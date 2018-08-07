@@ -8,20 +8,26 @@
 
 /* Begin PBXBuildFile section */
 		DF5CB4DE2118483A00F39DC0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB4DD2118483A00F39DC0 /* AppDelegate.swift */; };
-		DF5CB4E02118483A00F39DC0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB4DF2118483A00F39DC0 /* ViewController.swift */; };
-		DF5CB4E32118483A00F39DC0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DF5CB4E12118483A00F39DC0 /* Main.storyboard */; };
+		DF5CB4E02118483A00F39DC0 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB4DF2118483A00F39DC0 /* RootViewController.swift */; };
 		DF5CB4E52118483C00F39DC0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DF5CB4E42118483C00F39DC0 /* Assets.xcassets */; };
 		DF5CB4E82118483C00F39DC0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DF5CB4E62118483C00F39DC0 /* LaunchScreen.storyboard */; };
+		DF5CB4FA211855AA00F39DC0 /* NewSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB4F9211855AA00F39DC0 /* NewSplitViewController.swift */; };
+		DF5CB5022118634C00F39DC0 /* Split.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB5012118634C00F39DC0 /* Split.swift */; };
+		DF5CB5052118728F00F39DC0 /* database.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB5042118728F00F39DC0 /* database.swift */; };
+		DF5CB50721187A9400F39DC0 /* SplitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB50621187A9400F39DC0 /* SplitController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		DF5CB4DA2118483A00F39DC0 /* split-bills.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "split-bills.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF5CB4DD2118483A00F39DC0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		DF5CB4DF2118483A00F39DC0 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		DF5CB4E22118483A00F39DC0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		DF5CB4DF2118483A00F39DC0 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		DF5CB4E42118483C00F39DC0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DF5CB4E72118483C00F39DC0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DF5CB4E92118483C00F39DC0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DF5CB4F9211855AA00F39DC0 /* NewSplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSplitViewController.swift; sourceTree = "<group>"; };
+		DF5CB5012118634C00F39DC0 /* Split.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Split.swift; sourceTree = "<group>"; };
+		DF5CB5042118728F00F39DC0 /* database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = database.swift; sourceTree = "<group>"; };
+		DF5CB50621187A9400F39DC0 /* SplitController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,14 +60,41 @@
 		DF5CB4DC2118483A00F39DC0 /* split-bills */ = {
 			isa = PBXGroup;
 			children = (
+				DF5CB5032118728300F39DC0 /* Database */,
+				DF5CB5002118634100F39DC0 /* Models */,
+				DF5CB4F82118559800F39DC0 /* Splits Controllers */,
 				DF5CB4DD2118483A00F39DC0 /* AppDelegate.swift */,
-				DF5CB4DF2118483A00F39DC0 /* ViewController.swift */,
-				DF5CB4E12118483A00F39DC0 /* Main.storyboard */,
 				DF5CB4E42118483C00F39DC0 /* Assets.xcassets */,
 				DF5CB4E62118483C00F39DC0 /* LaunchScreen.storyboard */,
 				DF5CB4E92118483C00F39DC0 /* Info.plist */,
 			);
 			path = "split-bills";
+			sourceTree = "<group>";
+		};
+		DF5CB4F82118559800F39DC0 /* Splits Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				DF5CB4F9211855AA00F39DC0 /* NewSplitViewController.swift */,
+				DF5CB4DF2118483A00F39DC0 /* RootViewController.swift */,
+				DF5CB50621187A9400F39DC0 /* SplitController.swift */,
+			);
+			path = "Splits Controllers";
+			sourceTree = "<group>";
+		};
+		DF5CB5002118634100F39DC0 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				DF5CB5012118634C00F39DC0 /* Split.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		DF5CB5032118728300F39DC0 /* Database */ = {
+			isa = PBXGroup;
+			children = (
+				DF5CB5042118728F00F39DC0 /* database.swift */,
+			);
+			path = Database;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -74,6 +107,7 @@
 				DF5CB4D62118483A00F39DC0 /* Sources */,
 				DF5CB4D72118483A00F39DC0 /* Frameworks */,
 				DF5CB4D82118483A00F39DC0 /* Resources */,
+				DF5CB4F22118498100F39DC0 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -124,33 +158,54 @@
 			files = (
 				DF5CB4E82118483C00F39DC0 /* LaunchScreen.storyboard in Resources */,
 				DF5CB4E52118483C00F39DC0 /* Assets.xcassets in Resources */,
-				DF5CB4E32118483A00F39DC0 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		DF5CB4F22118498100F39DC0 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/SnapKit.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Eureka.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/SQLite.framework",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/SnapKit.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Eureka.framework",
+				"$(BUILD_PRODUCTS_DIC)/$(FRAMWEORKS_FOLDER_PATH)/SQLite.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n/usr/local/bin/carthage copy-frameworks\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		DF5CB4D62118483A00F39DC0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DF5CB4E02118483A00F39DC0 /* ViewController.swift in Sources */,
+				DF5CB50721187A9400F39DC0 /* SplitController.swift in Sources */,
+				DF5CB4E02118483A00F39DC0 /* RootViewController.swift in Sources */,
 				DF5CB4DE2118483A00F39DC0 /* AppDelegate.swift in Sources */,
+				DF5CB5022118634C00F39DC0 /* Split.swift in Sources */,
+				DF5CB5052118728F00F39DC0 /* database.swift in Sources */,
+				DF5CB4FA211855AA00F39DC0 /* NewSplitViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		DF5CB4E12118483A00F39DC0 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				DF5CB4E22118483A00F39DC0 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		DF5CB4E62118483C00F39DC0 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -283,6 +338,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = "split-bills/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -300,6 +359,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = "split-bills/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
