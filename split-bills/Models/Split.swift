@@ -21,3 +21,10 @@ struct Participant {
     let name: String
     let email: String?
 }
+
+extension Participant: Equatable {
+
+    static func == (lhs: Participant, rhs: Participant) -> Bool {
+        return lhs.name == rhs.name
+    }
+}

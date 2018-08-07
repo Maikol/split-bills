@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Eureka
 
 @UIApplicationMain
 final class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -19,6 +20,32 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         let rootNavigationViewController = UINavigationController(rootViewController: RootViewController())
         window!.rootViewController = rootNavigationViewController
         window!.makeKeyAndVisible()
+
+        // TODO: Move this stuff out
+
+        LabelRow.defaultCellUpdate = { cell, _ in
+            cell.contentView.backgroundColor = .red
+            cell.textLabel?.textColor = .white
+            cell.textLabel?.font = .boldSystemFont(ofSize: 13)
+            cell.textLabel?.textAlignment = .right
+        }
+
+        TextRow.defaultCellUpdate = { _, row in
+            let rowIndex = row.indexPath!.row
+            while row.section!.count > rowIndex + 1 && row.section?[rowIndex  + 1] is LabelRow {
+                row.section?.remove(at: rowIndex + 1)
+            }
+            if !row.isValid {
+                for (index, validationMsg) in row.validationErrors.map({ $0.msg }).enumerated() {
+                    let labelRow = LabelRow() {
+                        $0.title = validationMsg
+                        $0.cell.height = { 30 }
+                    }
+                    row.section?.insert(labelRow, at: row.indexPath!.row + index + 1)
+                }
+            }
+        }
+
         return true
     }
 

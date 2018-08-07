@@ -71,7 +71,7 @@ struct ParticipantDatabase {
     private func initializeDatabaseSchema() throws {
         _ = try db.run(table.create(ifNotExists: true) { t in
             t.column(id, primaryKey: true)
-            t.column(splitId, unique: true)
+            t.column(splitId)
             t.column(name)
             t.column(email)
         })
@@ -83,11 +83,111 @@ struct ParticipantDatabase {
     }
 
     func participants(for rowId: Int64) throws -> [Participant] {
-        let query = table.filter(splitId == Int64(rowId))
+        let query = table.filter(splitId == rowId)
         return try db.prepare(query).compactMap { participant(with: $0) }
+    }
+
+    func participant(with name: String) throws -> Participant? {
+        let query = table.filter(self.name == name)
+        return try db.prepare(query).compactMap { participant(with: $0) }.first
     }
 
     private func participant(with row: SQLite.Row) -> Participant? {
         return Participant(name: row[name], email: row[email])
+    }
+}
+
+struct ExpenseDatabase {
+
+    private let weightsTable: ExpsenseWeightDatabase
+    private let participantDatabase: ParticipantDatabase
+
+    private let db: Connection
+    private let table = Table("expense")
+
+    private let id = Expression<Int64>("id")
+    private let splitName = Expression<String>("split_name")
+    private let payerName = Expression<String>("payer_name")
+    private let description = Expression<String>("description")
+    private let amount = Expression<Double>("amount")
+
+    init(databasePath: String) throws {
+        weightsTable = try ExpsenseWeightDatabase(databasePath: databasePath)
+        participantDatabase = try ParticipantDatabase(databasePath: databasePath)
+
+        db = try Connection("\(databasePath)/exprenses_database.sqlite3")
+        try self.initializeDatabaseSchema()
+    }
+
+    private func initializeDatabaseSchema() throws {
+        _ = try db.run(table.create(ifNotExists: true) { t in
+            t.column(id, primaryKey: true)
+            t.column(splitName)
+            t.column(payerName)
+            t.column(description)
+            t.column(amount)
+        })
+    }
+
+    func add(expense: Expense, splitName: String) throws {
+        let insert = table.insert(self.splitName <- splitName, payerName <- expense.payer.name, description <- expense.description, amount <- expense.amount)
+        let rowId = try db.run(insert)
+
+        try expense.participantsWeight.forEach { try weightsTable.add(weight: $0, expenseId: rowId) }
+    }
+
+    func getAll(splitName: String) throws -> [Expense] {
+        let query = table.filter(self.splitName == splitName)
+        return try db.prepare(query).compactMap { try expense(with: $0) }
+    }
+
+    private func expense(with row: SQLite.Row) throws -> Expense? {
+        let weights = try weightsTable.get(expenseId: row[id])
+        let payer = try participantDatabase.participant(with: row[payerName])
+
+        return payer.flatMap { Expense(id: row[id], payer: $0, description: row[description], amount: row[amount], participantsWeight: weights) }
+    }
+}
+
+struct ExpsenseWeightDatabase {
+
+    private let participantDatabase: ParticipantDatabase
+
+    private let db: Connection
+    private let table = Table("expense_weight")
+
+    private let id = Expression<Int64>("id")
+    private let expenseId = Expression<Int64>("expense_id")
+    private let participantName = Expression<String>("participant_name")
+    private let weight = Expression<Double>("weight")
+
+    init(databasePath: String) throws {
+        participantDatabase = try ParticipantDatabase(databasePath: databasePath)
+        db = try Connection("\(databasePath)/expenses_weight_database.sqlite3")
+        try self.initializeDatabaseSchema()
+    }
+
+    private func initializeDatabaseSchema() throws {
+        _ = try db.run(table.create(ifNotExists: true) { t in
+            t.column(id, primaryKey: true)
+            t.column(expenseId)
+            t.column(participantName)
+            t.column(weight)
+        })
+    }
+
+    func add(weight: ExpenseWeight, expenseId: Int64) throws {
+        let insert = table.insert(self.expenseId <- expenseId, participantName <- weight.participant.name, self.weight <- weight.weight)
+        _ = try db.run(insert)
+    }
+
+    func get(expenseId: Int64) throws -> [ExpenseWeight] {
+        let query = table.filter(self.expenseId == expenseId)
+        return try db.prepare(query).compactMap { try weight(with: $0) }
+    }
+
+    func weight(with row: SQLite.Row) throws -> ExpenseWeight? {
+        let participant = try participantDatabase.participant(with: row[participantName])
+        return participant.flatMap { ExpenseWeight(participant: $0, weight: row[weight])}
     }
 }

@@ -12,19 +12,19 @@ struct SplitController {
 
     static let shared = SplitController()
 
-    private let database: SplitDatabase?
+    private let splitDatabase: SplitDatabase?
 
     init() {
         do {
-            database = try SplitDatabase(databasePath: URL.documentsDirectory.absoluteString)
+            splitDatabase = try SplitDatabase(databasePath: URL.documentsDirectory.absoluteString)
         } catch {
-            database = nil
+            splitDatabase = nil
         }
     }
 
     func add(split: Split) {
         do {
-            try self.database?.add(split: split)
+            try self.splitDatabase?.add(split: split)
         } catch {
             print("failed to add split item")
         }
@@ -32,10 +32,41 @@ struct SplitController {
 
     func getAll() -> [Split]? {
         do {
-            return try self.database?.getAll()
+            return try self.splitDatabase?.getAll()
         } catch {
             print("failed to get split items")
             return nil
+        }
+    }
+}
+
+struct ExpenseController {
+
+    static let shared = ExpenseController()
+
+    private let expensesDatabase: ExpenseDatabase?
+
+    init() {
+        do {
+            expensesDatabase = try ExpenseDatabase(databasePath: URL.documentsDirectory.absoluteString)
+        } catch {
+            expensesDatabase = nil
+        }
+    }
+
+    func add(expense: Expense, in split: Split) {
+        try? expensesDatabase?.add(expense: expense, splitName: split.eventName)
+    }
+
+    func getAll(for split: Split) -> [Expense] {
+        guard let expensesDatabase = expensesDatabase else {
+            return []
+        }
+
+        do {
+            return try expensesDatabase.getAll(splitName: split.eventName)
+        } catch {
+            return []
         }
     }
 }

@@ -9,7 +9,7 @@
 import UIKit
 import SnapKit
 
-final class RootViewController: UIViewController, NewSplitViewControllerDelegate, UITableViewDataSource {
+final class RootViewController: UIViewController, NewSplitViewControllerDelegate, UITableViewDataSource, UITableViewDelegate {
 
     private let tableView = UITableView()
 
@@ -30,6 +30,7 @@ final class RootViewController: UIViewController, NewSplitViewControllerDelegate
         self.navigationItem.rightBarButtonItem = newSplitButton
 
         tableView.dataSource = self
+        tableView.delegate = self
         tableView.tableFooterView = UIView()
         view.addSubview(tableView)
     }
@@ -60,6 +61,15 @@ final class RootViewController: UIViewController, NewSplitViewControllerDelegate
         cell.detailTextLabel?.text = split.name
 
         return cell
+    }
+
+    // MARK: UITableViewDelegate methods
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let viewController = SplitViewController(split: splits[indexPath.row])
+        navigationController!.pushViewController(viewController, animated: true)
+
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 
     // MARK: NewSplitViewControllerDelegate methods
