@@ -46,6 +46,22 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
+        DecimalRow.defaultCellUpdate = { _, row in
+            let rowIndex = row.indexPath!.row
+            while row.section!.count > rowIndex + 1 && row.section?[rowIndex  + 1] is LabelRow {
+                row.section?.remove(at: rowIndex + 1)
+            }
+            if !row.isValid {
+                for (index, validationMsg) in row.validationErrors.map({ $0.msg }).enumerated() {
+                    let labelRow = LabelRow() {
+                        $0.title = validationMsg
+                        $0.cell.height = { 30 }
+                    }
+                    row.section?.insert(labelRow, at: row.indexPath!.row + index + 1)
+                }
+            }
+        }
+
         return true
     }
 

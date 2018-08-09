@@ -9,7 +9,7 @@
 import UIKit
 import Eureka
 
-final class SplitViewController: FormViewController {
+final class SplitViewController: FormViewController, NewExpenseViewControllerDelegate {
 
     private let split: Split
     private var expenses: [Expense]
@@ -30,6 +30,9 @@ final class SplitViewController: FormViewController {
 
         buildView()
         buildForm()
+
+        let payments = self.payments.map { $0.description }
+        print(payments.joined(separator: "\n"))
     }
 
     private func buildView() {
@@ -60,9 +63,27 @@ final class SplitViewController: FormViewController {
         form += [headerSection, overviewSection]
     }
 
+    private func reloadExpenses() {
+        expenses = ExpenseController.shared.getAll(for: split)
+
+        form.removeAll(keepingCapacity: true)
+        buildForm()
+    }
+
     @objc private func newExpenseButtonTapped() {
         let viewController = NewExpenseViewController(split: split)
+        viewController.delegate = self
         present(UINavigationController(rootViewController: viewController), animated: true, completion: nil)
+    }
+
+    // MARK: NewExpenseViewControllerDelegate methods
+
+    func didCreateNewExpense(_ expense: Expense, viewController: UIViewController) {
+        ExpenseController.shared.add(expense: expense, in: split)
+
+        reloadExpenses()
+
+        viewController.dismiss(animated: true, completion: nil)
     }
 }
 
@@ -93,6 +114,7 @@ final class ExpenseRow: Row<ExpenseCell>, RowType {
         super.init(tag: tag)
     }
 }
+
 class ExpenseCell: Cell<Expense>, CellType {
 
     private let descriptionLabel = UILabel()
@@ -148,5 +170,55 @@ class ExpenseCell: Cell<Expense>, CellType {
 
         descriptionLabel.text = row.value?.description
         amountLabel.text = row.value.flatMap { String($0.amount) }
+    }
+}
+
+private extension SplitViewController {
+
+    var payments: [Payment] {
+        let paymentsValues = Dictionary(grouping: expenses) { expense in
+            return expense.payer
+        }.mapValues { $0.reduce(0) { return $0 + $1.amount } }
+
+        var owingValues = [Participant: Double]()
+        split.participants.forEach { participant in
+            let totalOwing = expenses.reduce(0.0) { result, expense in
+                guard let weight = expense.participantsWeight.first(where: { $0.participant == participant }) else {
+                    return result
+                }
+
+                return result + weight.weight * expense.amount
+            }
+
+            owingValues[participant] = totalOwing * (-1)
+        }
+
+        let mergedValues = paymentsValues.merging(owingValues) { $0 + $1 }.sorted { $0.value > $1.value }
+        return settle(mergedValues)
+    }
+
+    private func settle(_ values: [(key: Participant, value: Double)]) -> [Payment] {
+        guard values.count > 1 else {
+            print("Probably something wen't wrong")
+            return []
+        }
+
+        guard let first = values.first, let last = values.last else {
+            fatalError("something went wrong")
+        }
+
+        let sum = first.value + last.value
+
+        if sum < 0 {
+            let paymen = Payment(payer: last.key, receiver: first.key, amount: abs(first.value))
+            var newValues = values.filter { $0.key != first.key && $0.key != last.key  }
+            newValues.append((last.key, last.value + first.value))
+            return [paymen] + settle(newValues)
+        } else {
+            let paymen = Payment(payer: last.key, receiver: first.key, amount: abs(last.value))
+            var newValues = values.filter { $0.key != first.key && $0.key != last.key  }
+            newValues.insert((first.key, first.value + last.value), at: 0)
+            return [paymen] + settle(newValues)
+        }
     }
 }

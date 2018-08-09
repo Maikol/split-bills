@@ -18,6 +18,7 @@
 		DF5CB50921198D9400F39DC0 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB50821198D9400F39DC0 /* SplitViewController.swift */; };
 		DF5CB50C211998A500F39DC0 /* Expense.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB50B211998A500F39DC0 /* Expense.swift */; };
 		DF5CB50E2119D80A00F39DC0 /* NewExpenseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB50D2119D80A00F39DC0 /* NewExpenseViewController.swift */; };
+		DF890F9A211C542100305528 /* EurekaExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF890F99211C542100305528 /* EurekaExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,8 @@
 		DF5CB50821198D9400F39DC0 /* SplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
 		DF5CB50B211998A500F39DC0 /* Expense.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Expense.swift; sourceTree = "<group>"; };
 		DF5CB50D2119D80A00F39DC0 /* NewExpenseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewExpenseViewController.swift; sourceTree = "<group>"; };
+		DF890F99211C542100305528 /* EurekaExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EurekaExtensions.swift; sourceTree = "<group>"; };
+		DF890F9C211C772F00305528 /* Playground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Playground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +69,7 @@
 		DF5CB4DC2118483A00F39DC0 /* split-bills */ = {
 			isa = PBXGroup;
 			children = (
+				DF890F98211C541000305528 /* Utils */,
 				DF5CB5032118728300F39DC0 /* Database */,
 				DF5CB5002118634100F39DC0 /* Models */,
 				DF5CB4F82118559800F39DC0 /* Splits Controllers */,
@@ -112,6 +116,15 @@
 				DF5CB4E42118483C00F39DC0 /* Assets.xcassets */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		DF890F98211C541000305528 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				DF890F99211C542100305528 /* EurekaExtensions.swift */,
+				DF890F9C211C772F00305528 /* Playground.playground */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -211,6 +224,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF890F9A211C542100305528 /* EurekaExtensions.swift in Sources */,
 				DF5CB50C211998A500F39DC0 /* Expense.swift in Sources */,
 				DF5CB50721187A9400F39DC0 /* SplitController.swift in Sources */,
 				DF5CB50921198D9400F39DC0 /* SplitViewController.swift in Sources */,

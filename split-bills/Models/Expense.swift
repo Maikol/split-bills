@@ -23,6 +23,17 @@ struct ExpenseWeight {
     let weight: Double
 }
 
+struct Payment {
+
+    let payer: Participant
+    let receiver: Participant
+    let amount: Double
+
+    var description: String {
+        return "\(payer.name) nees to pay \(amount) to \(receiver.name)"
+    }
+}
+
 extension Expense: Equatable {
 
     static func == (lhs: Expense, rhs: Expense) -> Bool {

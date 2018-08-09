@@ -22,9 +22,13 @@ struct Participant {
     let email: String?
 }
 
-extension Participant: Equatable {
+extension Participant: Equatable, Hashable {
 
     static func == (lhs: Participant, rhs: Participant) -> Bool {
         return lhs.name == rhs.name
+    }
+
+    var hashValue: Int {
+        return name.hashValue
     }
 }

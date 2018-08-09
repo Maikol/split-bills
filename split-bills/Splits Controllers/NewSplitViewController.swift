@@ -106,6 +106,6 @@ private extension Split {
         self.eventName = eventName
         self.name = name
         self.email = dic["email"] as? String
-        self.participants = participantsSection.values().compactMap { $0 as? String }.map { Participant(name: $0, email: nil) }
+        self.participants = [Participant(name: name, email: nil)] + participantsSection.values().compactMap { $0 as? String }.map { Participant(name: $0, email: nil) }
     }
 }
