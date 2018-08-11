@@ -207,12 +207,16 @@ final class NewExpenseViewController: FormViewController {
             let amount = form.doubleRow(with: "expense-amount")?.value else { return }
 
         guard !form.uBoolRow(with: "split-equally-switch").value! else {
-            saveEqually(payer: payer, description: description, amount: amount)
+            saveEquallySplitedBetweenAll(payer: payer, description: description, amount: amount)
             return
         }
 
         guard let segmentsRow = form.rowBy(tag: "weight-segments") as? SegmentedRow<Segment>,
-            let segment = segmentsRow.value else { return }
+            let segment = segmentsRow.value
+        else {
+            print("Something went wrong - couldn't find weight-segments value creating an expense")
+            return
+        }
 
         switch segment {
         case .Equally: saveEquallySegment(payer: payer, description: description, amount: amount)
@@ -221,12 +225,13 @@ final class NewExpenseViewController: FormViewController {
         }
     }
 
-    private func saveEqually(payer: Participant, description: String, amount: Double) {
-        guard split.participants.count > 0 else { return }
-
-        let weight = 1 / Double(split.participants.count)
-        let participantsWeight = split.participants.map { ExpenseWeight(participant: $0, weight: weight) }
-        let expense = Expense(id: INTMAX_MAX, payer: payer, description: description, amount: amount, participantsWeight: participantsWeight)
+    private func saveEquallySplitedBetweenAll(payer: Participant, description: String, amount: Double) {
+        guard let expense = Expense.equallySplited(
+            with: split,
+            payer: payer,
+            participants: split.participants,
+            description: description,
+            amount: amount) else { return }
 
         self.delegate?.didCreateNewExpense(expense, viewController: self)
     }
@@ -234,30 +239,38 @@ final class NewExpenseViewController: FormViewController {
     private func saveEquallySegment(payer: Participant, description: String, amount: Double) {
         let participants = split.participants.filter { (form.rowBy(tag: "equally-\($0.name)") as? CheckRow)?.value == true }
 
-        guard participants.count > 0 else { return }
-
-        let weight = 1 / Double(participants.count)
-        let participantsWeight = participants.map { ExpenseWeight(participant: $0, weight: weight) }
-        let expense = Expense(id: INTMAX_MAX, payer: payer, description: description, amount: amount, participantsWeight: participantsWeight)
+        guard let expense = Expense.equallySplited(
+            with: split,
+            payer: payer,
+            participants: participants,
+            description: description,
+            amount: amount) else { return }
 
         self.delegate?.didCreateNewExpense(expense, viewController: self)
     }
 
     private func saveAmountSegment(payer: Participant, description: String, amount: Double) {
-        let values = split.participants.compactMap { ($0, form.doubleRow(with: "amount-\($0.name)")?.value ?? 0) }
+        let amounts = split.participants.compactMap { ($0, form.doubleRow(with: "amount-\($0.name)")?.value ?? 0) }
 
-        let participantsWeight = values.map { ExpenseWeight(participant: $0.0, weight: $0.1 / amount) }
-        let expense = Expense(id: INTMAX_MAX, payer: payer, description: description, amount: amount, participantsWeight: participantsWeight)
+        guard let expense = Expense.splitByAmount(
+            with: split,
+            payer: payer,
+            amounts: amounts,
+            description: description,
+            amount: amount) else { return }
 
         self.delegate?.didCreateNewExpense(expense, viewController: self)
     }
 
     private func saveWeightSegment(payer: Participant, description: String, amount: Double) {
-        let values = split.participants.compactMap { ($0, form.doubleRow(with: "weight-\($0.name)")?.value ?? 0) }
+        let weights = split.participants.compactMap { ($0, form.doubleRow(with: "weight-\($0.name)")?.value ?? 0) }
 
-        let totalWeight = values.map { $0.1 }.reduce(0) { return $0 + $1 }
-        let participantsWeight = values.map { ExpenseWeight(participant: $0.0, weight: $0.1 / totalWeight) }
-        let expense = Expense(id: INTMAX_MAX, payer: payer, description: description, amount: amount, participantsWeight: participantsWeight)
+        guard let expense = Expense.splitByWeight(
+            with: split,
+            payer: payer,
+            weights: weights,
+            description: description,
+            amount: amount) else { return }
 
         self.delegate?.didCreateNewExpense(expense, viewController: self)
     }

@@ -40,3 +40,40 @@ extension Expense: Equatable {
         return lhs.id == rhs.id
     }
 }
+
+extension Expense {
+
+    static func equallySplited(with split: Split, payer: Participant, participants: [Participant], description: String, amount: Double) -> Expense? {
+        guard participants.count > 0 else {
+            print("Tried to create an expense with no participants")
+            return nil
+        }
+
+        let weight = 1 / Double(participants.count)
+        let participantsWeight = participants.map { ExpenseWeight(participant: $0, weight: weight) }
+        return Expense(id: INTMAX_MAX, payer: payer, description: description, amount: amount, participantsWeight: participantsWeight)
+    }
+
+    typealias Amount = (Participant, Double)
+    static func splitByAmount(with split: Split, payer: Participant, amounts: [Amount], description: String, amount: Double) -> Expense? {
+        guard amounts.count > 0 else {
+            print("Tried to create an expense with no participants")
+            return nil
+        }
+
+        let participantsWeight = amounts.map { ExpenseWeight(participant: $0.0, weight: $0.1 / amount) }
+        return Expense(id: INTMAX_MAX, payer: payer, description: description, amount: amount, participantsWeight: participantsWeight)
+    }
+
+    typealias Weight = (Participant, Double)
+    static func splitByWeight(with split: Split, payer: Participant, weights: [Weight], description: String, amount: Double) -> Expense? {
+        guard weights.count > 0 else {
+            print("Tried to create an expense with no participants")
+            return nil
+        }
+
+        let totalWeight = weights.map { $0.1 }.reduce(0) { return $0 + $1 }
+        let participantsWeight = weights.map { ExpenseWeight(participant: $0.0, weight: $0.1 / totalWeight) }
+        return Expense(id: INTMAX_MAX, payer: payer, description: description, amount: amount, participantsWeight: participantsWeight)
+    }
+}
