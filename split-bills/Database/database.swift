@@ -18,8 +18,6 @@ struct SplitDatabase {
 
     private let id = Expression<Int64>("id")
     private let eventName = Expression<String>("event_name")
-    private let name = Expression<String>("name")
-    private let email = Expression<String?>("email")
 
     init(databasePath: String) throws {
         participantsDatabase = try ParticipantDatabase(databasePath: databasePath)
@@ -31,13 +29,11 @@ struct SplitDatabase {
         _ = try db.run(table.create(ifNotExists: true) { t in
             t.column(id, primaryKey: true)
             t.column(eventName, unique: true)
-            t.column(name)
-            t.column(email)
         })
     }
 
     func add(split: Split) throws {
-        let insert = table.insert(eventName <- split.eventName, name <- split.name, email <- split.email)
+        let insert = table.insert(eventName <- split.eventName)
         let rowId = try db.run(insert)
 
         try split.participants.forEach { try participantsDatabase.add(participant: $0, splitId: rowId) }
@@ -49,7 +45,7 @@ struct SplitDatabase {
 
     private func split(with row: SQLite.Row) throws -> Split? {
         let participants = try participantsDatabase.participants(for: row[id])
-        return Split(eventName: row[eventName], name: row[name], email: row[email], participants: participants)
+        return Split(eventName: row[eventName], participants: participants)
     }
 }
 

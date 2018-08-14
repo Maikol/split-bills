@@ -11,7 +11,10 @@ import SnapKit
 
 final class RootViewController: UIViewController, NewSplitViewControllerDelegate, UITableViewDataSource, UITableViewDelegate {
 
+    private let headerView = UIView()
+    private let titleView = UILabel(style: .headingWhite)
     private let tableView = UITableView()
+    private let newBillButton = UIButton(title: "New Bill", style: .brandBold)
 
     private var splits = SplitController.shared.getAll() ?? []
 
@@ -22,22 +25,50 @@ final class RootViewController: UIViewController, NewSplitViewControllerDelegate
         buildLayout()
     }
 
-    private func buildView() {
-        title = "Home"
-        view.backgroundColor = .white
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
 
-        let newSplitButton = UIBarButtonItem(title: "New split", style: .plain, target: self, action: #selector(newSplitButtonTapped))
-        self.navigationItem.rightBarButtonItem = newSplitButton
+        navigationController!.isNavigationBarHidden = true
+    }
+
+    private func buildView() {
+        view.backgroundColor = Color.white.value
+
+        headerView.backgroundColor = Color.brand.value
+        headerView.alpha = 0.8
+        view.addSubview(headerView)
+
+        titleView.text = "Split Bills"
+        headerView.addSubview(titleView)
 
         tableView.dataSource = self
         tableView.delegate = self
         tableView.tableFooterView = UIView()
         view.addSubview(tableView)
+
+        newBillButton.addTarget(self, action: #selector(newSplitButtonTapped), for: .touchUpInside)
+        view.addSubview(newBillButton)
     }
 
     private func buildLayout() {
+        headerView.snp.makeConstraints { make in
+            make.top.left.right.equalToSuperview()
+            make.height.equalTo(170)
+        }
+
+        titleView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
+
         tableView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.top.equalTo(headerView.snp.bottom)
+            make.left.right.equalToSuperview()
+        }
+
+        newBillButton.snp.makeConstraints { make in
+            make.top.equalTo(tableView.snp.bottom)
+            make.left.bottom.right.equalToSuperview()
+            make.height.equalTo(60)
         }
     }
 
@@ -58,7 +89,6 @@ final class RootViewController: UIViewController, NewSplitViewControllerDelegate
 
         let split = splits[indexPath.row]
         cell.textLabel?.text = split.eventName
-        cell.detailTextLabel?.text = split.name
 
         return cell
     }

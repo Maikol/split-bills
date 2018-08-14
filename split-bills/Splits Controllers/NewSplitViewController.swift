@@ -24,12 +24,15 @@ final class NewSplitViewController: FormViewController {
         buildForm()
     }
 
-    private func buildView() {
-        title = "New split"
-        view.backgroundColor = .white
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
 
-        let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(doneButtonTapped))
-        self.navigationItem.rightBarButtonItem = doneButton
+        navigationController!.isNavigationBarHidden = false
+    }
+
+    private func buildView() {
+        title = "Bill"
+        view.backgroundColor = .white
     }
 
     private func buildForm() {
@@ -41,18 +44,6 @@ final class NewSplitViewController: FormViewController {
                 $0.validationOptions = .validatesOnChange
             }
 
-        let infoSection = Section("Your info")
-            <<< TextRow() {
-                $0.tag = "name"
-                $0.placeholder = "your name"
-                $0.add(rule: RuleRequired())
-            }
-            <<< TextRow() {
-                $0.tag = "email"
-                $0.placeholder = "your email (optional)"
-                $0.add(rule: RuleEmail())
-            }
-
         let partnersSection = MultivaluedSection(
                 multivaluedOptions: [.Insert, .Delete],
                 header: "Participants")
@@ -60,28 +51,37 @@ final class NewSplitViewController: FormViewController {
                 $0.tag = "participants"
                 $0.addButtonProvider = { section in
                     return ButtonRow() {
-                        $0.title = "Add new person"
+                        $0.title = "Add participant"
                     }.cellUpdate { cell, row in
-                            cell.textLabel?.textAlignment = .left
+                        cell.textLabel?.textAlignment = .left
                     }
                 }
                 $0.multivaluedRowToInsertAt = { index in
                     return NameRow() {
-                        $0.tag = "person-\(index+1)"
-                        $0.placeholder = "Person \(index + 1)"
+                        $0.placeholder = "Participant \(index + 1)"
                     }
                 }
                 $0 <<< NameRow() {
-                    $0.tag = "person-1"
-                    $0.placeholder = "Person 1"
+                    $0.placeholder = "You"
+                    $0.add(rule: RuleRequired())
+                }
+                $0 <<< NameRow() {
+                    $0.placeholder = "Participant 1"
                     $0.add(rule: RuleRequired())
                 }
             }
 
-        form += [eventSection, infoSection, partnersSection]
+        let submitSection = Section()
+            <<< ButtonRow() {
+                $0.title = "Save"
+            }.onCellSelection { [weak self] _, _ in
+                self?.saveSplit()
+            }
+
+        form += [eventSection, partnersSection, submitSection]
     }
 
-    @objc private func doneButtonTapped() {
+    private func saveSplit() {
         guard form.validate().isEmpty else { return }
 
         guard let split = Split(form: form) else { return }
@@ -95,17 +95,17 @@ private extension Split {
 
     init?(form: Eureka.Form) {
         let dic = form.values()
-        guard let eventName = dic["event-name"] as? String, let name = dic["name"] as? String else {
+        guard let eventName = dic["event-name"] as? String else {
             return nil
         }
 
-        guard let participantsSection = form.sectionBy(tag: "participants") as? MultivaluedSection else {
+        guard let participantsSection = form.sectionBy(tag: "participants") as? MultivaluedSection, participantsSection.values().count > 1 else {
             return nil
         }
 
         self.eventName = eventName
-        self.name = name
-        self.email = dic["email"] as? String
-        self.participants = [Participant(name: name, email: nil)] + participantsSection.values().compactMap { $0 as? String }.map { Participant(name: $0, email: nil) }
+        self.participants = participantsSection.values()
+            .compactMap { $0 as? String }
+            .map { Participant(name: $0, email: nil) }
     }
 }

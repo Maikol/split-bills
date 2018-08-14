@@ -11,8 +11,6 @@ import Foundation
 struct Split {
 
     let eventName: String
-    let name: String
-    let email: String?
     let participants: [Participant]
 }
 
@@ -36,9 +34,8 @@ extension Participant: Equatable, Hashable {
 extension Split {
 
     func settle(expenses: [Expense]) -> [Payment] {
-        let paymentsValues = Dictionary(grouping: expenses) { expense in
-            return expense.payer
-            }.mapValues { $0.reduce(0) { return $0 + $1.amount } }
+        let paymentsValues = Dictionary(grouping: expenses) { $0.payer }
+            .mapValues { $0.reduce(0) { return $0 + $1.amount } }
 
         var owingValues = [Participant: Double]()
         participants.forEach { participant in
@@ -53,13 +50,12 @@ extension Split {
             owingValues[participant] = totalOwing * (-1)
         }
 
-        let mergedValues = paymentsValues.merging(owingValues) { $0 + $1 }.sorted { $0.value > $1.value }
+        let mergedValues = paymentsValues.merging(owingValues, uniquingKeysWith: +).sorted { $0.value > $1.value }
         return settle(mergedValues).filter { $0.amount > 0.01 }
     }
 
     private func settle(_ values: [(key: Participant, value: Double)]) -> [Payment] {
         guard values.count > 1 else {
-            print("Probably something wen't wrong")
             return []
         }
 
@@ -68,17 +64,13 @@ extension Split {
         }
 
         let sum = first.value + last.value
+        var newValues = values.filter { $0.key != first.key && $0.key != last.key  }
 
-        if sum < 0 {
-            let paymen = Payment(payer: last.key, receiver: first.key, amount: abs(first.value))
-            var newValues = values.filter { $0.key != first.key && $0.key != last.key  }
-            newValues.append((last.key, last.value + first.value))
-            return [paymen] + settle(newValues)
-        } else {
-            let paymen = Payment(payer: last.key, receiver: first.key, amount: abs(last.value))
-            var newValues = values.filter { $0.key != first.key && $0.key != last.key  }
-            newValues.insert((first.key, first.value + last.value), at: 0)
-            return [paymen] + settle(newValues)
-        }
+        let payment = (sum < 0 ? Payment(payer: last.key, receiver: first.key, amount: abs(first.value)) :
+            Payment(payer: last.key, receiver: first.key, amount: abs(last.value)))
+
+        (sum < 0 ? newValues.append((last.key, sum)) : newValues.insert((first.key, sum), at: 0))
+
+        return [payment] + settle(newValues)
     }
 }

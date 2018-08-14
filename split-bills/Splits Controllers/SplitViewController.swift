@@ -35,6 +35,12 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
         print(payments.joined(separator: "\n"))
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        navigationController!.isNavigationBarHidden = false
+    }
+
     private func buildView() {
         view.backgroundColor = .white
 
@@ -71,19 +77,37 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
     }
 
     @objc private func newExpenseButtonTapped() {
+        let viewController = createNewExpenseViewController()
+        present(UINavigationController(rootViewController: viewController), animated: true, completion: nil)
+    }
+
+    private func createNewExpenseViewController() -> NewExpenseViewController {
         let viewController = NewExpenseViewController(split: split)
         viewController.delegate = self
-        present(UINavigationController(rootViewController: viewController), animated: true, completion: nil)
+
+        return viewController
+    }
+
+    private func saveAndReload(expense: Expense) {
+        ExpenseController.shared.add(expense: expense, in: split)
+        reloadExpenses()
     }
 
     // MARK: NewExpenseViewControllerDelegate methods
 
-    func didCreateNewExpense(_ expense: Expense, viewController: UIViewController) {
-        ExpenseController.shared.add(expense: expense, in: split)
-
-        reloadExpenses()
+    func didRequestSaveExpenseAndDismiss(_ expense: Expense, from viewController: UIViewController) {
+        saveAndReload(expense: expense)
 
         viewController.dismiss(animated: true, completion: nil)
+    }
+
+    func didRequestSaveAndCreateNewExpense(_ expense: Expense, from viewController: UIViewController) {
+        saveAndReload(expense: expense)
+
+        let navigationController = viewController.navigationController!
+
+        let newViewController = createNewExpenseViewController()
+        navigationController.setViewControllers([newViewController], animated: true)
     }
 }
 

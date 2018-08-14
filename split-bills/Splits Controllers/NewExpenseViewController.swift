@@ -10,7 +10,8 @@ import UIKit
 import Eureka
 
 protocol NewExpenseViewControllerDelegate: class {
-    func didCreateNewExpense(_ expense: Expense, viewController: UIViewController)
+    func didRequestSaveExpenseAndDismiss(_ expense: Expense, from viewController: UIViewController)
+    func didRequestSaveAndCreateNewExpense(_ expense: Expense, from viewController: UIViewController)
 }
 
 final class NewExpenseViewController: FormViewController {
@@ -45,13 +46,10 @@ final class NewExpenseViewController: FormViewController {
     }
 
     private func buildView() {
-        title = "New expense"
+        title = "Expense"
 
         let closeButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonTapped))
-        let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(doneButtonTapped))
-
         navigationItem.leftBarButtonItem = closeButton
-        navigationItem.rightBarButtonItem = doneButton
     }
 
     private func buildForm() {
@@ -71,7 +69,7 @@ final class NewExpenseViewController: FormViewController {
                 $0.tag = "payer-name"
                 $0.title = "Payer"
                 $0.add(rule: RuleRequired())
-                $0.value = split.name
+                $0.value = split.participants.first?.name
                 $0.options = split.participants.map { $0.name }
             }
             <<< DecimalRow() {
@@ -192,87 +190,89 @@ final class NewExpenseViewController: FormViewController {
                 }
         }
 
-        form += [expenseSection, splitTypeSection, weightSection, participantsSection]
+        let submitSection = Section()
+            <<< ButtonRow() {
+                    $0.title = "Add new expense"
+                }
+                .onCellSelection { [weak self] _, _ in
+                    self?.addNewExpenseTapped()
+            }
+            <<< ButtonRow() {
+                    $0.title = "Save"
+                }
+                .onCellSelection { [weak self] _, _ in
+                    self?.saveButtonTapped()
+            }
+
+        form += [expenseSection, splitTypeSection, weightSection, participantsSection, submitSection]
     }
 
     @objc private func cancelButtonTapped() {
         dismiss(animated: true, completion: nil)
     }
 
-    @objc private func doneButtonTapped() {
+    private func saveButtonTapped() {
         guard form.validate().isEmpty else { return }
 
+        guard let expense = createExpense() else { return }
+
+        self.delegate?.didRequestSaveExpenseAndDismiss(expense, from: self)
+    }
+
+    private func addNewExpenseTapped() {
+        guard form.validate().isEmpty else { return }
+
+        guard let expense = createExpense() else { return }
+
+        self.delegate?.didRequestSaveAndCreateNewExpense(expense, from: self)
+    }
+
+    private func createExpense() -> Expense? {
         guard let payer = form.stringRow(with: "payer-name")?.value.map({ Participant(name: $0, email: nil) }),
             let description = form.stringRow(with: "expense-description")?.value,
-            let amount = form.doubleRow(with: "expense-amount")?.value else { return }
+            let amount = form.doubleRow(with: "expense-amount")?.value else
+        {
+            return nil
+        }
 
         guard !form.uBoolRow(with: "split-equally-switch").value! else {
-            saveEquallySplitedBetweenAll(payer: payer, description: description, amount: amount)
-            return
+            return Expense.equallySplited(with: split, payer: payer, participants: split.participants,
+                                          description: description, amount: amount)
         }
 
         guard let segmentsRow = form.rowBy(tag: "weight-segments") as? SegmentedRow<Segment>,
             let segment = segmentsRow.value
-        else {
-            print("Something went wrong - couldn't find weight-segments value creating an expense")
-            return
+            else {
+                print("Something went wrong - couldn't find weight-segments value creating an expense")
+                return nil
         }
 
         switch segment {
-        case .Equally: saveEquallySegment(payer: payer, description: description, amount: amount)
-        case .Amount: saveAmountSegment(payer: payer, description: description, amount: amount)
-        case .Weight: saveWeightSegment(payer: payer, description: description, amount: amount)
+        case .Equally: return saveEquallySegment(payer: payer, description: description, amount: amount)
+        case .Amount: return saveAmountSegment(payer: payer, description: description, amount: amount)
+        case .Weight: return saveWeightSegment(payer: payer, description: description, amount: amount)
         }
     }
 
-    private func saveEquallySplitedBetweenAll(payer: Participant, description: String, amount: Double) {
-        guard let expense = Expense.equallySplited(
-            with: split,
-            payer: payer,
-            participants: split.participants,
-            description: description,
-            amount: amount) else { return }
-
-        self.delegate?.didCreateNewExpense(expense, viewController: self)
-    }
-
-    private func saveEquallySegment(payer: Participant, description: String, amount: Double) {
+    private func saveEquallySegment(payer: Participant, description: String, amount: Double) -> Expense? {
         let participants = split.participants.filter { (form.rowBy(tag: "equally-\($0.name)") as? CheckRow)?.value == true }
 
-        guard let expense = Expense.equallySplited(
-            with: split,
-            payer: payer,
-            participants: participants,
-            description: description,
-            amount: amount) else { return }
-
-        self.delegate?.didCreateNewExpense(expense, viewController: self)
+        return Expense.equallySplited(with: split, payer: payer, participants: participants,
+                                      description: description, amount: amount)
     }
 
-    private func saveAmountSegment(payer: Participant, description: String, amount: Double) {
+    private func saveAmountSegment(payer: Participant, description: String, amount: Double) -> Expense? {
         let amounts = split.participants.compactMap { ($0, form.doubleRow(with: "amount-\($0.name)")?.value ?? 0) }
 
-        guard let expense = Expense.splitByAmount(
-            with: split,
-            payer: payer,
-            amounts: amounts,
-            description: description,
-            amount: amount) else { return }
-
-        self.delegate?.didCreateNewExpense(expense, viewController: self)
+        return Expense.splitByAmount(with: split, payer: payer, amounts: amounts,
+                                     description: description, amount: amount)
     }
 
-    private func saveWeightSegment(payer: Participant, description: String, amount: Double) {
+    private func saveWeightSegment(payer: Participant, description: String, amount: Double) -> Expense? {
         let weights = split.participants.compactMap { ($0, form.doubleRow(with: "weight-\($0.name)")?.value ?? 0) }
 
-        guard let expense = Expense.splitByWeight(
-            with: split,
-            payer: payer,
-            weights: weights,
-            description: description,
-            amount: amount) else { return }
-
-        self.delegate?.didCreateNewExpense(expense, viewController: self)
+        return Expense.splitByWeight(with: split, payer: payer, weights: weights,
+                                     description: description, amount: amount)
     }
 }
 
