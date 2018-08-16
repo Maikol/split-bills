@@ -77,3 +77,10 @@ extension Expense {
         return Expense(id: INTMAX_MAX, payer: payer, description: description, amount: amount, participantsWeight: participantsWeight)
     }
 }
+
+extension Payment: Equatable {
+
+    static func == (lhs: Payment, rhs: Payment) -> Bool {
+        return lhs.description == rhs.description
+    }
+}

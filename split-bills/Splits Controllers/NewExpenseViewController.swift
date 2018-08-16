@@ -47,9 +47,6 @@ final class NewExpenseViewController: FormViewController {
 
     private func buildView() {
         title = "Expense"
-
-        let closeButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonTapped))
-        navigationItem.leftBarButtonItem = closeButton
     }
 
     private func buildForm() {

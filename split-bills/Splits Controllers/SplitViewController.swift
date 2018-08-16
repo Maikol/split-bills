@@ -30,9 +30,6 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
 
         buildView()
         buildForm()
-
-        let payments = split.settle(expenses: expenses).map { $0.description }
-        print(payments.joined(separator: "\n"))
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -58,6 +55,15 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
             $0.header = header
         }
 
+        let settleSection = Section("Settle")
+
+        let payments = split.settle(expenses: expenses)
+        payments.forEach { payment in
+            settleSection <<< PaymentRow() {
+                $0.value = payment
+            }
+        }
+
         let overviewSection = Section("Overview")
 
         expenses.forEach { expense in
@@ -66,7 +72,7 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
             }
         }
 
-        form += [headerSection, overviewSection]
+        form += [headerSection, settleSection, overviewSection]
     }
 
     private func reloadExpenses() {
@@ -77,15 +83,16 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
     }
 
     @objc private func newExpenseButtonTapped() {
-        let viewController = createNewExpenseViewController()
-        present(UINavigationController(rootViewController: viewController), animated: true, completion: nil)
+        pushNewExpenseViewController()
     }
 
-    private func createNewExpenseViewController() -> NewExpenseViewController {
+    private func pushNewExpenseViewController() {
         let viewController = NewExpenseViewController(split: split)
         viewController.delegate = self
 
-        return viewController
+        var navigationViewControllers = navigationController!.viewControllers.filter { !($0 is NewExpenseViewController) }
+        navigationViewControllers.append(viewController)
+        navigationController!.setViewControllers(navigationViewControllers, animated: true)
     }
 
     private func saveAndReload(expense: Expense) {
@@ -98,16 +105,13 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
     func didRequestSaveExpenseAndDismiss(_ expense: Expense, from viewController: UIViewController) {
         saveAndReload(expense: expense)
 
-        viewController.dismiss(animated: true, completion: nil)
+        navigationController!.popViewController(animated: true)
     }
 
     func didRequestSaveAndCreateNewExpense(_ expense: Expense, from viewController: UIViewController) {
         saveAndReload(expense: expense)
 
-        let navigationController = viewController.navigationController!
-
-        let newViewController = createNewExpenseViewController()
-        navigationController.setViewControllers([newViewController], animated: true)
+        pushNewExpenseViewController()
     }
 }
 
@@ -194,5 +198,88 @@ class ExpenseCell: Cell<Expense>, CellType {
 
         descriptionLabel.text = row.value?.description
         amountLabel.text = row.value.flatMap { String($0.amount) }
+    }
+}
+
+final class PaymentRow: Row<PaymentCell>, RowType {
+
+    required public init(tag: String?) {
+        super.init(tag: tag)
+    }
+}
+
+class PaymentCell: Cell<Payment>, CellType {
+
+    private let descriptionLabel = UILabel()
+    private let amountLabel = UILabel()
+
+    required init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+
+        buildView()
+        buildLayout()
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func buildView() {
+        descriptionLabel.minimumScaleFactor = 0.6
+        descriptionLabel.adjustsFontSizeToFitWidth = true
+        contentView.addSubview(descriptionLabel)
+
+        amountLabel.textAlignment = .right
+        contentView.addSubview(amountLabel)
+    }
+
+    private func buildLayout() {
+        descriptionLabel.snp.makeConstraints { make in
+            make.top.bottom.equalToSuperview()
+            make.left.equalToSuperview().offset(12)
+        }
+
+        amountLabel.snp.makeConstraints { make in
+            make.top.bottom.equalToSuperview()
+            make.right.equalToSuperview().offset(-12)
+            make.left.equalTo(descriptionLabel.snp.right).offset(12)
+            make.width.lessThanOrEqualTo(84)
+        }
+    }
+
+    open override func setup() {
+        super.setup()
+
+        selectionStyle = .none
+    }
+
+    open override func update() {
+        super.update()
+
+        height = { 60 }
+        row.title = nil
+
+        detailTextLabel?.text = nil
+
+        if let payer = row.value?.payer, let receiver = row.value?.receiver, let amount = row.value?.amount {
+            let attributedString = NSMutableAttributedString()
+
+            let boldAttributes = [
+                NSAttributedString.Key.foregroundColor: Color.dark.value,
+                NSAttributedString.Key.font: Text.body(.darkBold).font
+            ] as [NSAttributedString.Key : Any]
+
+            let regularAttributes = [
+                NSAttributedString.Key.foregroundColor: Color.dark.value,
+                NSAttributedString.Key.font: Text.body(.dark).font
+            ] as [NSAttributedString.Key : Any]
+
+            attributedString.append(NSAttributedString(string: payer.name, attributes: boldAttributes))
+            attributedString.append(NSAttributedString(string: " pays to ", attributes: regularAttributes))
+            attributedString.append(NSAttributedString(string: receiver.name, attributes: boldAttributes))
+
+            descriptionLabel.attributedText = attributedString
+            amountLabel.text = String(format: "%.2f", amount)
+        }
     }
 }

@@ -11,10 +11,12 @@ import UIKit
 
 enum Text {
     case headingWhite
+    case heading3Brand
 
     enum Body {
         case brandBold
         case dark
+        case darkBold
     }
     case body(Body)
 }
@@ -32,7 +34,7 @@ extension Text {
         switch self {
         case .headingWhite, .body(.dark):
             return UIFont(name: "HelveticaNeue-Light", size: size)!
-        case .body(.brandBold):
+        case .heading3Brand, .body(.brandBold), .body(.darkBold):
             return UIFont(name: "HelveticaNeue-Bold", size: size)!
         }
     }
@@ -40,7 +42,8 @@ extension Text {
     var size: CGFloat {
         switch self {
         case .headingWhite: return 36.0
-        case .body: return 20.0
+        case .heading3Brand: return 20.0
+        case .body: return 16.0
         }
     }
 
@@ -48,9 +51,9 @@ extension Text {
         switch self {
         case .headingWhite:
             return .white
-        case .body(.brandBold):
+        case .heading3Brand, .body(.brandBold):
             return .brand
-        case .body(.dark):
+        case .body(.dark), .body(.darkBold):
             return .dark
         }
     }

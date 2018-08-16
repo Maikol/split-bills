@@ -14,7 +14,7 @@ final class RootViewController: UIViewController, NewSplitViewControllerDelegate
     private let headerView = UIView()
     private let titleView = UILabel(style: .headingWhite)
     private let tableView = UITableView()
-    private let newBillButton = UIButton(title: "New Bill", style: .brandBold)
+    private let newBillButton = UIButton(title: "New Bill", style: .headingBrand)
 
     private var splits = SplitController.shared.getAll() ?? []
 

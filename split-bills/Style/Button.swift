@@ -20,7 +20,7 @@ struct ButtonStyle {
 
 extension ButtonStyle {
 
-    static let brandBold = ButtonStyle(textStyle: .body(.brandBold), backgroundColor: .light, highlightedColor: .dark, selectedColor: nil, disabledColor: nil)
+    static let headingBrand = ButtonStyle(textStyle: .heading3Brand, backgroundColor: .light, highlightedColor: .dark, selectedColor: nil, disabledColor: nil)
 }
 
 extension UIButton {
