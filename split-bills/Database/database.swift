@@ -111,6 +111,7 @@ struct ExpenseDatabase {
     private let payerName = Expression<String>("payer_name")
     private let description = Expression<String>("description")
     private let amount = Expression<Double>("amount")
+    private let splitType = Expression<Int>("splitType")
 
     init(databasePath: String) throws {
         weightsTable = try ExpsenseWeightDatabase(databasePath: databasePath)
@@ -127,14 +128,31 @@ struct ExpenseDatabase {
             t.column(payerName)
             t.column(description)
             t.column(amount)
+            t.column(splitType)
         })
     }
 
     func add(expense: Expense, splitName: String) throws {
-        let insert = table.insert(self.splitName <- splitName, payerName <- expense.payer.name, description <- expense.description, amount <- expense.amount)
+        let insert = table.insert(self.splitName <- splitName, payerName <- expense.payer.name, description <- expense.description, amount <- expense.amount, splitType <- expense.splitType.rawValue)
         let rowId = try db.run(insert)
 
         try expense.participantsWeight.forEach { try weightsTable.add(weight: $0, expenseId: rowId) }
+    }
+
+    func update(expense: Expense) throws {
+        let row = table.filter(id == expense.id)
+        let update = row.update(description <- expense.description, payerName <- expense.payer.name, amount <- expense.amount, splitType <- expense.splitType.rawValue)
+
+        try db.run(update)
+        try weightsTable.delete(for: expense.id)
+        try expense.participantsWeight.forEach { try weightsTable.add(weight: $0, expenseId: expense.id) }
+    }
+
+    func remove(expense: Expense) throws {
+        let row = table.filter(id == expense.id)
+
+        try db.run(row.delete())
+        try weightsTable.delete(for: expense.id)
     }
 
     func getAll(splitName: String) throws -> [Expense] {
@@ -146,7 +164,7 @@ struct ExpenseDatabase {
         let weights = try weightsTable.get(expenseId: row[id])
         let payer = try participantDatabase.participant(with: row[payerName])
 
-        return payer.flatMap { Expense(id: row[id], payer: $0, description: row[description], amount: row[amount], participantsWeight: weights) }
+        return payer.flatMap { Expense(id: row[id], payer: $0, description: row[description], amount: row[amount], participantsWeight: weights, splitType: Expense.SplitType(rawValue: row[splitType])!) }
     }
 }
 
@@ -180,6 +198,11 @@ struct ExpsenseWeightDatabase {
     func add(weight: ExpenseWeight, expenseId: Int64) throws {
         let insert = table.insert(self.expenseId <- expenseId, participantName <- weight.participant.name, self.weight <- weight.weight)
         _ = try db.run(insert)
+    }
+
+    func delete(for expenseId: Int64) throws {
+        let rows = table.filter(self.expenseId == expenseId)
+        try db.run(rows.delete())
     }
 
     func get(expenseId: Int64) throws -> [ExpenseWeight] {

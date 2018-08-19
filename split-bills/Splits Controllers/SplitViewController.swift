@@ -53,6 +53,7 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
 
     private func buildForm() {
         let emptySection = Section() {
+            $0.tag = "empty-state"
             var header = HeaderFooterView<EmptyView>(.class)
             header.onSetupView = { view, section in
                 let size = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
@@ -65,6 +66,7 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
         }
 
         let settleSection = Section("Settle") {
+            $0.tag = "settle"
             $0.header?.height = { 38 }
             $0.hidden = Condition.function([]) { [weak self] _ in
                 return self?.expenses.isEmpty == true
@@ -79,6 +81,7 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
         }
 
         let overviewSection = Section("Overview") {
+            $0.tag = "overview"
             $0.header?.height = { 38 }
             $0.hidden = Condition.function([]) { [weak self] _ in
                 return self?.expenses.isEmpty == true
@@ -88,6 +91,18 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
         expenses.forEach { expense in
             overviewSection <<< ExpenseRow() {
                 $0.value = expense
+                let deleteAction = SwipeAction(style: .destructive, title: "Delete")
+                { [weak self] _, _, completionHandler in
+                    guard let sSelf = self else { return }
+
+                    completionHandler?(sSelf.deleteAndReload(expense: expense))
+                }
+
+                $0.trailingSwipe.actions = [deleteAction]
+            }.onCellSelection { [weak self] _, row in
+                guard let expense = row.value else { return }
+
+                self?.pushNewExpenseViewController(expense: expense)
             }
         }
 
@@ -105,8 +120,8 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
         pushNewExpenseViewController()
     }
 
-    private func pushNewExpenseViewController() {
-        let viewController = NewExpenseViewController(split: split)
+    private func pushNewExpenseViewController(expense: Expense? = nil) {
+        let viewController = NewExpenseViewController(split: split, expense: expense)
         viewController.delegate = self
 
         var navigationViewControllers = navigationController!.viewControllers.filter { !($0 is NewExpenseViewController) }
@@ -115,8 +130,40 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
     }
 
     private func saveAndReload(expense: Expense) {
-        ExpenseController.shared.add(expense: expense, in: split)
+        if expense.id != INTMAX_MAX {
+            ExpenseController.shared.update(expense: expense)
+        } else {
+            ExpenseController.shared.add(expense: expense, in: split)
+        }
+
         reloadExpenses()
+    }
+
+    private func deleteAndReload(expense: Expense) -> Bool {
+        guard ExpenseController.shared.remove(expense: expense) else {
+            return false
+        }
+
+        expenses.removeAll { $0 == expense }
+        rebuildPayments()
+        return true
+    }
+
+    private func rebuildPayments() {
+        guard let section = form.sectionBy(tag: "settle") else { return }
+
+        section.removeAll()
+
+        let payments = split.settle(expenses: expenses)
+        payments.forEach { payment in
+            section <<< PaymentRow() {
+                $0.value = payment
+            }
+        }
+
+        section.evaluateHidden()
+        form.sectionBy(tag: "empty-state")?.evaluateHidden()
+        form.sectionBy(tag: "overview")?.evaluateHidden()
     }
 
     // MARK: NewExpenseViewControllerDelegate methods

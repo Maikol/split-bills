@@ -66,6 +66,23 @@ struct ExpenseController {
         try? expensesDatabase?.add(expense: expense, splitName: split.eventName)
     }
 
+    func update(expense: Expense) {
+        try? expensesDatabase?.update(expense: expense)
+    }
+
+    func remove(expense: Expense) -> Bool {
+        guard let expenseDatabase = self.expensesDatabase else {
+            return false
+        }
+
+        do {
+            try expenseDatabase.remove(expense: expense)
+            return true
+        } catch {
+            return false
+        }
+    }
+
     func getAll(for split: Split) -> [Expense] {
         guard let expensesDatabase = expensesDatabase else {
             return []

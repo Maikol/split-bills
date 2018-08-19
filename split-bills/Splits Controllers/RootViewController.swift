@@ -135,6 +135,10 @@ final class RootViewController: UIViewController, NewSplitViewControllerDelegate
         tableView.deselectRow(at: indexPath, animated: true)
     }
 
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60.0
+    }
+
     // MARK: NewSplitViewControllerDelegate methods
 
     func didCreateNewSplit(_ split: Split) {

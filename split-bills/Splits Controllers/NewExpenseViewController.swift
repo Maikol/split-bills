@@ -27,9 +27,11 @@ final class NewExpenseViewController: FormViewController {
     weak var delegate: NewExpenseViewControllerDelegate?
 
     private let split: Split
+    private let expense: Expense?
 
-    init(split: Split) {
+    init(split: Split, expense: Expense? = nil) {
         self.split = split
+        self.expense = expense
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -50,7 +52,7 @@ final class NewExpenseViewController: FormViewController {
     }
 
     private func buildForm() {
-        var totalAmount = 0.0
+        var totalAmount = expense?.amount ?? 0.0
         var updatingFromAmount = false
 
         var amountTags = [String]()
@@ -60,25 +62,23 @@ final class NewExpenseViewController: FormViewController {
             <<< TextRow() {
                 $0.tag = "expense-description"
                 $0.placeholder = "What was for?"
+                $0.value = expense?.description
                 $0.add(rule: RuleRequired())
             }
             <<< PushRow<String> {
                 $0.tag = "payer-name"
                 $0.title = "Payer"
                 $0.add(rule: RuleRequired())
-                $0.value = split.participants.first?.name
+                $0.value = expense?.payer.name ?? split.participants.first?.name
                 $0.options = split.participants.map { $0.name }
             }
             <<< DecimalRow() {
                 $0.tag = "expense-amount"
                 $0.title = "Amount"
-                $0.value = 0
-                $0.formatter = DecimalFormatter()
-                $0.useFormatterDuringInput = true
+                $0.value = expense?.amount
+                $0.useFormatterDuringInput = false
                 $0.add(rule: RuleRequired())
                 $0.add(rule: RuleGreaterThan(min: 1))
-            }.cellSetup { cell, _  in
-                cell.textField.keyboardType = .numberPad
             }.onChange { [weak self] row in
                 guard let sSelf = self else { return }
                 totalAmount = row.value ?? 0
@@ -100,7 +100,7 @@ final class NewExpenseViewController: FormViewController {
         let splitTypeSection = Section("Split:")
             <<< SwitchRow("split-equally-switch") {
                 $0.title = "Split equally between everyone"
-                $0.value = true
+                $0.value = (expense.map { $0.splitType == .equallyWithAll } ?? true)
             }
 
         let participantsSectionHidden = Condition.function(["split-equally-switch"]) { form in
@@ -113,7 +113,7 @@ final class NewExpenseViewController: FormViewController {
             }
             <<< SegmentedRow<Segment>("weight-segments") {
                 $0.options = Segment.allValues
-                $0.value = Segment.Equally
+                $0.value = expense.flatMap { Segment(splitType: $0.splitType) } ?? Segment.Equally
             }
 
         let splitEquallyHidden = Condition.function(["split-equally-switch", "weight-segments"]) { form in
@@ -157,21 +157,30 @@ final class NewExpenseViewController: FormViewController {
                 $0.hidden = participantsSectionHidden
             }
 
+        let totalWeight = expense.map { $0.participantsWeight.reduce(0) { $0 + $1.weight } } ?? 0
         split.participants.forEach { participant in
+            let equallyValue = expense.map { $0.participantsWeight.contains(where: { $0.participant == participant}) }
+            let amountValue: Double? = expense.map {
+                let weight = $0.participantsWeight.first(where: { $0.participant == participant })?.weight ?? 0
+                return weight * $0.amount
+            }
+            let weightValue: Double? = expense.map {
+                let weight = $0.participantsWeight.first(where: { $0.participant == participant })?.weight ?? 0
+                return weight * totalWeight
+            }
+
             participantsSection
                 <<< CheckRow() {
                     $0.tag = "equally-\(participant.name)"
                     $0.title = participant.name
-                    $0.value = true
+                    $0.value = (equallyValue ?? true)
                     $0.hidden = splitEquallyHidden
                 }
                 <<< CustomDecimalRow() {
                     let tag = "amount-\(participant.name)"
                     $0.tag = tag
                     $0.title = participant.name
-                    $0.value = 0
-                    $0.formatter = DecimalFormatter()
-                    $0.useFormatterDuringInput = true
+                    $0.value = amountValue
                     $0.hidden = splitAmountHidden
                     amountTags.append(tag)
                 }.onChange(amountUpdate)
@@ -179,7 +188,7 @@ final class NewExpenseViewController: FormViewController {
                     let tag = "weight-\(participant.name)"
                     $0.tag = tag
                     $0.title = participant.name
-                    $0.value = 0
+                    $0.value = weightValue
                     $0.formatter = DecimalFormatter()
                     $0.useFormatterDuringInput = true
                     $0.hidden = splitWeightHidden
@@ -234,7 +243,7 @@ final class NewExpenseViewController: FormViewController {
 
         guard !form.uBoolRow(with: "split-equally-switch").value! else {
             return Expense.equallySplited(with: split, payer: payer, participants: split.participants,
-                                          description: description, amount: amount)
+                                          description: description, amount: amount, id: expense?.id)
         }
 
         guard let segmentsRow = form.rowBy(tag: "weight-segments") as? SegmentedRow<Segment>,
@@ -255,25 +264,41 @@ final class NewExpenseViewController: FormViewController {
         let participants = split.participants.filter { (form.rowBy(tag: "equally-\($0.name)") as? CheckRow)?.value == true }
 
         return Expense.equallySplited(with: split, payer: payer, participants: participants,
-                                      description: description, amount: amount)
+                                      description: description, amount: amount, id: expense?.id)
     }
 
     private func saveAmountSegment(payer: Participant, description: String, amount: Double) -> Expense? {
         let amounts = split.participants.compactMap { ($0, form.doubleRow(with: "amount-\($0.name)")?.value ?? 0) }
 
         return Expense.splitByAmount(with: split, payer: payer, amounts: amounts,
-                                     description: description, amount: amount)
+                                     description: description, amount: amount, id: expense?.id)
     }
 
     private func saveWeightSegment(payer: Participant, description: String, amount: Double) -> Expense? {
         let weights = split.participants.compactMap { ($0, form.doubleRow(with: "weight-\($0.name)")?.value ?? 0) }
 
         return Expense.splitByWeight(with: split, payer: payer, weights: weights,
-                                     description: description, amount: amount)
+                                     description: description, amount: amount, id: expense?.id)
     }
 }
 
 final class CustomDecimalRow: _DecimalRow, RowType {
 
     var updated = false
+}
+
+private extension NewExpenseViewController.Segment {
+
+    init?(splitType: Expense.SplitType) {
+        switch splitType {
+        case .equallyWithAll:
+            return nil
+        case .equallyCustom:
+            self = .Equally
+        case .byAmount:
+            self = .Amount
+        case .byWeight:
+            self = .Weight
+        }
+    }
 }
