@@ -86,7 +86,6 @@ final class NewSplitViewController: FormViewController {
 
         guard let split = Split(form: form) else { return }
 
-        self.navigationController!.popViewController(animated: true)
         self.delegate?.didCreateNewSplit(split)
     }
 }

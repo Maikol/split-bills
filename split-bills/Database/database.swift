@@ -39,6 +39,11 @@ struct SplitDatabase {
         try split.participants.forEach { try participantsDatabase.add(participant: $0, splitId: rowId) }
     }
 
+    func remove(split: Split) throws {
+        let row = table.filter(eventName == split.eventName)
+        try db.run(row.delete())
+    }
+
     func getAll() throws -> [Split] {
         return try db.prepare(table).compactMap { try split(with: $0) }
     }

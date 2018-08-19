@@ -25,6 +25,7 @@ enum Color {
     case brand
     case dark
     case white
+    case fade
     case light
 }
 
@@ -66,6 +67,7 @@ extension Color {
         case .brand: return UIColor(red: 0, green: 105/255.0, blue: 137/255.0, alpha: 1.0)
         case .dark: return UIColor(red: 60/255.0, green: 68/255.0, blue: 71/255.0, alpha: 1.0)
         case .white: return UIColor(red: 255/255.0, green: 255/255.0, blue: 255/255.0, alpha: 1.0)
+        case .fade: return UIColor(red: 151/255.0, green: 151/255.0, blue: 151/255.0, alpha: 1.0)
         case .light: return UIColor(red: 234/255.0, green: 235/255.0, blue: 237/255.0, alpha: 1.0)
         }
     }

@@ -11,6 +11,11 @@ import Eureka
 
 final class SplitViewController: FormViewController, NewExpenseViewControllerDelegate {
 
+    fileprivate final class EmptyView: UIView {
+        private let label = UILabel()
+        private let imageView = UIImageView(image: UIImage(named: "curved_up_arrow")!)
+    }
+
     private let split: Split
     private var expenses: [Expense]
 
@@ -39,23 +44,32 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
     }
 
     private func buildView() {
+        title = split.eventName
         view.backgroundColor = .white
 
-        let button = UIBarButtonItem(title: "New expense", style: .plain, target: self, action: #selector(newExpenseButtonTapped))
+        let button = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newExpenseButtonTapped))
         navigationItem.rightBarButtonItem = button
     }
 
     private func buildForm() {
-        let headerSection = Section() {
-            var header = HeaderFooterView<SplitHeaderView>(.class)
+        let emptySection = Section() {
+            var header = HeaderFooterView<EmptyView>(.class)
             header.onSetupView = { view, section in
                 let size = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
                 section.header?.height = { size.height }
             }
             $0.header = header
+            $0.hidden = Condition.function([]) { [weak self] _ in
+                return self?.expenses.isEmpty != true
+            }
         }
 
-        let settleSection = Section("Settle")
+        let settleSection = Section("Settle") {
+            $0.header?.height = { 38 }
+            $0.hidden = Condition.function([]) { [weak self] _ in
+                return self?.expenses.isEmpty == true
+            }
+        }
 
         let payments = split.settle(expenses: expenses)
         payments.forEach { payment in
@@ -64,7 +78,12 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
             }
         }
 
-        let overviewSection = Section("Overview")
+        let overviewSection = Section("Overview") {
+            $0.header?.height = { 38 }
+            $0.hidden = Condition.function([]) { [weak self] _ in
+                return self?.expenses.isEmpty == true
+            }
+        }
 
         expenses.forEach { expense in
             overviewSection <<< ExpenseRow() {
@@ -72,7 +91,7 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
             }
         }
 
-        form += [headerSection, settleSection, overviewSection]
+        form += [emptySection, settleSection, overviewSection]
     }
 
     private func reloadExpenses() {
@@ -112,27 +131,6 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
         saveAndReload(expense: expense)
 
         pushNewExpenseViewController()
-    }
-}
-
-final class SplitHeaderView: UIView {
-
-    private let imageView = UIImageView(image: UIImage(named: "Money-Icon")!)
-
-    override init(frame: CGRect) {
-        super.init(frame: .zero)
-
-        imageView.contentMode = .scaleAspectFit
-
-        addSubview(imageView)
-        imageView.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(12)
-            make.height.equalTo(104)
-        }
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }
 
@@ -280,6 +278,46 @@ class PaymentCell: Cell<Payment>, CellType {
 
             descriptionLabel.attributedText = attributedString
             amountLabel.text = String(format: "%.2f", amount)
+        }
+    }
+}
+
+extension SplitViewController.EmptyView {
+
+    convenience init() {
+        self.init(frame: .zero)
+
+        let attributedString = NSMutableAttributedString()
+
+        let boldAttributes = [
+            NSAttributedString.Key.foregroundColor: Color.dark.value,
+            NSAttributedString.Key.font: Text.body(.darkBold).font
+            ] as [NSAttributedString.Key : Any]
+
+        let regularAttributes = [
+            NSAttributedString.Key.foregroundColor: Color.dark.value,
+            NSAttributedString.Key.font: Text.body(.dark).font
+            ] as [NSAttributedString.Key : Any]
+
+        attributedString.append(NSAttributedString(string: "Add ", attributes: regularAttributes))
+        attributedString.append(NSAttributedString(string: "New Expenses", attributes: boldAttributes))
+        attributedString.append(NSAttributedString(string: " to this bill", attributes: regularAttributes))
+        label.attributedText = attributedString
+        label.numberOfLines = 0
+        label.textAlignment = .right
+        addSubview(label)
+
+        addSubview(imageView)
+
+        label.snp.makeConstraints { make in
+            let insets = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 0)
+            make.left.bottom.equalToSuperview().inset(insets)
+        }
+
+        imageView.snp.makeConstraints { make in
+            let insets = UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 12)
+            make.left.equalTo(label.snp.right).offset(24)
+            make.top.bottom.right.equalToSuperview().inset(insets)
         }
     }
 }

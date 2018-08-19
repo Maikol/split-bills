@@ -30,6 +30,14 @@ struct SplitController {
         }
     }
 
+    func remove(split: Split) {
+        do {
+            try self.splitDatabase?.remove(split: split)
+        } catch {
+            print("failed to delete split item")
+        }
+    }
+
     func getAll() -> [Split]? {
         do {
             return try self.splitDatabase?.getAll()
