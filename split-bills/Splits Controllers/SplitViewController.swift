@@ -33,26 +33,23 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        navigationItem.largeTitleDisplayMode = .never
+
         buildView()
         buildForm()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        navigationController!.isNavigationBarHidden = false
-    }
-
     private func buildView() {
         title = split.eventName
-        view.backgroundColor = .white
+
+        tableView.backgroundColor = Color.light.value
 
         let button = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newExpenseButtonTapped))
         navigationItem.rightBarButtonItem = button
     }
 
     private func buildForm() {
-        let emptySection = Section() {
+        let emptySection = Section {
             $0.tag = "empty-state"
             var header = HeaderFooterView<EmptyView>(.class)
             header.onSetupView = { view, section in
@@ -67,7 +64,11 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
 
         let settleSection = Section("Settle") {
             $0.tag = "settle"
-            $0.header?.height = { 38 }
+            var header = HeaderLabel.defaultHeader
+            header.onSetupView = { view, _ in
+                view.update(title: "Settle")
+            }
+            $0.header = header
             $0.hidden = Condition.function([]) { [weak self] _ in
                 return self?.expenses.isEmpty == true
             }
@@ -82,7 +83,11 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
 
         let overviewSection = Section("Overview") {
             $0.tag = "overview"
-            $0.header?.height = { 38 }
+            var header = HeaderLabel.defaultHeader
+            header.onSetupView = { view, _ in
+                view.update(title: "Overview")
+            }
+            $0.header = header
             $0.hidden = Condition.function([]) { [weak self] _ in
                 return self?.expenses.isEmpty == true
             }
@@ -190,8 +195,8 @@ final class ExpenseRow: Row<ExpenseCell>, RowType {
 
 class ExpenseCell: Cell<Expense>, CellType {
 
-    private let descriptionLabel = UILabel()
-    private let amountLabel = UILabel()
+    private let descriptionLabel = UILabel(style: .bodyLarge(.dark))
+    private let amountLabel = UILabel(style: .bodyLarge(.dark))
 
     required init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -310,13 +315,13 @@ class PaymentCell: Cell<Payment>, CellType {
             let attributedString = NSMutableAttributedString()
 
             let boldAttributes = [
-                NSAttributedString.Key.foregroundColor: Color.dark.value,
-                NSAttributedString.Key.font: Text.body(.darkBold).font
+                .foregroundColor: Color.dark.value,
+                .font: Text.body(.darkBold).font
             ] as [NSAttributedString.Key : Any]
 
             let regularAttributes = [
-                NSAttributedString.Key.foregroundColor: Color.dark.value,
-                NSAttributedString.Key.font: Text.body(.dark).font
+                .foregroundColor: Color.dark.value,
+                .font: Text.body(.dark).font
             ] as [NSAttributedString.Key : Any]
 
             attributedString.append(NSAttributedString(string: payer.name, attributes: boldAttributes))
@@ -337,13 +342,13 @@ extension SplitViewController.EmptyView {
         let attributedString = NSMutableAttributedString()
 
         let boldAttributes = [
-            NSAttributedString.Key.foregroundColor: Color.dark.value,
-            NSAttributedString.Key.font: Text.body(.darkBold).font
+            .foregroundColor: Color.dark.value,
+            .font: Text.bodyLarge(.darkBold).font
             ] as [NSAttributedString.Key : Any]
 
         let regularAttributes = [
-            NSAttributedString.Key.foregroundColor: Color.dark.value,
-            NSAttributedString.Key.font: Text.body(.dark).font
+            .foregroundColor: Color.dark.value,
+            .font: Text.bodyLarge(.dark).font
             ] as [NSAttributedString.Key : Any]
 
         attributedString.append(NSAttributedString(string: "Add ", attributes: regularAttributes))
@@ -354,6 +359,8 @@ extension SplitViewController.EmptyView {
         label.textAlignment = .right
         addSubview(label)
 
+        imageView.contentMode = .scaleAspectFit
+        imageView.setContentHuggingPriority(.required, for: .horizontal)
         addSubview(imageView)
 
         label.snp.makeConstraints { make in
@@ -362,7 +369,7 @@ extension SplitViewController.EmptyView {
         }
 
         imageView.snp.makeConstraints { make in
-            let insets = UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 12)
+            let insets = UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 14)
             make.left.equalTo(label.snp.right).offset(24)
             make.top.bottom.right.equalToSuperview().inset(insets)
         }

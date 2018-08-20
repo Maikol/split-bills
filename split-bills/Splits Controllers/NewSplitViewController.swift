@@ -20,60 +20,84 @@ final class NewSplitViewController: FormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        navigationItem.largeTitleDisplayMode = .never
+
         buildView()
         buildForm()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        navigationController!.isNavigationBarHidden = false
-    }
-
     private func buildView() {
         title = "Bill"
-        view.backgroundColor = .white
+
+        tableView.backgroundColor = Color.light.value
     }
 
     private func buildForm() {
-        let eventSection = Section("Event info")
+
+        let eventSection = Section {
+            var header = HeaderLabel.defaultHeader
+            header.onSetupView = { view, _ in
+                view.update(title: "Event info")
+            }
+            $0.header = header
+        }
             <<< TextRow() {
                 $0.tag = "event-name"
-                $0.placeholder = "event name"
                 $0.add(rule: RuleRequired())
                 $0.validationOptions = .validatesOnChange
+                $0.cellUpdate { cell, _ in
+                    cell.textField.apply(style: .body(.dark), placeholder: .init(text: "Event name", style: .body(.fade)))
+                    cell.titleLabel?.apply(style: .body(.dark))
+                }
             }
 
         let partnersSection = MultivaluedSection(
-                multivaluedOptions: [.Insert, .Delete],
-                header: "Participants")
+                multivaluedOptions: [.Insert, .Delete])
             {
+                var header = HeaderLabel.defaultHeader
+                header.onSetupView = { view, _ in
+                    view.update(title: "Participants")
+                }
+                $0.header = header
                 $0.tag = "participants"
                 $0.addButtonProvider = { section in
                     return ButtonRow() {
                         $0.title = "Add participant"
                     }.cellUpdate { cell, row in
                         cell.textLabel?.textAlignment = .left
+                        cell.textLabel?.font = Text.body(.dark).font
                     }
                 }
                 $0.multivaluedRowToInsertAt = { index in
                     return NameRow() {
-                        $0.placeholder = "Participant \(index + 1)"
+                        $0.cellUpdate { cell, _ in
+                            cell.textField.apply(style: .body(.dark), placeholder: .init(text: "Participant \(index + 1)", style: .body(.fade)))
+                            cell.titleLabel?.apply(style: .body(.dark))
+                        }
                     }
                 }
                 $0 <<< NameRow() {
-                    $0.placeholder = "You"
                     $0.add(rule: RuleRequired())
+                    $0.cellUpdate { cell, _ in
+                        cell.textField.apply(style: .body(.dark), placeholder: .init(text: "You", style: .body(.fade)))
+                        cell.titleLabel?.apply(style: .body(.dark))
+                    }
                 }
                 $0 <<< NameRow() {
-                    $0.placeholder = "Participant 1"
                     $0.add(rule: RuleRequired())
+                    $0.cellUpdate { cell, _ in
+                        cell.textField.apply(style: .body(.dark), placeholder: .init(text: "Participant 1", style: .body(.fade)))
+                        cell.titleLabel?.apply(style: .body(.dark))
+                    }
                 }
             }
 
         let submitSection = Section()
             <<< ButtonRow() {
                 $0.title = "Save"
+                $0.cellUpdate { cell, _ in
+                    cell.textLabel?.font = Text.body(.dark).font
+                }
             }.onCellSelection { [weak self] _, _ in
                 self?.saveSplit()
             }

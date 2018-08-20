@@ -14,12 +14,12 @@ final class RootViewController: UIViewController, NewSplitViewControllerDelegate
     fileprivate final class EmptyStateView: UIView {
         let label = UILabel()
         let arrowImage = UIImageView(image: UIImage(named: "down_arrow")!)
+
+        private var arrowImageRightConstraint: Constraint?
     }
 
-    private let headerView = UIView()
-    private let titleView = UILabel(style: .headingWhite)
     private let tableView = UITableView()
-    private let newBillButton = UIButton(title: "New Bill", style: .headingBrand)
+    private let newBillButton = UIButton.plusIcon()
 
     private let emptyStateView = EmptyStateView()
 
@@ -34,27 +34,23 @@ final class RootViewController: UIViewController, NewSplitViewControllerDelegate
         buildLayout()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
 
-        navigationController!.isNavigationBarHidden = true
+        emptyStateView.update(rightConstraint: newBillButton.snp.left)
+        view.bringSubviewToFront(newBillButton)
     }
 
     private func buildView() {
-        view.backgroundColor = Color.white.value
-
-        headerView.backgroundColor = Color.brand.value
-        headerView.alpha = 0.8
-        view.addSubview(headerView)
-
-        titleView.text = "Split Bills"
-        headerView.addSubview(titleView)
+        title = "Split Bills"
+        view.backgroundColor = Color.light.value
 
         tableView.dataSource = self
         tableView.delegate = self
         tableView.tableFooterView = UIView()
         tableView.register(SplitTableViewCell.self, forCellReuseIdentifier: SplitTableViewCell.reuseIdentifier)
         tableView.allowsMultipleSelection = false
+        tableView.backgroundColor = Color.light.value
         view.addSubview(tableView)
 
         newBillButton.addTarget(self, action: #selector(newSplitButtonTapped), for: .touchUpInside)
@@ -65,30 +61,18 @@ final class RootViewController: UIViewController, NewSplitViewControllerDelegate
     }
 
     private func buildLayout() {
-        headerView.snp.makeConstraints { make in
-            make.top.left.right.equalToSuperview()
-            make.height.equalTo(170)
-        }
-
-        titleView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-        }
-
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(headerView.snp.bottom)
-            make.left.right.equalToSuperview()
+            make.edges.equalToSuperview()
         }
 
         newBillButton.snp.makeConstraints { make in
-            make.top.equalTo(tableView.snp.bottom)
-            make.left.bottom.right.equalToSuperview()
-            make.height.equalTo(60)
+            make.bottom.right.equalToSuperview().inset(24)
+            make.size.equalTo(55)
         }
 
         emptyStateView.snp.makeConstraints { make in
-            make.top.equalTo(view.snp.centerY).priority(500)
-            make.bottom.lessThanOrEqualTo(newBillButton.snp.top).offset(-30)
             make.left.right.equalToSuperview()
+            make.bottom.equalTo(newBillButton.snp.centerY).offset(8)
         }
     }
 
@@ -108,7 +92,7 @@ final class RootViewController: UIViewController, NewSplitViewControllerDelegate
         let cell = tableView.dequeueReusableCell(withIdentifier: SplitTableViewCell.reuseIdentifier) as! SplitTableViewCell
 
         let split = splits[indexPath.row]
-        cell.textLabel?.text = split.eventName
+        cell.update(title: split.eventName)
 
         return cell
     }
@@ -171,22 +155,31 @@ private extension RootViewController.EmptyStateView {
 
         let attributedString = NSMutableAttributedString()
 
+        let boldHeadingAttributes = [
+            NSAttributedString.Key.foregroundColor: Color.dark.value,
+            NSAttributedString.Key.font: Text.heading2DarkBold.font
+            ] as [NSAttributedString.Key : Any]
+
         let boldAttributes = [
             NSAttributedString.Key.foregroundColor: Color.dark.value,
-            NSAttributedString.Key.font: Text.body(.darkBold).font
+            NSAttributedString.Key.font: Text.bodyLarge(.darkBold).font
             ] as [NSAttributedString.Key : Any]
 
         let regularAttributes = [
             NSAttributedString.Key.foregroundColor: Color.dark.value,
-            NSAttributedString.Key.font: Text.body(.dark).font
+            NSAttributedString.Key.font: Text.bodyLarge(.dark).font
             ] as [NSAttributedString.Key : Any]
 
         attributedString.append(NSAttributedString(
             string: "You have not added any split bills.\n\nTap the ", attributes: regularAttributes))
         attributedString.append(NSAttributedString(
-            string: "New Bill", attributes: boldAttributes))
+            string: "+", attributes: boldHeadingAttributes))
         attributedString.append(NSAttributedString(
-            string: " button to create a new bill.", attributes: regularAttributes))
+            string: " button to create a", attributes: regularAttributes))
+        attributedString.append(NSAttributedString(
+            string: " new bill", attributes: boldAttributes))
+        attributedString.append(NSAttributedString(
+            string: ".", attributes: regularAttributes))
 
         label.numberOfLines = 0
         label.textAlignment = .center
@@ -200,8 +193,16 @@ private extension RootViewController.EmptyStateView {
 
         arrowImage.snp.makeConstraints { make in
             make.top.equalTo(label.snp.bottom).offset(24)
-            make.centerX.equalToSuperview()
+            arrowImageRightConstraint = make.right.equalToSuperview().constraint
             make.bottom.equalToSuperview()
+        }
+    }
+
+    func update(rightConstraint: ConstraintRelatableTarget) {
+        arrowImageRightConstraint?.deactivate()
+
+        arrowImage.snp.makeConstraints { make in
+            make.right.equalTo(rightConstraint).offset(-12)
         }
     }
 }
@@ -210,13 +211,26 @@ final class SplitTableViewCell: UITableViewCell {
 
     static let reuseIdentifier = "SplitCell"
 
+    private let splitNameLabel = UILabel(style: .bodyLarge(.darkBold))
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         accessoryType = .disclosureIndicator
+
+        addSubview(splitNameLabel)
+
+        splitNameLabel.snp.makeConstraints { make in
+            let insets = UIEdgeInsets(top: 0, left: 18, bottom: 0, right: 0)
+            make.edges.equalToSuperview().inset(insets)
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    func update(title: String) {
+        splitNameLabel.text = title
     }
 }

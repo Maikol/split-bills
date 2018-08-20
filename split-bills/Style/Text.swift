@@ -11,14 +11,29 @@ import UIKit
 
 enum Text {
     case headingWhite
-    case heading3Brand
+    case headingWhiteBold
+    case heading2DarkBold
+    case heading3WhiteBold
+
+    enum BodyLarge {
+        case dark
+        case darkBold
+        case whiteBold
+    }
+    case bodyLarge(BodyLarge)
 
     enum Body {
         case brandBold
         case dark
         case darkBold
+        case fade
     }
     case body(Body)
+
+    enum BodySmall {
+        case darkBold
+    }
+    case bodySmall(BodySmall)
 }
 
 enum Color {
@@ -33,29 +48,36 @@ extension Text {
 
     var font: UIFont {
         switch self {
-        case .headingWhite, .body(.dark):
+        case .headingWhite, .bodyLarge(.dark), .body(.dark), .body(.fade):
             return UIFont(name: "HelveticaNeue-Light", size: size)!
-        case .heading3Brand, .body(.brandBold), .body(.darkBold):
+        case .headingWhiteBold, .heading2DarkBold, .heading3WhiteBold, .bodyLarge(.darkBold),
+             .bodyLarge(.whiteBold), .body(.brandBold), .body(.darkBold), .bodySmall(.darkBold):
             return UIFont(name: "HelveticaNeue-Bold", size: size)!
         }
     }
 
     var size: CGFloat {
         switch self {
-        case .headingWhite: return 36.0
-        case .heading3Brand: return 20.0
+        case .headingWhite, .headingWhiteBold: return 36.0
+        case .heading2DarkBold: return 24.0
+        case .heading3WhiteBold: return 20.0
+        case .bodyLarge: return 18.0
         case .body: return 16.0
+        case .bodySmall: return 14.0
         }
     }
 
     var color: Color {
         switch self {
-        case .headingWhite:
+        case .headingWhite, .headingWhiteBold, .bodyLarge(.whiteBold), .heading3WhiteBold:
             return .white
-        case .heading3Brand, .body(.brandBold):
+        case .body(.brandBold):
             return .brand
-        case .body(.dark), .body(.darkBold):
+        case .heading2DarkBold, .body(.dark), .body(.darkBold), .bodyLarge(.dark),
+             .bodyLarge(.darkBold), .bodySmall(.darkBold):
             return .dark
+        case .body(.fade):
+            return .fade
         }
     }
 }

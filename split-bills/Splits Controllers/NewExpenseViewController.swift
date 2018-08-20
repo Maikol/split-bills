@@ -43,12 +43,16 @@ final class NewExpenseViewController: FormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        navigationItem.largeTitleDisplayMode = .never
+
         buildView()
         buildForm()
     }
 
     private func buildView() {
         title = "Expense"
+
+        tableView.backgroundColor = Color.light.value
     }
 
     private func buildForm() {
@@ -58,12 +62,21 @@ final class NewExpenseViewController: FormViewController {
         var amountTags = [String]()
         var weightTags = [String]()
 
-        let expenseSection = Section()
+        let expenseSection = Section {
+            var header = HeaderLabel.defaultHeader
+            header.onSetupView = { view, _ in
+                view.update(title: "Info")
+            }
+            $0.header = header
+        }
             <<< TextRow() {
                 $0.tag = "expense-description"
-                $0.placeholder = "What was for?"
                 $0.value = expense?.description
                 $0.add(rule: RuleRequired())
+                $0.cellUpdate { cell, _ in
+                    cell.textField.apply(style: .body(.dark), placeholder: .init(text: "What was for?", style: .body(.fade)))
+                    cell.titleLabel?.apply(style: .body(.dark))
+                }
             }
             <<< PushRow<String> {
                 $0.tag = "payer-name"
@@ -71,6 +84,15 @@ final class NewExpenseViewController: FormViewController {
                 $0.add(rule: RuleRequired())
                 $0.value = expense?.payer.name ?? split.participants.first?.name
                 $0.options = split.participants.map { $0.name }
+                $0.cellUpdate { cell, _ in
+                    cell.textLabel?.apply(style: .body(.darkBold))
+                    cell.detailTextLabel?.apply(style: .body(.dark))
+                }
+                _ = $0.onPresent { form, viewController in
+                    viewController.selectableRowCellSetup = { cell, _ in
+                        cell.textLabel?.apply(style: .body(.dark))
+                    }
+                }
             }
             <<< DecimalRow() {
                 $0.tag = "expense-amount"
@@ -79,6 +101,10 @@ final class NewExpenseViewController: FormViewController {
                 $0.useFormatterDuringInput = false
                 $0.add(rule: RuleRequired())
                 $0.add(rule: RuleGreaterThan(min: 1))
+                $0.cellUpdate { cell, _ in
+                    cell.textField.apply(style: .body(.dark))
+                    cell.titleLabel?.apply(style: .body(.dark))
+                }
             }.onChange { [weak self] row in
                 guard let sSelf = self else { return }
                 totalAmount = row.value ?? 0
@@ -97,10 +123,19 @@ final class NewExpenseViewController: FormViewController {
                 updatingFromAmount = false
             }
 
-        let splitTypeSection = Section("Split:")
+        let splitTypeSection = Section  {
+            var header = HeaderLabel.defaultHeader
+            header.onSetupView = { view, _ in
+                view.update(title: "Split")
+            }
+            $0.header = header
+        }
             <<< SwitchRow("split-equally-switch") {
-                $0.title = "Split equally between everyone"
+                $0.title = "Equally between everyone"
                 $0.value = (expense.map { $0.splitType == .equallyWithAll } ?? true)
+                $0.cellUpdate { cell, _ in
+                    cell.textLabel?.apply(style: .body(.dark))
+                }
             }
 
         let participantsSectionHidden = Condition.function(["split-equally-switch"]) { form in
@@ -108,12 +143,23 @@ final class NewExpenseViewController: FormViewController {
             return row.value ?? false
         }
 
-        let weightSection = Section("Split differently") {
-                $0.hidden = participantsSectionHidden
+        let weightSection = Section {
+            $0.hidden = participantsSectionHidden
+            var header = HeaderLabel.defaultHeader
+            header.onSetupView = { view, _ in
+                view.update(title: "Split differently")
             }
+            $0.header = header
+        }
             <<< SegmentedRow<Segment>("weight-segments") {
                 $0.options = Segment.allValues
                 $0.value = expense.flatMap { Segment(splitType: $0.splitType) } ?? Segment.Equally
+                $0.cellUpdate { cell, _ in
+                    cell.segmentedControl.setTitleTextAttributes(
+                        [.font: Text.body(.dark).font], for: .selected)
+                    cell.segmentedControl.setTitleTextAttributes(
+                        [.font: Text.body(.dark).font], for: .normal)
+                }
             }
 
         let splitEquallyHidden = Condition.function(["split-equally-switch", "weight-segments"]) { form in
@@ -139,7 +185,9 @@ final class NewExpenseViewController: FormViewController {
 
             row.updated = true
 
-            let rows = amountTags.filter { $0 != "amount-\(title)" }.compactMap { sSelf.form.rowBy(tag: $0) as? CustomDecimalRow }.filter { !$0.updated }
+            let rows = amountTags.filter { $0 != "amount-\(title)" }
+                .compactMap { sSelf.form.rowBy(tag: $0) as? CustomDecimalRow }
+                .filter { !$0.updated }
 
             updatingFromAmount = true
 
@@ -153,9 +201,14 @@ final class NewExpenseViewController: FormViewController {
             updatingFromAmount = false
         }
 
-        let participantsSection = Section("Participants") {
-                $0.hidden = participantsSectionHidden
+        let participantsSection = Section {
+            $0.hidden = participantsSectionHidden
+            var header = HeaderLabel.defaultHeader
+            header.onSetupView = { view, _ in
+                view.update(title: "Participants")
             }
+            $0.header = header
+        }
 
         let totalWeight = expense.map { $0.participantsWeight.reduce(0) { $0 + $1.weight } } ?? 0
         split.participants.forEach { participant in
@@ -175,6 +228,9 @@ final class NewExpenseViewController: FormViewController {
                     $0.title = participant.name
                     $0.value = (equallyValue ?? true)
                     $0.hidden = splitEquallyHidden
+                    $0.cellUpdate { cell, _ in
+                        cell.textLabel?.apply(style: .body(.darkBold))
+                    }
                 }
                 <<< CustomDecimalRow() {
                     let tag = "amount-\(participant.name)"
@@ -183,6 +239,10 @@ final class NewExpenseViewController: FormViewController {
                     $0.value = amountValue
                     $0.hidden = splitAmountHidden
                     amountTags.append(tag)
+                    $0.cellUpdate { cell, _ in
+                        cell.textField.apply(style: .body(.dark))
+                        cell.titleLabel?.apply(style: .body(.dark))
+                    }
                 }.onChange(amountUpdate)
                 <<< CustomDecimalRow() {
                     let tag = "weight-\(participant.name)"
@@ -193,20 +253,28 @@ final class NewExpenseViewController: FormViewController {
                     $0.useFormatterDuringInput = true
                     $0.hidden = splitWeightHidden
                     weightTags.append(tag)
+                    $0.cellUpdate { cell, _ in
+                        cell.textField.apply(style: .body(.dark))
+                        cell.titleLabel?.apply(style: .body(.dark))
+                    }
                 }
         }
 
         let submitSection = Section()
             <<< ButtonRow() {
-                    $0.title = "Add new expense"
+                $0.title = "Add new expense"
+                $0.cellUpdate { cell, _ in
+                    cell.textLabel?.font = Text.body(.dark).font
                 }
-                .onCellSelection { [weak self] _, _ in
+            }.onCellSelection { [weak self] _, _ in
                     self?.addNewExpenseTapped()
             }
             <<< ButtonRow() {
-                    $0.title = "Save"
+                $0.title = "Save"
+                $0.cellUpdate { cell, _ in
+                    cell.textLabel?.font = Text.body(.dark).font
                 }
-                .onCellSelection { [weak self] _, _ in
+            }.onCellSelection { [weak self] _, _ in
                     self?.saveButtonTapped()
             }
 
@@ -279,6 +347,24 @@ final class NewExpenseViewController: FormViewController {
 
         return Expense.splitByWeight(with: split, payer: payer, weights: weights,
                                      description: description, amount: amount, id: expense?.id)
+    }
+
+    // Override animations
+
+    override func insertAnimation(forSections sections: [Section]) -> UITableView.RowAnimation {
+        return .none
+    }
+
+    override func insertAnimation(forRows rows: [BaseRow]) -> UITableView.RowAnimation {
+        return .none
+    }
+
+    override func deleteAnimation(forRows rows: [BaseRow]) -> UITableView.RowAnimation {
+        return .none
+    }
+
+    override func deleteAnimation(forSections sections: [Section]) -> UITableView.RowAnimation {
+        return .none
     }
 }
 

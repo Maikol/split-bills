@@ -18,11 +18,6 @@ struct ButtonStyle {
     let disabledColor: Color?
 }
 
-extension ButtonStyle {
-
-    static let headingBrand = ButtonStyle(textStyle: .heading3Brand, backgroundColor: .light, highlightedColor: .dark, selectedColor: nil, disabledColor: nil)
-}
-
 extension UIButton {
 
     convenience init(title: String, style: ButtonStyle) {
@@ -38,5 +33,11 @@ extension UIButton {
         setTitleColor(style.disabledColor?.value, for: .disabled)
 
         backgroundColor = style.backgroundColor.value
+    }
+
+    static func plusIcon() -> UIButton {
+        let button = UIButton()
+        button.setBackgroundImage(UIImage(named: "plus_icon")!, for: .normal)
+        return button
     }
 }

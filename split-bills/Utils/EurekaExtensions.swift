@@ -94,3 +94,29 @@ extension Form {
         }
     }
 }
+
+final class HeaderLabel: UIView {
+
+    static let defaultHeader: HeaderFooterView<HeaderLabel> = {
+        var header = HeaderFooterView<HeaderLabel>(.class)
+        header.height = { 40 }
+        return header
+    }()
+
+    private let label = UILabel(style: .bodySmall(.darkBold))
+
+    convenience init() {
+        self.init(frame: .zero)
+
+        addSubview(label)
+
+        label.snp.makeConstraints { make in
+            make.top.bottom.equalToSuperview()
+            make.left.right.equalToSuperview().inset(15)
+        }
+    }
+
+    func update(title: String) {
+        label.text = title
+    }
+}
