@@ -211,7 +211,7 @@ final class SplitTableViewCell: UITableViewCell {
 
     static let reuseIdentifier = "SplitCell"
 
-    private let splitNameLabel = UILabel(style: .bodyLarge(.darkBold))
+    private let splitNameLabel = UILabel(style: .bodyLarge(.dark))
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)

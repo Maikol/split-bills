@@ -196,7 +196,7 @@ final class ExpenseRow: Row<ExpenseCell>, RowType {
 class ExpenseCell: Cell<Expense>, CellType {
 
     private let descriptionLabel = UILabel(style: .bodyLarge(.dark))
-    private let amountLabel = UILabel(style: .bodyLarge(.dark))
+    private let amountLabel = UILabel(style: .body(.darkBold))
 
     required init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -261,7 +261,7 @@ final class PaymentRow: Row<PaymentCell>, RowType {
 class PaymentCell: Cell<Payment>, CellType {
 
     private let descriptionLabel = UILabel()
-    private let amountLabel = UILabel()
+    private let amountLabel = UILabel(style: .body(.darkBold))
 
     required init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
