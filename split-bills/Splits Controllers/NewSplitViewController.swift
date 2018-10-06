@@ -57,6 +57,7 @@ final class NewSplitViewController: FormViewController {
                 $0.tag = "event-name"
                 $0.add(rule: RuleRequired())
                 $0.validationOptions = .validatesOnChange
+                $0.value = self.split?.eventName
                 $0.cellUpdate { cell, _ in
                     cell.textField.apply(style: .body(.dark), placeholder: .init(text: "Event name", style: .body(.fade)))
                     cell.titleLabel?.apply(style: .body(.dark))
@@ -123,6 +124,16 @@ final class NewSplitViewController: FormViewController {
         guard let split = Split(form: form) else { return }
 
         self.delegate?.didCreateNewSplit(split)
+    }
+
+    func addDismissButton() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelButtonTapped))
+    }
+
+    // MARK: Actions
+
+    @objc private func cancelButtonTapped() {
+        self.dismiss(animated: true, completion: nil)
     }
 }
 

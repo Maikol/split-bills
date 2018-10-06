@@ -158,7 +158,10 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
         alertController.addAction(UIAlertAction(title: "Edit", style: .default) { [weak self] _ in
             guard let self = self else { return }
 
-            
+            let viewController = NewSplitViewController(split: self.split)
+            let navigationController = UINavigationController(rootViewController: viewController, style: .default)
+            viewController.addDismissButton()
+            self.present(navigationController, animated: true, completion: nil)
         })
 
         alertController.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in

@@ -24,6 +24,12 @@ extension UINavigationController {
 
         navigationBar.prefersLargeTitles = true
     }
+
+    convenience init(rootViewController: UIViewController, style: Style) {
+        self.init(rootViewController: rootViewController)
+
+        apply(style: style)
+    }
 }
 
 extension UITextField {
