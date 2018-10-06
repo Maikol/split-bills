@@ -17,6 +17,18 @@ final class NewSplitViewController: FormViewController {
 
     weak var delegate: NewSplitViewControllerDelegate?
 
+    private let split: Split?
+
+    init(split: Split? = nil) {
+        self.split = split
+
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 

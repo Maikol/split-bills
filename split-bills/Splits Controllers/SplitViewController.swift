@@ -8,13 +8,25 @@
 
 import UIKit
 import Eureka
+import SnapKit
+
+protocol SplitViewControllerDelegate: class {
+    func didRequestDeleting(split: Split, from viewController: UIViewController)
+}
 
 final class SplitViewController: FormViewController, NewExpenseViewControllerDelegate {
 
-    fileprivate final class EmptyView: UIView {
+    weak var delegate: SplitViewControllerDelegate?
+
+    fileprivate final class EmptyStateView: UIView {
         private let label = UILabel()
-        private let imageView = UIImageView(image: UIImage(named: "curved_up_arrow")!)
+        private let imageView = UIImageView(image: UIImage(named: "down_arrow")!)
+
+        private var arrowImageRightConstraint: Constraint?
     }
+
+    private let newSplitButton = UIButton.plusIcon()
+    private let emptyStateView = EmptyStateView()
 
     private let split: Split
     private var expenses: [Expense]
@@ -36,7 +48,15 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
         navigationItem.largeTitleDisplayMode = .never
 
         buildView()
+        buildLayout()
         buildForm()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        emptyStateView.update(rightConstraint: newSplitButton.snp.left)
+        view.bringSubviewToFront(newSplitButton)
     }
 
     private func buildView() {
@@ -44,24 +64,29 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
 
         tableView.backgroundColor = Color.light.value
 
-        let button = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newExpenseButtonTapped))
+        newSplitButton.addTarget(self, action: #selector(newExpenseButtonTapped), for: .touchUpInside)
+        view.addSubview(newSplitButton)
+
+        emptyStateView.isHidden = !expenses.isEmpty
+        view.addSubview(emptyStateView)
+
+        let button = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editButtonTapped))
         navigationItem.rightBarButtonItem = button
     }
 
-    private func buildForm() {
-        let emptySection = Section {
-            $0.tag = "empty-state"
-            var header = HeaderFooterView<EmptyView>(.class)
-            header.onSetupView = { view, section in
-                let size = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
-                section.header?.height = { size.height }
-            }
-            $0.header = header
-            $0.hidden = Condition.function([]) { [weak self] _ in
-                return self?.expenses.isEmpty != true
-            }
+    private func buildLayout() {
+        newSplitButton.snp.makeConstraints { make in
+            make.bottom.right.equalToSuperview().inset(24)
+            make.size.equalTo(55)
         }
 
+        emptyStateView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.bottom.equalTo(newSplitButton.snp.centerY).offset(8)
+        }
+    }
+
+    private func buildForm() {
         let settleSection = Section("Settle") {
             $0.tag = "settle"
             var header = HeaderLabel.defaultHeader
@@ -111,7 +136,7 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
             }
         }
 
-        form += [emptySection, settleSection, overviewSection]
+        form += [settleSection, overviewSection]
     }
 
     private func reloadExpenses() {
@@ -121,8 +146,30 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
         buildForm()
     }
 
+    // MARK: Actions
+
     @objc private func newExpenseButtonTapped() {
         pushNewExpenseViewController()
+    }
+
+    @objc private func editButtonTapped() {
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+
+        alertController.addAction(UIAlertAction(title: "Edit", style: .default) { [weak self] _ in
+            guard let self = self else { return }
+
+            
+        })
+
+        alertController.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
+            guard let self = self else { return }
+
+            self.delegate?.didRequestDeleting(split: self.split, from: self)
+        })
+
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+
+        present(alertController, animated: true, completion: nil)
     }
 
     private func pushNewExpenseViewController(expense: Expense? = nil) {
@@ -334,7 +381,7 @@ class PaymentCell: Cell<Payment>, CellType {
     }
 }
 
-extension SplitViewController.EmptyView {
+extension SplitViewController.EmptyStateView {
 
     convenience init() {
         self.init(frame: .zero)
@@ -356,7 +403,7 @@ extension SplitViewController.EmptyView {
         attributedString.append(NSAttributedString(string: " to this bill", attributes: regularAttributes))
         label.attributedText = attributedString
         label.numberOfLines = 0
-        label.textAlignment = .right
+        label.textAlignment = .center
         addSubview(label)
 
         imageView.contentMode = .scaleAspectFit
@@ -364,14 +411,21 @@ extension SplitViewController.EmptyView {
         addSubview(imageView)
 
         label.snp.makeConstraints { make in
-            let insets = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 0)
-            make.left.bottom.equalToSuperview().inset(insets)
+            make.top.left.right.equalToSuperview()
         }
 
         imageView.snp.makeConstraints { make in
-            let insets = UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 14)
-            make.left.equalTo(label.snp.right).offset(24)
-            make.top.bottom.right.equalToSuperview().inset(insets)
+            make.top.equalTo(label.snp.bottom).offset(24)
+            arrowImageRightConstraint = make.right.equalToSuperview().constraint
+            make.bottom.equalToSuperview()
+        }
+    }
+
+    func update(rightConstraint: ConstraintRelatableTarget) {
+        arrowImageRightConstraint?.deactivate()
+
+        imageView.snp.makeConstraints { make in
+            make.right.equalTo(rightConstraint).offset(-12)
         }
     }
 }

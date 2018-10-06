@@ -2,6 +2,10 @@ import UIKit
 
 struct Test {
     let id: String?
+
+    public mutating func test() {
+
+    }
 }
 
 let test: Test? = Test(id: nil)

@@ -9,7 +9,12 @@
 import UIKit
 import SnapKit
 
-final class RootViewController: UIViewController, NewSplitViewControllerDelegate, UITableViewDataSource, UITableViewDelegate {
+final class RootViewController: UIViewController,
+    NewSplitViewControllerDelegate,
+    UITableViewDataSource,
+    UITableViewDelegate,
+    SplitViewControllerDelegate
+{
 
     fileprivate final class EmptyStateView: UIView {
         let label = UILabel()
@@ -106,14 +111,15 @@ final class RootViewController: UIViewController, NewSplitViewControllerDelegate
 
         let split = splits.remove(at: indexPath.row)
         SplitController.shared.remove(split: split)
-        emptyStateView.isHidden = !splits.isEmpty
-        tableView.reloadData()
+
+        reloadData()
     }
 
     // MARK: UITableViewDelegate methods
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let viewController = SplitViewController(split: splits[indexPath.row])
+        viewController.delegate = self
         navigationController!.pushViewController(viewController, animated: true)
 
         tableView.deselectRow(at: indexPath, animated: true)
@@ -129,11 +135,31 @@ final class RootViewController: UIViewController, NewSplitViewControllerDelegate
         SplitController.shared.add(split: split)
         splits.append(split)
 
-        emptyStateView.isHidden = true
-        tableView.reloadData()
+        reloadData()
 
         let viewController = SplitViewController(split: split)
+        viewController.delegate = self
         navigationController?.setViewControllers([self, viewController], animated: true)
+    }
+
+    // MARK: SplitViewControllerDelegate methods
+
+    func didRequestDeleting(split: Split, from viewController: UIViewController) {
+        guard let index = splits.index(of: split) else { return }
+
+        splits.remove(at: index)
+        SplitController.shared.remove(split: split)
+
+        reloadData()
+
+        viewController.navigationController!.popViewController(animated: true)
+    }
+
+    // MARK: Reload
+
+    private func reloadData() {
+        emptyStateView.isHidden = !splits.isEmpty
+        tableView.reloadData()
     }
 }
 

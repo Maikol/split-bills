@@ -74,3 +74,10 @@ extension Split {
         return [payment] + settle(newValues)
     }
 }
+
+extension Split: Equatable {
+
+    static func == (lhs: Split, rhs: Split) -> Bool {
+        return lhs.eventName == rhs.eventName // Maybe do more checks in the future
+    }
+}
