@@ -16,17 +16,18 @@ struct SplitController {
 
     init() {
         do {
-            splitDatabase = try SplitDatabase(databasePath: URL.documentsDirectory.absoluteString)
+            splitDatabase = try SplitDatabase(databasePath: URL.documentsDirectory.path)
         } catch {
             splitDatabase = nil
         }
     }
 
-    func add(split: Split) {
+    func create(eventName: String, participants: [Participant]) -> Split? {
         do {
-            try self.splitDatabase?.add(split: split)
+            return try self.splitDatabase?.create(eventName: eventName, participants: participants)
         } catch {
             print("failed to add split item")
+            return nil
         }
     }
 

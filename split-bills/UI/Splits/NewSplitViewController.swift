@@ -9,18 +9,12 @@
 import UIKit
 import Eureka
 
-protocol NewSplitViewControllerDelegate: class {
-    func didCreateNewSplit(_ split: Split)
-}
-
 final class NewSplitViewController: FormViewController {
 
-    weak var delegate: NewSplitViewControllerDelegate?
+    private let viewModel: NewSplitViewModel
 
-    private let split: Split?
-
-    init(split: Split? = nil) {
-        self.split = split
+    init(viewModel: NewSplitViewModel) {
+        self.viewModel = viewModel
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -39,17 +33,16 @@ final class NewSplitViewController: FormViewController {
     }
 
     private func buildView() {
-        title = "Bill"
+        title = NSLocalizedString("new-split-controller.title", comment: "")
 
         tableView.backgroundColor = Color.light.value
     }
 
     private func buildForm() {
-
         let eventSection = Section {
             var header = HeaderLabel.defaultHeader
             header.onSetupView = { view, _ in
-                view.update(title: "Event info")
+                view.update(title: NSLocalizedString("new-split-controller.event-info", comment: ""))
             }
             $0.header = header
         }
@@ -57,34 +50,38 @@ final class NewSplitViewController: FormViewController {
                 $0.tag = "event-name"
                 $0.add(rule: RuleRequired())
                 $0.validationOptions = .validatesOnChange
-                $0.value = self.split?.eventName
+                $0.value = viewModel.split?.eventName
                 $0.cellUpdate { cell, _ in
-                    cell.textField.apply(style: .body(.dark), placeholder: .init(text: "Event name", style: .body(.fade)))
+                    cell.textField.apply(
+                        style: .body(.dark),
+                        placeholder: .init(text: NSLocalizedString("new-split-controller.event-name", comment: ""),
+                                           style: .body(.fade)))
                     cell.titleLabel?.apply(style: .body(.dark))
                 }
             }
 
-        let partnersSection = MultivaluedSection(
-                multivaluedOptions: [.Insert, .Delete])
-            {
+        let participantsSection = MultivaluedSection(multivaluedOptions: [.Insert, .Delete]) {
                 var header = HeaderLabel.defaultHeader
                 header.onSetupView = { view, _ in
-                    view.update(title: "Participants")
+                    view.update(title: NSLocalizedString("new-split-controller.participants", comment: ""))
                 }
                 $0.header = header
                 $0.tag = "participants"
                 $0.addButtonProvider = { section in
                     return ButtonRow() {
-                        $0.title = "Add participant"
+                        $0.title = NSLocalizedString("new-split-controller.add-participant", comment: "")
                     }.cellUpdate { cell, row in
                         cell.textLabel?.textAlignment = .left
-                        cell.textLabel?.font = Text.body(.dark).font
+                        cell.textLabel?.font = Style.body(.dark).font
                     }
                 }
                 $0.multivaluedRowToInsertAt = { index in
                     return NameRow() {
                         $0.cellUpdate { cell, _ in
-                            cell.textField.apply(style: .body(.dark), placeholder: .init(text: "Participant \(index + 1)", style: .body(.fade)))
+                            let text = String(
+                                format: NSLocalizedString("new-split-controller.participant-number.format", comment: ""),
+                                index + 1)
+                            cell.textField.apply(style: .body(.dark), placeholder: .init(text: text, style: .body(.fade)))
                             cell.titleLabel?.apply(style: .body(.dark))
                         }
                     }
@@ -92,14 +89,25 @@ final class NewSplitViewController: FormViewController {
                 $0 <<< NameRow() {
                     $0.add(rule: RuleRequired())
                     $0.cellUpdate { cell, _ in
-                        cell.textField.apply(style: .body(.dark), placeholder: .init(text: "You", style: .body(.fade)))
+                        cell.textField.apply(
+                            style: .body(.dark),
+                            placeholder: .init(
+                                text: NSLocalizedString("new-split-controller.participant-placeholder.you", comment: ""),
+                                style: .body(.fade)
+                            ))
                         cell.titleLabel?.apply(style: .body(.dark))
                     }
                 }
                 $0 <<< NameRow() {
                     $0.add(rule: RuleRequired())
                     $0.cellUpdate { cell, _ in
-                        cell.textField.apply(style: .body(.dark), placeholder: .init(text: "Participant 1", style: .body(.fade)))
+                        cell.textField.apply(
+                            style: .body(.dark),
+                            placeholder: .init(
+                                text: NSLocalizedString(
+                                    "new-split-controller.participant-placeholder.participant-1", comment: ""),
+                                style: .body(.fade)
+                            ))
                         cell.titleLabel?.apply(style: .body(.dark))
                     }
                 }
@@ -107,23 +115,29 @@ final class NewSplitViewController: FormViewController {
 
         let submitSection = Section()
             <<< ButtonRow() {
-                $0.title = "Save"
+                $0.title = NSLocalizedString("new-split-controller.save", comment: "")
                 $0.cellUpdate { cell, _ in
-                    cell.textLabel?.font = Text.body(.dark).font
+                    cell.textLabel?.font = Style.body(.dark).font
                 }
             }.onCellSelection { [weak self] _, _ in
                 self?.saveSplit()
             }
 
-        form += [eventSection, partnersSection, submitSection]
+        form += [eventSection, participantsSection, submitSection]
     }
 
     private func saveSplit() {
         guard form.validate().isEmpty else { return }
 
-        guard let split = Split(form: form) else { return }
+        guard let eventName = form.values()["event-name"] as? String else { return }
 
-        self.delegate?.didCreateNewSplit(split)
+        guard let participantsSection = form.sectionBy(tag: "participants") as? MultivaluedSection, participantsSection.values().count > 1 else { return }
+
+        let participants = participantsSection.values()
+            .compactMap { $0 as? String }
+            .map { Participant(name: $0, email: nil) }
+
+        self.viewModel.createdNewSplit(name: eventName, participants: participants)
     }
 
     func addDismissButton() {
@@ -134,24 +148,5 @@ final class NewSplitViewController: FormViewController {
 
     @objc private func cancelButtonTapped() {
         self.dismiss(animated: true, completion: nil)
-    }
-}
-
-private extension Split {
-
-    init?(form: Eureka.Form) {
-        let dic = form.values()
-        guard let eventName = dic["event-name"] as? String else {
-            return nil
-        }
-
-        guard let participantsSection = form.sectionBy(tag: "participants") as? MultivaluedSection, participantsSection.values().count > 1 else {
-            return nil
-        }
-
-        self.eventName = eventName
-        self.participants = participantsSection.values()
-            .compactMap { $0 as? String }
-            .map { Participant(name: $0, email: nil) }
     }
 }

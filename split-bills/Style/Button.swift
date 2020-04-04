@@ -11,7 +11,7 @@ import UIKit
 
 struct ButtonStyle {
 
-    let textStyle: Text
+    let textStyle: Style
     let backgroundColor: Color
     let highlightedColor: Color?
     let selectedColor: Color?

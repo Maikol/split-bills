@@ -10,18 +10,17 @@ import UIKit
 import SnapKit
 
 final class RootViewController: UIViewController,
-    NewSplitViewControllerDelegate,
     UITableViewDataSource,
-    UITableViewDelegate,
-    SplitViewControllerDelegate
+    UITableViewDelegate
 {
-
     fileprivate final class EmptyStateView: UIView {
         let label = UILabel()
         let arrowImage = UIImageView(image: UIImage(named: "down_arrow")!)
 
         private var arrowImageRightConstraint: Constraint?
     }
+
+    unowned let coordinator: MainCoordinator
 
     private let tableView = UITableView()
     private let newBillButton = UIButton.plusIcon()
@@ -30,13 +29,28 @@ final class RootViewController: UIViewController,
 
     private var splits = SplitController.shared.getAll() ?? []
 
+    init(coordinator: MainCoordinator) {
+        self.coordinator = coordinator
+
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    @available(*, unavailable)
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationController!.apply(style: .default)
-
         buildView()
         buildLayout()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        reloadData()
     }
 
     override func viewDidLayoutSubviews() {
@@ -47,7 +61,7 @@ final class RootViewController: UIViewController,
     }
 
     private func buildView() {
-        title = "Split Bills"
+        title = NSLocalizedString("root-controller.title", comment: "")
         view.backgroundColor = Color.light.value
 
         tableView.dataSource = self
@@ -82,9 +96,7 @@ final class RootViewController: UIViewController,
     }
 
     @objc private func newSplitButtonTapped() {
-        let viewController = NewSplitViewController()
-        viewController.delegate = self
-        self.navigationController!.pushViewController(viewController, animated: true)
+        coordinator.newSplit()
     }
 
     // MARK: UITableViewDataSource methods
@@ -118,10 +130,7 @@ final class RootViewController: UIViewController,
     // MARK: UITableViewDelegate methods
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let viewController = SplitViewController(split: splits[indexPath.row])
-        viewController.delegate = self
-        navigationController!.pushViewController(viewController, animated: true)
-
+        coordinator.open(split: splits[indexPath.row])
         tableView.deselectRow(at: indexPath, animated: true)
     }
 
@@ -129,35 +138,10 @@ final class RootViewController: UIViewController,
         return 60.0
     }
 
-    // MARK: NewSplitViewControllerDelegate methods
-
-    func didCreateNewSplit(_ split: Split) {
-        SplitController.shared.add(split: split)
-        splits.append(split)
-
-        reloadData()
-
-        let viewController = SplitViewController(split: split)
-        viewController.delegate = self
-        navigationController?.setViewControllers([self, viewController], animated: true)
-    }
-
-    // MARK: SplitViewControllerDelegate methods
-
-    func didRequestDeleting(split: Split, from viewController: UIViewController) {
-        guard let index = splits.index(of: split) else { return }
-
-        splits.remove(at: index)
-        SplitController.shared.remove(split: split)
-
-        reloadData()
-
-        viewController.navigationController!.popViewController(animated: true)
-    }
-
     // MARK: Reload
 
     private func reloadData() {
+        splits = SplitController.shared.getAll() ?? []
         emptyStateView.isHidden = !splits.isEmpty
         tableView.reloadData()
     }
@@ -183,27 +167,27 @@ private extension RootViewController.EmptyStateView {
 
         let boldHeadingAttributes = [
             NSAttributedString.Key.foregroundColor: Color.dark.value,
-            NSAttributedString.Key.font: Text.heading2DarkBold.font
+            NSAttributedString.Key.font: Style.heading2DarkBold.font
             ] as [NSAttributedString.Key : Any]
 
         let boldAttributes = [
             NSAttributedString.Key.foregroundColor: Color.dark.value,
-            NSAttributedString.Key.font: Text.bodyLarge(.darkBold).font
+            NSAttributedString.Key.font: Style.bodyLarge(.darkBold).font
             ] as [NSAttributedString.Key : Any]
 
         let regularAttributes = [
             NSAttributedString.Key.foregroundColor: Color.dark.value,
-            NSAttributedString.Key.font: Text.bodyLarge(.dark).font
+            NSAttributedString.Key.font: Style.bodyLarge(.dark).font
             ] as [NSAttributedString.Key : Any]
 
         attributedString.append(NSAttributedString(
-            string: "You have not added any split bills.\n\nTap the ", attributes: regularAttributes))
+            string: NSLocalizedString("root-controller.empty-view.text-1", comment: ""), attributes: regularAttributes))
         attributedString.append(NSAttributedString(
             string: "+", attributes: boldHeadingAttributes))
         attributedString.append(NSAttributedString(
-            string: " button to create a", attributes: regularAttributes))
+            string: NSLocalizedString("root-controller.empty-view.text-2", comment: ""), attributes: regularAttributes))
         attributedString.append(NSAttributedString(
-            string: " new bill", attributes: boldAttributes))
+            string: NSLocalizedString("root-controller.empty-view.text-3", comment: ""), attributes: boldAttributes))
         attributedString.append(NSAttributedString(
             string: ".", attributes: regularAttributes))
 

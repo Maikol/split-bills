@@ -61,7 +61,7 @@ extension Expense {
         let participantsWeight = participants.map { ExpenseWeight(participant: $0, weight: weight) }
         let splitType: Expense.SplitType = (participants.count == split.participants.count ?
             .equallyWithAll : .equallyCustom)
-        return Expense(id: id ?? INTMAX_MAX, payer: payer, description: description, amount: amount, participantsWeight: participantsWeight, splitType: splitType)
+        return Expense(id: id ?? INT64_MAX, payer: payer, description: description, amount: amount, participantsWeight: participantsWeight, splitType: splitType)
     }
 
     typealias Amount = (Participant, Double)
@@ -72,7 +72,7 @@ extension Expense {
         }
 
         let participantsWeight = amounts.map { ExpenseWeight(participant: $0.0, weight: $0.1 / amount) }
-        return Expense(id: id ?? INTMAX_MAX, payer: payer, description: description, amount: amount, participantsWeight: participantsWeight, splitType: .byAmount)
+        return Expense(id: id ?? INT64_MAX, payer: payer, description: description, amount: amount, participantsWeight: participantsWeight, splitType: .byAmount)
     }
 
     typealias Weight = (Participant, Double)
@@ -89,7 +89,7 @@ extension Expense {
         }
 
         let participantsWeight = weights.map { ExpenseWeight(participant: $0.0, weight: $0.1 / totalWeight) }
-        return Expense(id: id ?? INTMAX_MAX, payer: payer, description: description, amount: amount, participantsWeight: participantsWeight, splitType: .byWeight)
+        return Expense(id: id ?? INT64_MAX, payer: payer, description: description, amount: amount, participantsWeight: participantsWeight, splitType: .byWeight)
     }
 }
 

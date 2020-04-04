@@ -9,11 +9,6 @@
 import UIKit
 import Eureka
 
-protocol NewExpenseViewControllerDelegate: class {
-    func didRequestSaveExpenseAndDismiss(_ expense: Expense, from viewController: UIViewController)
-    func didRequestSaveAndCreateNewExpense(_ expense: Expense, from viewController: UIViewController)
-}
-
 final class NewExpenseViewController: FormViewController {
 
     enum Segment: String {
@@ -24,14 +19,10 @@ final class NewExpenseViewController: FormViewController {
         static let allValues = [Equally, Amount, Weight]
     }
 
-    weak var delegate: NewExpenseViewControllerDelegate?
+    private let viewModel: NewExpenseViewModel
 
-    private let split: Split
-    private let expense: Expense?
-
-    init(split: Split, expense: Expense? = nil) {
-        self.split = split
-        self.expense = expense
+    init(viewModel: NewExpenseViewModel) {
+        self.viewModel = viewModel
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -56,7 +47,7 @@ final class NewExpenseViewController: FormViewController {
     }
 
     private func buildForm() {
-        var totalAmount = expense?.amount ?? 0.0
+        var totalAmount = viewModel.expense?.amount ?? 0.0
         var updatingFromAmount = false
 
         var amountTags = [String]()
@@ -71,7 +62,7 @@ final class NewExpenseViewController: FormViewController {
         }
             <<< TextRow() {
                 $0.tag = "expense-description"
-                $0.value = expense?.description
+                $0.value = viewModel.expense?.description
                 $0.add(rule: RuleRequired())
                 $0.cellUpdate { cell, _ in
                     cell.textField.apply(style: .body(.dark), placeholder: .init(text: "What was for?", style: .body(.fade)))
@@ -82,8 +73,8 @@ final class NewExpenseViewController: FormViewController {
                 $0.tag = "payer-name"
                 $0.title = "Payer"
                 $0.add(rule: RuleRequired())
-                $0.value = expense?.payer.name ?? split.participants.first?.name
-                $0.options = split.participants.map { $0.name }
+                $0.value = viewModel.expense?.payer.name ?? viewModel.split.participants.first?.name
+                $0.options = viewModel.split.participants.map { $0.name }
                 $0.cellUpdate { cell, _ in
                     cell.textLabel?.apply(style: .body(.darkBold))
                     cell.detailTextLabel?.apply(style: .body(.dark))
@@ -97,7 +88,7 @@ final class NewExpenseViewController: FormViewController {
             <<< DecimalRow() {
                 $0.tag = "expense-amount"
                 $0.title = "Amount"
-                $0.value = expense?.amount
+                $0.value = viewModel.expense?.amount
                 $0.useFormatterDuringInput = false
                 $0.add(rule: RuleRequired())
                 $0.add(rule: RuleGreaterThan(min: 1))
@@ -132,7 +123,7 @@ final class NewExpenseViewController: FormViewController {
         }
             <<< SwitchRow("split-equally-switch") {
                 $0.title = "Equally between everyone"
-                $0.value = (expense.map { $0.splitType == .equallyWithAll } ?? true)
+                $0.value = (viewModel.expense.map { $0.splitType == .equallyWithAll } ?? true)
                 $0.cellUpdate { cell, _ in
                     cell.textLabel?.apply(style: .body(.dark))
                 }
@@ -153,12 +144,12 @@ final class NewExpenseViewController: FormViewController {
         }
             <<< SegmentedRow<Segment>("weight-segments") {
                 $0.options = Segment.allValues
-                $0.value = expense.flatMap { Segment(splitType: $0.splitType) } ?? Segment.Equally
+                $0.value = viewModel.expense.flatMap { Segment(splitType: $0.splitType) } ?? Segment.Equally
                 $0.cellUpdate { cell, _ in
                     cell.segmentedControl.setTitleTextAttributes(
-                        [.font: Text.body(.dark).font], for: .selected)
+                        [.font: Style.body(.dark).font], for: .selected)
                     cell.segmentedControl.setTitleTextAttributes(
-                        [.font: Text.body(.dark).font], for: .normal)
+                        [.font: Style.body(.dark).font], for: .normal)
                 }
             }
 
@@ -210,14 +201,14 @@ final class NewExpenseViewController: FormViewController {
             $0.header = header
         }
 
-        let totalWeight = expense.map { $0.participantsWeight.reduce(0) { $0 + $1.weight } } ?? 0
-        split.participants.forEach { participant in
-            let equallyValue = expense.map { $0.participantsWeight.contains(where: { $0.participant == participant}) }
-            let amountValue: Double? = expense.map {
+        let totalWeight = viewModel.expense.map { $0.participantsWeight.reduce(0) { $0 + $1.weight } } ?? 0
+        viewModel.split.participants.forEach { participant in
+            let equallyValue = viewModel.expense.map { $0.participantsWeight.contains(where: { $0.participant == participant}) }
+            let amountValue: Double? = viewModel.expense.map {
                 let weight = $0.participantsWeight.first(where: { $0.participant == participant })?.weight ?? 0
                 return weight * $0.amount
             }
-            let weightValue: Double? = expense.map {
+            let weightValue: Double? = viewModel.expense.map {
                 let weight = $0.participantsWeight.first(where: { $0.participant == participant })?.weight ?? 0
                 return weight * totalWeight
             }
@@ -264,7 +255,7 @@ final class NewExpenseViewController: FormViewController {
             <<< ButtonRow() {
                 $0.title = "Add new expense"
                 $0.cellUpdate { cell, _ in
-                    cell.textLabel?.font = Text.body(.dark).font
+                    cell.textLabel?.font = Style.body(.dark).font
                 }
             }.onCellSelection { [weak self] _, _ in
                     self?.addNewExpenseTapped()
@@ -272,7 +263,7 @@ final class NewExpenseViewController: FormViewController {
             <<< ButtonRow() {
                 $0.title = "Save"
                 $0.cellUpdate { cell, _ in
-                    cell.textLabel?.font = Text.body(.dark).font
+                    cell.textLabel?.font = Style.body(.dark).font
                 }
             }.onCellSelection { [weak self] _, _ in
                     self?.saveButtonTapped()
@@ -290,7 +281,7 @@ final class NewExpenseViewController: FormViewController {
 
         guard let expense = createExpense() else { return }
 
-        self.delegate?.didRequestSaveExpenseAndDismiss(expense, from: self)
+        viewModel.save(expense: expense)
     }
 
     private func addNewExpenseTapped() {
@@ -298,7 +289,7 @@ final class NewExpenseViewController: FormViewController {
 
         guard let expense = createExpense() else { return }
 
-        self.delegate?.didRequestSaveAndCreateNewExpense(expense, from: self)
+        viewModel.saveAndCreate(expense: expense)
     }
 
     private func createExpense() -> Expense? {
@@ -310,8 +301,13 @@ final class NewExpenseViewController: FormViewController {
         }
 
         guard !form.uBoolRow(with: "split-equally-switch").value! else {
-            return Expense.equallySplited(with: split, payer: payer, participants: split.participants,
-                                          description: description, amount: amount, id: expense?.id)
+            return Expense.equallySplited(
+                with: viewModel.split,
+                payer: payer,
+                participants: viewModel.split.participants,
+                description: description,
+                amount: amount,
+                id: viewModel.expense?.id)
         }
 
         guard let segmentsRow = form.rowBy(tag: "weight-segments") as? SegmentedRow<Segment>,
@@ -329,24 +325,39 @@ final class NewExpenseViewController: FormViewController {
     }
 
     private func saveEquallySegment(payer: Participant, description: String, amount: Double) -> Expense? {
-        let participants = split.participants.filter { (form.rowBy(tag: "equally-\($0.name)") as? CheckRow)?.value == true }
+        let participants = viewModel.split.participants.filter { (form.rowBy(tag: "equally-\($0.name)") as? CheckRow)?.value == true }
 
-        return Expense.equallySplited(with: split, payer: payer, participants: participants,
-                                      description: description, amount: amount, id: expense?.id)
+        return Expense.equallySplited(
+            with: viewModel.split,
+            payer: payer,
+            participants: participants,
+            description: description,
+            amount: amount,
+            id: viewModel.expense?.id)
     }
 
     private func saveAmountSegment(payer: Participant, description: String, amount: Double) -> Expense? {
-        let amounts = split.participants.compactMap { ($0, form.doubleRow(with: "amount-\($0.name)")?.value ?? 0) }
+        let amounts = viewModel.split.participants.compactMap { ($0, form.doubleRow(with: "amount-\($0.name)")?.value ?? 0) }
 
-        return Expense.splitByAmount(with: split, payer: payer, amounts: amounts,
-                                     description: description, amount: amount, id: expense?.id)
+        return Expense.splitByAmount(
+            with: viewModel.split,
+            payer: payer,
+            amounts: amounts,
+            description: description,
+            amount: amount,
+            id: viewModel.expense?.id)
     }
 
     private func saveWeightSegment(payer: Participant, description: String, amount: Double) -> Expense? {
-        let weights = split.participants.compactMap { ($0, form.doubleRow(with: "weight-\($0.name)")?.value ?? 0) }
+        let weights = viewModel.split.participants.compactMap { ($0, form.doubleRow(with: "weight-\($0.name)")?.value ?? 0) }
 
-        return Expense.splitByWeight(with: split, payer: payer, weights: weights,
-                                     description: description, amount: amount, id: expense?.id)
+        return Expense.splitByWeight(
+            with: viewModel.split,
+            payer: payer,
+            weights: weights,
+            description: description,
+            amount: amount,
+            id: viewModel.expense?.id)
     }
 
     // Override animations

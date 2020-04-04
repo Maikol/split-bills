@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-enum Text {
+enum Style {
     case headingWhite
     case headingWhiteBold
     case heading2DarkBold
@@ -44,7 +44,7 @@ enum Color {
     case light
 }
 
-extension Text {
+extension Style {
 
     var font: UIFont {
         switch self {
@@ -97,7 +97,7 @@ extension Color {
 
 extension UILabel {
 
-    convenience init(style: Text) {
+    convenience init(style: Style) {
         self.init()
 
         font = style.font

@@ -10,13 +10,9 @@ import UIKit
 import Eureka
 import SnapKit
 
-protocol SplitViewControllerDelegate: class {
-    func didRequestDeleting(split: Split, from viewController: UIViewController)
-}
+final class SplitViewController: FormViewController {
 
-final class SplitViewController: FormViewController, NewExpenseViewControllerDelegate {
-
-    weak var delegate: SplitViewControllerDelegate?
+    private let viewModel: SplitViewModel
 
     fileprivate final class EmptyStateView: UIView {
         private let label = UILabel()
@@ -28,16 +24,13 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
     private let newSplitButton = UIButton.plusIcon()
     private let emptyStateView = EmptyStateView()
 
-    private let split: Split
-    private var expenses: [Expense]
-
-    init(split: Split) {
-        self.split = split
-        expenses = ExpenseController.shared.getAll(for: split)
+    init(viewModel: SplitViewModel) {
+        self.viewModel = viewModel
 
         super.init(nibName: nil, bundle: nil)
     }
 
+    @available(*, unavailable)
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -52,6 +45,14 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
         buildForm()
     }
 
+    // TODO: viewWillAppear reload expense
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        viewModel.reloadExpenses()
+        reload()
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
@@ -60,14 +61,14 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
     }
 
     private func buildView() {
-        title = split.eventName
+        title = viewModel.split.eventName
 
         tableView.backgroundColor = Color.light.value
 
         newSplitButton.addTarget(self, action: #selector(newExpenseButtonTapped), for: .touchUpInside)
         view.addSubview(newSplitButton)
 
-        emptyStateView.isHidden = !expenses.isEmpty
+        emptyStateView.isHidden = !viewModel.expenses.isEmpty
         view.addSubview(emptyStateView)
 
         let button = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editButtonTapped))
@@ -95,11 +96,11 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
             }
             $0.header = header
             $0.hidden = Condition.function([]) { [weak self] _ in
-                return self?.expenses.isEmpty == true
+                return self?.viewModel.expenses.isEmpty == true
             }
         }
 
-        let payments = split.settle(expenses: expenses)
+        let payments = viewModel.split.settle(expenses: viewModel.expenses)
         payments.forEach { payment in
             settleSection <<< PaymentRow() {
                 $0.value = payment
@@ -114,11 +115,11 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
             }
             $0.header = header
             $0.hidden = Condition.function([]) { [weak self] _ in
-                return self?.expenses.isEmpty == true
+                return self?.viewModel.expenses.isEmpty == true
             }
         }
 
-        expenses.forEach { expense in
+        viewModel.expenses.forEach { expense in
             overviewSection <<< ExpenseRow() {
                 $0.value = expense
                 let deleteAction = SwipeAction(style: .destructive, title: "Delete")
@@ -130,18 +131,16 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
 
                 $0.trailingSwipe.actions = [deleteAction]
             }.onCellSelection { [weak self] _, row in
-                guard let expense = row.value else { return }
+                guard let self = self, let expense = row.value else { return }
 
-                self?.pushNewExpenseViewController(expense: expense)
+                self.viewModel.open(expense: expense)
             }
         }
 
         form += [settleSection, overviewSection]
     }
 
-    private func reloadExpenses() {
-        expenses = ExpenseController.shared.getAll(for: split)
-
+    private func reload() {
         form.removeAll(keepingCapacity: true)
         buildForm()
     }
@@ -149,57 +148,39 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
     // MARK: Actions
 
     @objc private func newExpenseButtonTapped() {
-        pushNewExpenseViewController()
+        viewModel.newExpense()
     }
 
     @objc private func editButtonTapped() {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
-        alertController.addAction(UIAlertAction(title: "Edit", style: .default) { [weak self] _ in
-            guard let self = self else { return }
-
-            let viewController = NewSplitViewController(split: self.split)
-            let navigationController = UINavigationController(rootViewController: viewController, style: .default)
-            viewController.addDismissButton()
-            self.present(navigationController, animated: true, completion: nil)
+        alertController.addAction(UIAlertAction(
+            title: NSLocalizedString("split-controller.edit", comment: ""),
+            style: .default) { [viewModel] _ in
+                viewModel.editSplit()
         })
 
-        alertController.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
-            guard let self = self else { return }
+        alertController.addAction(UIAlertAction(
+            title: NSLocalizedString("split-controller.delete", comment: ""),
+            style: .destructive) { [weak self] _ in
+                guard let self = self else { return }
 
-            self.delegate?.didRequestDeleting(split: self.split, from: self)
+                self.viewModel.deleteSplit()
         })
 
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        alertController.addAction(UIAlertAction(
+            title: NSLocalizedString("split-controller.cancel", comment: ""),
+            style: .cancel,
+            handler: nil))
 
         present(alertController, animated: true, completion: nil)
     }
 
-    private func pushNewExpenseViewController(expense: Expense? = nil) {
-        let viewController = NewExpenseViewController(split: split, expense: expense)
-        viewController.delegate = self
-
-        var navigationViewControllers = navigationController!.viewControllers.filter { !($0 is NewExpenseViewController) }
-        navigationViewControllers.append(viewController)
-        navigationController!.setViewControllers(navigationViewControllers, animated: true)
-    }
-
-    private func saveAndReload(expense: Expense) {
-        if expense.id != INTMAX_MAX {
-            ExpenseController.shared.update(expense: expense)
-        } else {
-            ExpenseController.shared.add(expense: expense, in: split)
-        }
-
-        reloadExpenses()
-    }
-
     private func deleteAndReload(expense: Expense) -> Bool {
-        guard ExpenseController.shared.remove(expense: expense) else {
+        guard viewModel.delete(expense: expense) else {
             return false
         }
 
-        expenses.removeAll { $0 == expense }
         rebuildPayments()
         return true
     }
@@ -209,8 +190,7 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
 
         section.removeAll()
 
-        let payments = split.settle(expenses: expenses)
-        payments.forEach { payment in
+        viewModel.payments.forEach { payment in
             section <<< PaymentRow() {
                 $0.value = payment
             }
@@ -219,20 +199,6 @@ final class SplitViewController: FormViewController, NewExpenseViewControllerDel
         section.evaluateHidden()
         form.sectionBy(tag: "empty-state")?.evaluateHidden()
         form.sectionBy(tag: "overview")?.evaluateHidden()
-    }
-
-    // MARK: NewExpenseViewControllerDelegate methods
-
-    func didRequestSaveExpenseAndDismiss(_ expense: Expense, from viewController: UIViewController) {
-        saveAndReload(expense: expense)
-
-        navigationController!.popViewController(animated: true)
-    }
-
-    func didRequestSaveAndCreateNewExpense(_ expense: Expense, from viewController: UIViewController) {
-        saveAndReload(expense: expense)
-
-        pushNewExpenseViewController()
     }
 }
 
@@ -366,12 +332,12 @@ class PaymentCell: Cell<Payment>, CellType {
 
             let boldAttributes = [
                 .foregroundColor: Color.dark.value,
-                .font: Text.body(.darkBold).font
+                .font: Style.body(.darkBold).font
             ] as [NSAttributedString.Key : Any]
 
             let regularAttributes = [
                 .foregroundColor: Color.dark.value,
-                .font: Text.body(.dark).font
+                .font: Style.body(.dark).font
             ] as [NSAttributedString.Key : Any]
 
             attributedString.append(NSAttributedString(string: payer.name, attributes: boldAttributes))
@@ -393,17 +359,23 @@ extension SplitViewController.EmptyStateView {
 
         let boldAttributes = [
             .foregroundColor: Color.dark.value,
-            .font: Text.bodyLarge(.darkBold).font
+            .font: Style.bodyLarge(.darkBold).font
             ] as [NSAttributedString.Key : Any]
 
         let regularAttributes = [
             .foregroundColor: Color.dark.value,
-            .font: Text.bodyLarge(.dark).font
+            .font: Style.bodyLarge(.dark).font
             ] as [NSAttributedString.Key : Any]
 
-        attributedString.append(NSAttributedString(string: "Add ", attributes: regularAttributes))
-        attributedString.append(NSAttributedString(string: "New Expenses", attributes: boldAttributes))
-        attributedString.append(NSAttributedString(string: " to this bill", attributes: regularAttributes))
+        attributedString.append(NSAttributedString(
+            string: NSLocalizedString("split-controller.empty-view.text-1", comment: ""),
+            attributes: regularAttributes))
+        attributedString.append(NSAttributedString(
+            string: NSLocalizedString("split-controller.empty-view.text-2", comment: ""),
+            attributes: boldAttributes))
+        attributedString.append(NSAttributedString(
+            string: NSLocalizedString("split-controller.empty-view.text-3", comment: ""),
+            attributes: regularAttributes))
         label.attributedText = attributedString
         label.numberOfLines = 0
         label.textAlignment = .center

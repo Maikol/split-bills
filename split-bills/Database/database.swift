@@ -11,6 +11,8 @@ import SQLite
 
 struct SplitDatabase {
 
+    private static let databaseName = "split_database"
+
     private let participantsDatabase: ParticipantDatabase
 
     private let db: Connection
@@ -21,7 +23,7 @@ struct SplitDatabase {
 
     init(databasePath: String) throws {
         participantsDatabase = try ParticipantDatabase(databasePath: databasePath)
-        db = try Connection("\(databasePath)/split_database.sqlite3")
+        db = try Connection("\(databasePath)/\(SplitDatabase.databaseName).sqlite3")
         try self.initializeDatabaseSchema()
     }
 
@@ -32,15 +34,18 @@ struct SplitDatabase {
         })
     }
 
-    func add(split: Split) throws {
-        let insert = table.insert(eventName <- split.eventName)
+    func create(eventName: String, participants: [Participant]) throws -> Split {
+        let insert = table.insert(self.eventName <- eventName)
         let rowId = try db.run(insert)
 
-        try split.participants.forEach { try participantsDatabase.add(participant: $0, splitId: rowId) }
+        try participants.forEach { try participantsDatabase.add(participant: $0, splitId: rowId) }
+
+        return Split(id: rowId, eventName: eventName, participants: participants)
     }
 
     func remove(split: Split) throws {
         let row = table.filter(eventName == split.eventName)
+        try participantsDatabase.remove(splitId: split.id)
         try db.run(row.delete())
     }
 
@@ -50,11 +55,13 @@ struct SplitDatabase {
 
     private func split(with row: SQLite.Row) throws -> Split? {
         let participants = try participantsDatabase.participants(for: row[id])
-        return Split(eventName: row[eventName], participants: participants)
+        return Split(id: row[id], eventName: row[eventName], participants: participants)
     }
 }
 
 struct ParticipantDatabase {
+
+    private static let databaseName = "participant_database"
 
     private let db: Connection
     private let table = Table("participant")
@@ -65,7 +72,7 @@ struct ParticipantDatabase {
     private let email = Expression<String?>("email")
 
     init(databasePath: String) throws {
-        db = try Connection("\(databasePath)/participant_database.sqlite3")
+        db = try Connection("\(databasePath)/\(ParticipantDatabase.databaseName).sqlite3")
         try self.initializeDatabaseSchema()
     }
 
@@ -81,6 +88,11 @@ struct ParticipantDatabase {
     func add(participant: Participant, splitId: Int64) throws {
         let insert = table.insert(self.splitId <- splitId, name <- participant.name, email <- participant.email)
         _ = try db.run(insert)
+    }
+
+    func remove(splitId: Int64) throws {
+        let participants = table.filter(self.splitId == splitId)
+        try db.run(participants.delete())
     }
 
     func participants(for rowId: Int64) throws -> [Participant] {
@@ -151,8 +163,8 @@ struct ExpenseDatabase {
     func remove(expense: Expense) throws {
         let row = table.filter(id == expense.id)
 
-        try db.run(row.delete())
         try weightsTable.delete(for: expense.id)
+        try db.run(row.delete())
     }
 
     func getAll(splitName: String) throws -> [Expense] {

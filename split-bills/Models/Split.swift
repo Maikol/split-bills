@@ -10,6 +10,7 @@ import Foundation
 
 struct Split {
 
+    let id: Int64
     let eventName: String
     let participants: [Participant]
 }

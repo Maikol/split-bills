@@ -11,23 +11,18 @@ import XCTest
 
 class ExpenseTests: XCTestCase {
 
-    let participant1 = Participant(name: "User 1", email: nil)
-    let participant2 = Participant(name: "User 2", email: nil)
-    let participant3 = Participant(name: "User 3", email: nil)
-    let participant4 = Participant(name: "User 4", email: nil)
-
     var participants: [Participant]!
     var split: Split!
 
     override func setUp() {
         super.setUp()
 
-        participants = [participant1,participant2,participant3,participant4]
-        split = Split(eventName: "Test 1", name: "User 1", email: nil, participants: participants)
+        participants = [participant1, participant2, participant3, participant4]
+        split = Split(id: 1, eventName: "Test 1", participants: participants)
     }
 
     func testEquallySplited() {
-        let expense = Expense.equallySplited(with: split, payer: participant1, participants: participants, description: "Expense test", amount: 100.0)
+        let expense = Expense.equallySplited(with: split, payer: participant1, participants: participants, description: "Expense test", amount: 100.0, id: nil)
 
         XCTAssertNotNil(expense)
 
@@ -52,10 +47,10 @@ class ExpenseTests: XCTestCase {
 
     func testSplitByAmount() {
         let amounts1 = [(participant1, 20.0), (participant2, 40.0), (participant3, 15.0), (participant4, 30.0)]
-        let expense1 = Expense.splitByAmount(with: split, payer: participant2, amounts: amounts1, description: "Expense amounts 1", amount: 105)
+        let expense1 = Expense.splitByAmount(with: split, payer: participant2, amounts: amounts1, description: "Expense amounts 1", amount: 105, id: nil)
 
         let amounts2 = [(participant1, 30.0), (participant2, 30.0), (participant3, 15.0), (participant4, 30.0)]
-        let expense2 = Expense.splitByAmount(with: split, payer: participant3, amounts: amounts2, description: "Expense amounts 2", amount: 105)
+        let expense2 = Expense.splitByAmount(with: split, payer: participant3, amounts: amounts2, description: "Expense amounts 2", amount: 105, id: nil)
 
         XCTAssertNotNil(expense1)
         XCTAssertNotNil(expense2)
@@ -93,10 +88,10 @@ class ExpenseTests: XCTestCase {
 
     func testSplitByWeight() {
         let weights1 = [(participant1, 2.0), (participant2, 6.0), (participant3, 8.0)]
-        let expense1 = Expense.splitByWeight(with: split, payer: participant1, weights: weights1, description: "Expense weights 1", amount: 100)
+        let expense1 = Expense.splitByWeight(with: split, payer: participant1, weights: weights1, description: "Expense weights 1", amount: 100, id: nil)
 
         let weights2 = [(participant1, 4.0), (participant2, 4.0), (participant3, 2.0)]
-        let expense2 = Expense.splitByWeight(with: split, payer: participant3, weights: weights2, description: "Expense weights 2", amount: 85)
+        let expense2 = Expense.splitByWeight(with: split, payer: participant3, weights: weights2, description: "Expense weights 2", amount: 85, id: nil)
 
         XCTAssertNotNil(expense1)
         XCTAssertNotNil(expense2)

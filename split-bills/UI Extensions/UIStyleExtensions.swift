@@ -16,13 +16,17 @@ extension UINavigationController {
     }
 
     func apply(style: Style) {
-        navigationBar.barTintColor = style.backgroundColor.value
-        navigationBar.tintColor = style.textColor.value
-        navigationBar.titleTextAttributes = [.foregroundColor: style.textColor.value, .font: style.font]
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithDefaultBackground()
+        appearance.backgroundColor = style.backgroundColor.value
+        appearance.titleTextAttributes = [.foregroundColor: style.textColor.value, .font: style.font]
+        appearance.largeTitleTextAttributes = [.foregroundColor: style.textColor.value, .font: style.largeFont]
 
-        navigationBar.largeTitleTextAttributes = [.foregroundColor: style.textColor.value, .font: style.largeFont]
-
+        navigationBar.standardAppearance = appearance
+        navigationBar.scrollEdgeAppearance = appearance
         navigationBar.prefersLargeTitles = true
+
+        navigationBar.tintColor = style.textColor.value
     }
 
     convenience init(rootViewController: UIViewController, style: Style) {
@@ -36,10 +40,10 @@ extension UITextField {
 
     struct Placeholder {
         let text: String
-        let style: Text
+        let style: Style
     }
 
-    func apply(style: Text, placeholder: Placeholder? = nil) {
+    func apply(style: Style, placeholder: Placeholder? = nil) {
         font = style.font
         textColor = style.color.value
 
@@ -53,7 +57,7 @@ extension UITextField {
 
 extension UILabel {
 
-    func apply(style: Text) {
+    func apply(style: Style) {
         font = style.font
         textColor = style.color.value
     }
@@ -69,13 +73,13 @@ private extension UINavigationController.Style {
 
     var font: UIFont {
         switch self {
-        case .default: return Text.bodyLarge(.darkBold).font
+        case .default: return Style.bodyLarge(.darkBold).font
         }
     }
 
     var largeFont: UIFont {
         switch self {
-        case .default: return Text.headingWhiteBold.font
+        case .default: return Style.headingWhiteBold.font
         }
     }
 

@@ -1,0 +1,29 @@
+/* 
+  Localizable.strings
+  split-bills
+
+  Created by Carlos Miguel de Elias on 23/2/19.
+  Copyright © 2019 Carlos Miguel de Elias. All rights reserved.
+*/
+
+"root-controller.title" = "Split Bills";
+"root-controller.empty-view.text-1" = "You have not added any split bills.\n\nTap the ";
+"root-controller.empty-view.text-2" = " button to create a";
+"root-controller.empty-view.text-3" = " new bill";
+
+"new-split-controller.title" = "Bill";
+"new-split-controller.event-info" = "Event info";
+"new-split-controller.event-name" = "Event name";
+"new-split-controller.participants" = "Participants";
+"new-split-controller.add-participant" = "Add participant";
+"new-split-controller.participant-number.format" = "Participant %d";
+"new-split-controller.participant-placeholder.you" = "You";
+"new-split-controller.participant-placeholder.participant-1" = "Participant 1";
+"new-split-controller.save" = "Save";
+
+"split-controller.empty-view.text-1" = "Add ";
+"split-controller.empty-view.text-2" = "New Expenses";
+"split-controller.empty-view.text-3" = " to this bill";
+"split-controller.edit" = "Edit";
+"split-controller.delete" = "Delete";
+"split-controller.cancel" = "Cancel";

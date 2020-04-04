@@ -7,7 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DF1A03D92438054F00AD4E64 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1A03D82438054F00AD4E64 /* MainView.swift */; };
 		DF1C7DB421290D1800B8FA0C /* UIStyleExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1C7DB321290D1800B8FA0C /* UIStyleExtensions.swift */; };
+		DF4C6DC12437CC6800954DC7 /* NewSplitViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4C6DC02437CC6800954DC7 /* NewSplitViewModel.swift */; };
+		DF4C6DC32437D15C00954DC7 /* SplitViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4C6DC22437D15C00954DC7 /* SplitViewModel.swift */; };
+		DF4C6DC52437D57100954DC7 /* NewExpenseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4C6DC42437D57100954DC7 /* NewExpenseViewModel.swift */; };
 		DF5CB4DE2118483A00F39DC0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB4DD2118483A00F39DC0 /* AppDelegate.swift */; };
 		DF5CB4E02118483A00F39DC0 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB4DF2118483A00F39DC0 /* RootViewController.swift */; };
 		DF5CB4E52118483C00F39DC0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DF5CB4E42118483C00F39DC0 /* Assets.xcassets */; };
@@ -19,11 +23,16 @@
 		DF5CB50921198D9400F39DC0 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB50821198D9400F39DC0 /* SplitViewController.swift */; };
 		DF5CB50C211998A500F39DC0 /* Expense.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB50B211998A500F39DC0 /* Expense.swift */; };
 		DF5CB50E2119D80A00F39DC0 /* NewExpenseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB50D2119D80A00F39DC0 /* NewExpenseViewController.swift */; };
+		DF62DA9524375E7C002807B4 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF62DA9424375E7C002807B4 /* Coordinator.swift */; };
+		DF62DA9724375ED8002807B4 /* MainCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF62DA9624375ED8002807B4 /* MainCoordinator.swift */; };
 		DF890F9A211C542100305528 /* EurekaExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF890F99211C542100305528 /* EurekaExtensions.swift */; };
 		DFB90DA4211E7A0F0084C5E5 /* split_bills_tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB90DA3211E7A0F0084C5E5 /* split_bills_tests.swift */; };
 		DFB90DAC211E7A570084C5E5 /* ExpenseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB90DAB211E7A570084C5E5 /* ExpenseTests.swift */; };
-		DFB90DB021218D5D0084C5E5 /* Text.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB90DAF21218D5D0084C5E5 /* Text.swift */; };
+		DFB90DB021218D5D0084C5E5 /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB90DAF21218D5D0084C5E5 /* Style.swift */; };
 		DFB90DB2212191BE0084C5E5 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB90DB1212191BE0084C5E5 /* Button.swift */; };
+		DFD8C5702220F13A0095B3A3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DFD8C5722220F13A0095B3A3 /* Localizable.strings */; };
+		DFD8C57422211C6B0095B3A3 /* DatabaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFD8C57322211C6B0095B3A3 /* DatabaseTests.swift */; };
+		DFD8C57722211CC70095B3A3 /* Mocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFD8C57622211CC70095B3A3 /* Mocks.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,7 +46,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		DF1A03D82438054F00AD4E64 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		DF1C7DB321290D1800B8FA0C /* UIStyleExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIStyleExtensions.swift; sourceTree = "<group>"; };
+		DF4C6DC02437CC6800954DC7 /* NewSplitViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSplitViewModel.swift; sourceTree = "<group>"; };
+		DF4C6DC22437D15C00954DC7 /* SplitViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewModel.swift; sourceTree = "<group>"; };
+		DF4C6DC42437D57100954DC7 /* NewExpenseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewExpenseViewModel.swift; sourceTree = "<group>"; };
 		DF5CB4DA2118483A00F39DC0 /* split-bills.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "split-bills.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF5CB4DD2118483A00F39DC0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DF5CB4DF2118483A00F39DC0 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
@@ -51,14 +64,19 @@
 		DF5CB50821198D9400F39DC0 /* SplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
 		DF5CB50B211998A500F39DC0 /* Expense.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Expense.swift; sourceTree = "<group>"; };
 		DF5CB50D2119D80A00F39DC0 /* NewExpenseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewExpenseViewController.swift; sourceTree = "<group>"; };
+		DF62DA9424375E7C002807B4 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
+		DF62DA9624375ED8002807B4 /* MainCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCoordinator.swift; sourceTree = "<group>"; };
 		DF890F99211C542100305528 /* EurekaExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EurekaExtensions.swift; sourceTree = "<group>"; };
 		DF890F9C211C772F00305528 /* Playground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Playground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		DFB90DA1211E7A0F0084C5E5 /* split-bills-tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "split-bills-tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFB90DA3211E7A0F0084C5E5 /* split_bills_tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = split_bills_tests.swift; sourceTree = "<group>"; };
 		DFB90DA5211E7A0F0084C5E5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DFB90DAB211E7A570084C5E5 /* ExpenseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseTests.swift; sourceTree = "<group>"; };
-		DFB90DAF21218D5D0084C5E5 /* Text.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Text.swift; sourceTree = "<group>"; };
+		DFB90DAF21218D5D0084C5E5 /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 		DFB90DB1212191BE0084C5E5 /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
+		DFD8C5712220F13A0095B3A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		DFD8C57322211C6B0095B3A3 /* DatabaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseTests.swift; sourceTree = "<group>"; };
+		DFD8C57622211CC70095B3A3 /* Mocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mocks.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +105,43 @@
 			path = "UI Extensions";
 			sourceTree = "<group>";
 		};
+		DF4C6DBC2437672800954DC7 /* Main Screen */ = {
+			isa = PBXGroup;
+			children = (
+				DF5CB4DF2118483A00F39DC0 /* RootViewController.swift */,
+				DF1A03D82438054F00AD4E64 /* MainView.swift */,
+			);
+			path = "Main Screen";
+			sourceTree = "<group>";
+		};
+		DF4C6DBD2437673800954DC7 /* Splits */ = {
+			isa = PBXGroup;
+			children = (
+				DF4C6DC02437CC6800954DC7 /* NewSplitViewModel.swift */,
+				DF5CB4F9211855AA00F39DC0 /* NewSplitViewController.swift */,
+				DF4C6DC22437D15C00954DC7 /* SplitViewModel.swift */,
+				DF5CB50821198D9400F39DC0 /* SplitViewController.swift */,
+			);
+			path = Splits;
+			sourceTree = "<group>";
+		};
+		DF4C6DBE2437675D00954DC7 /* Expenses */ = {
+			isa = PBXGroup;
+			children = (
+				DF5CB50D2119D80A00F39DC0 /* NewExpenseViewController.swift */,
+				DF4C6DC42437D57100954DC7 /* NewExpenseViewModel.swift */,
+			);
+			path = Expenses;
+			sourceTree = "<group>";
+		};
+		DF4C6DBF2437677B00954DC7 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				DF5CB50621187A9400F39DC0 /* SplitController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
 		DF5CB4D12118483A00F39DC0 = {
 			isa = PBXGroup;
 			children = (
@@ -108,12 +163,14 @@
 		DF5CB4DC2118483A00F39DC0 /* split-bills */ = {
 			isa = PBXGroup;
 			children = (
+				DF4C6DBF2437677B00954DC7 /* Controllers */,
+				DF62DA9324375E4B002807B4 /* Coordinator */,
 				DF1C7DB221290C2400B8FA0C /* UI Extensions */,
 				DFB90DAE21218D430084C5E5 /* Style */,
 				DF890F98211C541000305528 /* Utils */,
 				DF5CB5032118728300F39DC0 /* Database */,
 				DF5CB5002118634100F39DC0 /* Models */,
-				DF5CB4F82118559800F39DC0 /* Splits Controllers */,
+				DF5CB4F82118559800F39DC0 /* UI */,
 				DF5CB4DD2118483A00F39DC0 /* AppDelegate.swift */,
 				DF5CB50A2119917E00F39DC0 /* Resources */,
 				DF5CB4E62118483C00F39DC0 /* LaunchScreen.storyboard */,
@@ -122,16 +179,14 @@
 			path = "split-bills";
 			sourceTree = "<group>";
 		};
-		DF5CB4F82118559800F39DC0 /* Splits Controllers */ = {
+		DF5CB4F82118559800F39DC0 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				DF5CB4F9211855AA00F39DC0 /* NewSplitViewController.swift */,
-				DF5CB4DF2118483A00F39DC0 /* RootViewController.swift */,
-				DF5CB50621187A9400F39DC0 /* SplitController.swift */,
-				DF5CB50821198D9400F39DC0 /* SplitViewController.swift */,
-				DF5CB50D2119D80A00F39DC0 /* NewExpenseViewController.swift */,
+				DF4C6DBE2437675D00954DC7 /* Expenses */,
+				DF4C6DBD2437673800954DC7 /* Splits */,
+				DF4C6DBC2437672800954DC7 /* Main Screen */,
 			);
-			path = "Splits Controllers";
+			path = UI;
 			sourceTree = "<group>";
 		};
 		DF5CB5002118634100F39DC0 /* Models */ = {
@@ -155,8 +210,18 @@
 			isa = PBXGroup;
 			children = (
 				DF5CB4E42118483C00F39DC0 /* Assets.xcassets */,
+				DFD8C5722220F13A0095B3A3 /* Localizable.strings */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		DF62DA9324375E4B002807B4 /* Coordinator */ = {
+			isa = PBXGroup;
+			children = (
+				DF62DA9424375E7C002807B4 /* Coordinator.swift */,
+				DF62DA9624375ED8002807B4 /* MainCoordinator.swift */,
+			);
+			path = Coordinator;
 			sourceTree = "<group>";
 		};
 		DF890F98211C541000305528 /* Utils */ = {
@@ -171,9 +236,11 @@
 		DFB90DA2211E7A0F0084C5E5 /* split-bills-tests */ = {
 			isa = PBXGroup;
 			children = (
+				DFD8C57522211CAE0095B3A3 /* Resources */,
 				DFB90DA3211E7A0F0084C5E5 /* split_bills_tests.swift */,
 				DFB90DA5211E7A0F0084C5E5 /* Info.plist */,
 				DFB90DAB211E7A570084C5E5 /* ExpenseTests.swift */,
+				DFD8C57322211C6B0095B3A3 /* DatabaseTests.swift */,
 			);
 			path = "split-bills-tests";
 			sourceTree = "<group>";
@@ -181,10 +248,18 @@
 		DFB90DAE21218D430084C5E5 /* Style */ = {
 			isa = PBXGroup;
 			children = (
-				DFB90DAF21218D5D0084C5E5 /* Text.swift */,
+				DFB90DAF21218D5D0084C5E5 /* Style.swift */,
 				DFB90DB1212191BE0084C5E5 /* Button.swift */,
 			);
 			path = Style;
+			sourceTree = "<group>";
+		};
+		DFD8C57522211CAE0095B3A3 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				DFD8C57622211CC70095B3A3 /* Mocks.swift */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -270,6 +345,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DF5CB4E82118483C00F39DC0 /* LaunchScreen.storyboard in Resources */,
+				DFD8C5702220F13A0095B3A3 /* Localizable.strings in Resources */,
 				DF5CB4E52118483C00F39DC0 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -310,18 +386,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF4C6DC32437D15C00954DC7 /* SplitViewModel.swift in Sources */,
 				DF890F9A211C542100305528 /* EurekaExtensions.swift in Sources */,
 				DF5CB50C211998A500F39DC0 /* Expense.swift in Sources */,
 				DF5CB50721187A9400F39DC0 /* SplitController.swift in Sources */,
 				DF5CB50921198D9400F39DC0 /* SplitViewController.swift in Sources */,
+				DF1A03D92438054F00AD4E64 /* MainView.swift in Sources */,
+				DF4C6DC12437CC6800954DC7 /* NewSplitViewModel.swift in Sources */,
 				DF5CB4E02118483A00F39DC0 /* RootViewController.swift in Sources */,
 				DF1C7DB421290D1800B8FA0C /* UIStyleExtensions.swift in Sources */,
+				DF62DA9524375E7C002807B4 /* Coordinator.swift in Sources */,
 				DF5CB4DE2118483A00F39DC0 /* AppDelegate.swift in Sources */,
 				DF5CB5022118634C00F39DC0 /* Split.swift in Sources */,
 				DFB90DB2212191BE0084C5E5 /* Button.swift in Sources */,
 				DF5CB5052118728F00F39DC0 /* database.swift in Sources */,
 				DF5CB4FA211855AA00F39DC0 /* NewSplitViewController.swift in Sources */,
-				DFB90DB021218D5D0084C5E5 /* Text.swift in Sources */,
+				DFB90DB021218D5D0084C5E5 /* Style.swift in Sources */,
+				DF62DA9724375ED8002807B4 /* MainCoordinator.swift in Sources */,
+				DF4C6DC52437D57100954DC7 /* NewExpenseViewModel.swift in Sources */,
 				DF5CB50E2119D80A00F39DC0 /* NewExpenseViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -330,8 +412,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DFD8C57422211C6B0095B3A3 /* DatabaseTests.swift in Sources */,
 				DFB90DAC211E7A570084C5E5 /* ExpenseTests.swift in Sources */,
 				DFB90DA4211E7A0F0084C5E5 /* split_bills_tests.swift in Sources */,
+				DFD8C57722211CC70095B3A3 /* Mocks.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -352,6 +436,14 @@
 				DF5CB4E72118483C00F39DC0 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		DFD8C5722220F13A0095B3A3 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DFD8C5712220F13A0095B3A3 /* en */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -408,7 +500,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -463,7 +555,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -484,7 +576,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "split-bills/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -507,7 +599,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "split-bills/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
