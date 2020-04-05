@@ -8,8 +8,9 @@
 
 import Foundation
 import UIKit
+import SwiftUI
 
-enum Style {
+enum TextStyle {
     case headingWhite
     case headingWhiteBold
     case heading2DarkBold
@@ -36,7 +37,7 @@ enum Style {
     case bodySmall(BodySmall)
 }
 
-enum Color {
+enum ColorStyle {
     case brand
     case dark
     case white
@@ -44,15 +45,25 @@ enum Color {
     case light
 }
 
-extension Style {
+extension TextStyle {
 
-    var font: UIFont {
+    var uiFont: UIFont {
         switch self {
         case .headingWhite, .bodyLarge(.dark), .body(.dark), .body(.fade):
             return UIFont(name: "HelveticaNeue-Light", size: size)!
         case .headingWhiteBold, .heading2DarkBold, .heading3WhiteBold, .bodyLarge(.darkBold),
              .bodyLarge(.whiteBold), .body(.brandBold), .body(.darkBold), .bodySmall(.darkBold):
             return UIFont(name: "HelveticaNeue-Bold", size: size)!
+        }
+    }
+
+    var font: Font {
+        switch self {
+        case .headingWhite, .bodyLarge(.dark), .body(.dark), .body(.fade):
+            return .custom("HelveticaNeue-Light", size: size)
+        case .headingWhiteBold, .heading2DarkBold, .heading3WhiteBold, .bodyLarge(.darkBold),
+             .bodyLarge(.whiteBold), .body(.brandBold), .body(.darkBold), .bodySmall(.darkBold):
+            return .custom("HelveticaNeue-Bold", size: size)
         }
     }
 
@@ -67,7 +78,7 @@ extension Style {
         }
     }
 
-    var color: Color {
+    var color: ColorStyle {
         switch self {
         case .headingWhite, .headingWhiteBold, .bodyLarge(.whiteBold), .heading3WhiteBold:
             return .white
@@ -82,7 +93,7 @@ extension Style {
     }
 }
 
-extension Color {
+extension ColorStyle {
 
     var value: UIColor {
         switch self {
@@ -93,14 +104,24 @@ extension Color {
         case .light: return UIColor(red: 234/255.0, green: 235/255.0, blue: 237/255.0, alpha: 1.0)
         }
     }
+
+    var color: Color {
+        switch self {
+        case .brand: return .init(red: 0, green: 105/255.0, blue: 137/255.0)
+        case .dark: return .init(red: 60/255.0, green: 68/255.0, blue: 71/255.0)
+        case .white: return .init(red: 255/255.0, green: 255/255.0, blue: 255/255.0)
+        case .fade: return .init(red: 151/255.0, green: 151/255.0, blue: 151/255.0)
+        case .light: return .init(red: 234/255.0, green: 235/255.0, blue: 237/255.0)
+        }
+    }
 }
 
 extension UILabel {
 
-    convenience init(style: Style) {
+    convenience init(style: TextStyle) {
         self.init()
 
-        font = style.font
+        font = style.uiFont
         textColor = style.color.value
     }
 }

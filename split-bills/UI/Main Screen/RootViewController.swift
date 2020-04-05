@@ -27,7 +27,7 @@ final class RootViewController: UIViewController,
 
     private let emptyStateView = EmptyStateView()
 
-    private var splits = SplitController.shared.getAll() ?? []
+    private var splits = SplitController.shared.splits
 
     init(coordinator: MainCoordinator) {
         self.coordinator = coordinator
@@ -62,14 +62,14 @@ final class RootViewController: UIViewController,
 
     private func buildView() {
         title = NSLocalizedString("root-controller.title", comment: "")
-        view.backgroundColor = Color.light.value
+        view.backgroundColor = ColorStyle.light.value
 
         tableView.dataSource = self
         tableView.delegate = self
         tableView.tableFooterView = UIView()
         tableView.register(SplitTableViewCell.self, forCellReuseIdentifier: SplitTableViewCell.reuseIdentifier)
         tableView.allowsMultipleSelection = false
-        tableView.backgroundColor = Color.light.value
+        tableView.backgroundColor = ColorStyle.light.value
         view.addSubview(tableView)
 
         newBillButton.addTarget(self, action: #selector(newSplitButtonTapped), for: .touchUpInside)
@@ -141,7 +141,7 @@ final class RootViewController: UIViewController,
     // MARK: Reload
 
     private func reloadData() {
-        splits = SplitController.shared.getAll() ?? []
+        splits = SplitController.shared.splits
         emptyStateView.isHidden = !splits.isEmpty
         tableView.reloadData()
     }
@@ -166,18 +166,18 @@ private extension RootViewController.EmptyStateView {
         let attributedString = NSMutableAttributedString()
 
         let boldHeadingAttributes = [
-            NSAttributedString.Key.foregroundColor: Color.dark.value,
-            NSAttributedString.Key.font: Style.heading2DarkBold.font
+            NSAttributedString.Key.foregroundColor: ColorStyle.dark.value,
+            NSAttributedString.Key.font: TextStyle.heading2DarkBold.uiFont
             ] as [NSAttributedString.Key : Any]
 
         let boldAttributes = [
-            NSAttributedString.Key.foregroundColor: Color.dark.value,
-            NSAttributedString.Key.font: Style.bodyLarge(.darkBold).font
+            NSAttributedString.Key.foregroundColor: ColorStyle.dark.value,
+            NSAttributedString.Key.font: TextStyle.bodyLarge(.darkBold).uiFont
             ] as [NSAttributedString.Key : Any]
 
         let regularAttributes = [
-            NSAttributedString.Key.foregroundColor: Color.dark.value,
-            NSAttributedString.Key.font: Style.bodyLarge(.dark).font
+            NSAttributedString.Key.foregroundColor: ColorStyle.dark.value,
+            NSAttributedString.Key.font: TextStyle.bodyLarge(.dark).uiFont
             ] as [NSAttributedString.Key : Any]
 
         attributedString.append(NSAttributedString(

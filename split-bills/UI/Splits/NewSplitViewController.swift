@@ -35,7 +35,7 @@ final class NewSplitViewController: FormViewController {
     private func buildView() {
         title = NSLocalizedString("new-split-controller.title", comment: "")
 
-        tableView.backgroundColor = Color.light.value
+        tableView.backgroundColor = ColorStyle.light.value
     }
 
     private func buildForm() {
@@ -72,7 +72,7 @@ final class NewSplitViewController: FormViewController {
                         $0.title = NSLocalizedString("new-split-controller.add-participant", comment: "")
                     }.cellUpdate { cell, row in
                         cell.textLabel?.textAlignment = .left
-                        cell.textLabel?.font = Style.body(.dark).font
+                        cell.textLabel?.font = TextStyle.body(.dark).uiFont
                     }
                 }
                 $0.multivaluedRowToInsertAt = { index in
@@ -117,7 +117,7 @@ final class NewSplitViewController: FormViewController {
             <<< ButtonRow() {
                 $0.title = NSLocalizedString("new-split-controller.save", comment: "")
                 $0.cellUpdate { cell, _ in
-                    cell.textLabel?.font = Style.body(.dark).font
+                    cell.textLabel?.font = TextStyle.body(.dark).uiFont
                 }
             }.onCellSelection { [weak self] _, _ in
                 self?.saveSplit()

@@ -11,11 +11,11 @@ import UIKit
 
 struct ButtonStyle {
 
-    let textStyle: Style
-    let backgroundColor: Color
-    let highlightedColor: Color?
-    let selectedColor: Color?
-    let disabledColor: Color?
+    let textStyle: TextStyle
+    let backgroundColor: ColorStyle
+    let highlightedColor: ColorStyle?
+    let selectedColor: ColorStyle?
+    let disabledColor: ColorStyle?
 }
 
 extension UIButton {
@@ -25,7 +25,7 @@ extension UIButton {
 
         setTitle(title, for: .normal)
 
-        titleLabel?.font = style.textStyle.font
+        titleLabel?.font = style.textStyle.uiFont
 
         setTitleColor(style.textStyle.color.value, for: .normal)
         setTitleColor(style.highlightedColor?.value, for: .highlighted)

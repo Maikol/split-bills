@@ -8,23 +8,22 @@
 
 import Foundation
 
-struct SplitController {
+final class SplitController: ObservableObject {
+
+    @Published var splits: [Split]
 
     static let shared = SplitController()
 
-    private let splitDatabase: SplitDatabase?
+    private let splitDatabase: SplitDatabase
 
     init() {
-        do {
-            splitDatabase = try SplitDatabase(databasePath: URL.documentsDirectory.path)
-        } catch {
-            splitDatabase = nil
-        }
+        splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
+        splits = try! splitDatabase.getAll()
     }
 
     func create(eventName: String, participants: [Participant]) -> Split? {
         do {
-            return try self.splitDatabase?.create(eventName: eventName, participants: participants)
+            return try self.splitDatabase.create(eventName: eventName, participants: participants)
         } catch {
             print("failed to add split item")
             return nil
@@ -33,18 +32,9 @@ struct SplitController {
 
     func remove(split: Split) {
         do {
-            try self.splitDatabase?.remove(split: split)
+            try self.splitDatabase.remove(split: split)
         } catch {
             print("failed to delete split item")
-        }
-    }
-
-    func getAll() -> [Split]? {
-        do {
-            return try self.splitDatabase?.getAll()
-        } catch {
-            print("failed to get split items")
-            return nil
         }
     }
 }

@@ -8,6 +8,7 @@
 
 import UIKit
 import Eureka
+import SwiftUI
 
 @UIApplicationMain
 final class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,11 +16,17 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var coordinator: MainCoordinator?
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        let rootNavigationViewController = UINavigationController()
+    // SwiftUI
+    let splitDataSource = SplitController()
 
-        coordinator = MainCoordinator(navigationController: rootNavigationViewController)
-        coordinator?.start()
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+//        let rootNavigationViewController = UINavigationController()
+//
+//        coordinator = MainCoordinator(navigationController: rootNavigationViewController)
+//        coordinator?.start()
+
+        let mainView = MainView().environmentObject(splitDataSource)
+        let rootNavigationViewController = UIHostingController(rootView: mainView)
 
         window = UIWindow(frame: UIScreen.main.bounds)
         window!.rootViewController = rootNavigationViewController

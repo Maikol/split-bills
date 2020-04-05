@@ -43,7 +43,7 @@ final class NewExpenseViewController: FormViewController {
     private func buildView() {
         title = "Expense"
 
-        tableView.backgroundColor = Color.light.value
+        tableView.backgroundColor = ColorStyle.light.value
     }
 
     private func buildForm() {
@@ -147,9 +147,9 @@ final class NewExpenseViewController: FormViewController {
                 $0.value = viewModel.expense.flatMap { Segment(splitType: $0.splitType) } ?? Segment.Equally
                 $0.cellUpdate { cell, _ in
                     cell.segmentedControl.setTitleTextAttributes(
-                        [.font: Style.body(.dark).font], for: .selected)
+                        [.font: TextStyle.body(.dark).uiFont], for: .selected)
                     cell.segmentedControl.setTitleTextAttributes(
-                        [.font: Style.body(.dark).font], for: .normal)
+                        [.font: TextStyle.body(.dark).uiFont], for: .normal)
                 }
             }
 
@@ -255,7 +255,7 @@ final class NewExpenseViewController: FormViewController {
             <<< ButtonRow() {
                 $0.title = "Add new expense"
                 $0.cellUpdate { cell, _ in
-                    cell.textLabel?.font = Style.body(.dark).font
+                    cell.textLabel?.font = TextStyle.body(.dark).uiFont
                 }
             }.onCellSelection { [weak self] _, _ in
                     self?.addNewExpenseTapped()
@@ -263,7 +263,7 @@ final class NewExpenseViewController: FormViewController {
             <<< ButtonRow() {
                 $0.title = "Save"
                 $0.cellUpdate { cell, _ in
-                    cell.textLabel?.font = Style.body(.dark).font
+                    cell.textLabel?.font = TextStyle.body(.dark).uiFont
                 }
             }.onCellSelection { [weak self] _, _ in
                     self?.saveButtonTapped()

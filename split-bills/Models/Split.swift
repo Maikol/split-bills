@@ -8,14 +8,14 @@
 
 import Foundation
 
-struct Split {
+struct Split: Codable, Identifiable {
 
     let id: Int64
     let eventName: String
     let participants: [Participant]
 }
 
-struct Participant {
+struct Participant: Codable {
 
     let name: String
     let email: String?
@@ -27,8 +27,8 @@ extension Participant: Equatable, Hashable {
         return lhs.name == rhs.name
     }
 
-    var hashValue: Int {
-        return name.hashValue
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(name.hashValue)
     }
 }
 

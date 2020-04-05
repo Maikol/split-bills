@@ -40,32 +40,32 @@ extension UITextField {
 
     struct Placeholder {
         let text: String
-        let style: Style
+        let style: TextStyle
     }
 
-    func apply(style: Style, placeholder: Placeholder? = nil) {
-        font = style.font
+    func apply(style: TextStyle, placeholder: Placeholder? = nil) {
+        font = style.uiFont
         textColor = style.color.value
 
         if let placeholder = placeholder {
             attributedPlaceholder = NSAttributedString(
                 string: placeholder.text,
-                attributes: [.font: placeholder.style.font])
+                attributes: [.font: placeholder.style.uiFont])
         }
     }
 }
 
 extension UILabel {
 
-    func apply(style: Style) {
-        font = style.font
+    func apply(style: TextStyle) {
+        font = style.uiFont
         textColor = style.color.value
     }
 }
 
-private extension UINavigationController.Style {
+extension UINavigationController.Style {
 
-    var backgroundColor: Color {
+    var backgroundColor: ColorStyle {
         switch self {
         case .default: return .brand
         }
@@ -73,17 +73,17 @@ private extension UINavigationController.Style {
 
     var font: UIFont {
         switch self {
-        case .default: return Style.bodyLarge(.darkBold).font
+        case .default: return TextStyle.bodyLarge(.darkBold).uiFont
         }
     }
 
     var largeFont: UIFont {
         switch self {
-        case .default: return Style.headingWhiteBold.font
+        case .default: return TextStyle.headingWhiteBold.uiFont
         }
     }
 
-    var textColor: Color {
+    var textColor: ColorStyle {
         switch self {
         case .default: return .white
         }

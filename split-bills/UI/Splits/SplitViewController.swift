@@ -63,7 +63,7 @@ final class SplitViewController: FormViewController {
     private func buildView() {
         title = viewModel.split.eventName
 
-        tableView.backgroundColor = Color.light.value
+        tableView.backgroundColor = ColorStyle.light.value
 
         newSplitButton.addTarget(self, action: #selector(newExpenseButtonTapped), for: .touchUpInside)
         view.addSubview(newSplitButton)
@@ -331,13 +331,13 @@ class PaymentCell: Cell<Payment>, CellType {
             let attributedString = NSMutableAttributedString()
 
             let boldAttributes = [
-                .foregroundColor: Color.dark.value,
-                .font: Style.body(.darkBold).font
+                .foregroundColor: ColorStyle.dark.value,
+                .font: TextStyle.body(.darkBold).uiFont
             ] as [NSAttributedString.Key : Any]
 
             let regularAttributes = [
-                .foregroundColor: Color.dark.value,
-                .font: Style.body(.dark).font
+                .foregroundColor: ColorStyle.dark.value,
+                .font: TextStyle.body(.dark).uiFont
             ] as [NSAttributedString.Key : Any]
 
             attributedString.append(NSAttributedString(string: payer.name, attributes: boldAttributes))
@@ -358,13 +358,13 @@ extension SplitViewController.EmptyStateView {
         let attributedString = NSMutableAttributedString()
 
         let boldAttributes = [
-            .foregroundColor: Color.dark.value,
-            .font: Style.bodyLarge(.darkBold).font
+            .foregroundColor: ColorStyle.dark.value,
+            .font: TextStyle.bodyLarge(.darkBold).uiFont
             ] as [NSAttributedString.Key : Any]
 
         let regularAttributes = [
-            .foregroundColor: Color.dark.value,
-            .font: Style.bodyLarge(.dark).font
+            .foregroundColor: ColorStyle.dark.value,
+            .font: TextStyle.bodyLarge(.dark).uiFont
             ] as [NSAttributedString.Key : Any]
 
         attributedString.append(NSAttributedString(
