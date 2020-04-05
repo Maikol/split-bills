@@ -8,13 +8,6 @@
 
 import SwiftUI
 
-struct NewSplitView: View {
-    var body: some View {
-        Text("New split")
-        .navigationBarTitle(Text("Bill"), displayMode: .inline)
-    }
-}
-
 struct SplitView: View {
     @EnvironmentObject var splitController: SplitController
     var split: Split

@@ -21,9 +21,11 @@ final class SplitController: ObservableObject {
         splits = try! splitDatabase.getAll()
     }
 
-    func create(eventName: String, participants: [Participant]) -> Split? {
+    @discardableResult func create(eventName: String, participants: [Participant]) -> Split? {
         do {
-            return try self.splitDatabase.create(eventName: eventName, participants: participants)
+            let split = try self.splitDatabase.create(eventName: eventName, participants: participants)
+            self.splits.append(split)
+            return split
         } catch {
             print("failed to add split item")
             return nil

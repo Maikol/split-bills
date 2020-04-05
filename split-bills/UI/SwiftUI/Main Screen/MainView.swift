@@ -9,37 +9,11 @@
 import Combine
 import SwiftUI
 
-struct EmptyView: View {
-    var action: () -> Void
-    var body: some View {
-        VStack {
-            Spacer()
-            HStack() {
-                VStack() {
-                    Label {
-                        $0.numberOfLines = 0
-                        $0.textAlignment = .center
-                        $0.attributedText = NSAttributedString.emptyLabel
-                    }
-                    .offset(x: 0, y: -35)
-                    HStack(alignment: .bottom) {
-                        Spacer()
-                        Image("down_arrow")
-                            .offset(x: 0, y: -25)
-                        NavigationLink(destination: NewSplitView()) {
-                            Image("plus_icon")
-                                .renderingMode(.original)
-                        }
-                    }
-                }
-                .fixedSize(horizontal: false, vertical: true)
-            }
-        }
-    }
-}
-
 struct MainView: View {
+
     @EnvironmentObject var splitController: SplitController
+
+    @State private var showingNewSplit = false
 
     // TODO: There should be a better way
     init() {
@@ -57,23 +31,58 @@ struct MainView: View {
 
     var body: some View {
         NavigationView {
-            ZStack(alignment: .bottomTrailing) {
+            Group {
                 if splitController.splits.isEmpty {
-                    EmptyView() {
-                        
+                    EmptyView { self.showingNewSplit.toggle() }
+                        .sheet(isPresented: $showingNewSplit) {
+                            NewSplitView(isPresented: self.$showingNewSplit).environmentObject(self.splitController)
                     }
+                    .offset(x: -24, y: -44)
                 } else {
                     List(splitController.splits) { split in
                         NavigationLink(destination: SplitView(split: split)) {
                             Text(split.eventName)
                         }
                     }
+                    .offset(x: 0, y: 140)
                 }
             }
-            .offset(x: -24, y: -44)
             .background(ColorStyle.light.color)
             .edgesIgnoringSafeArea(.all)
-            .navigationBarTitle("Split Bills")
+            .navigationBarTitle("root-controller.title")
+        }
+    }
+}
+
+fileprivate struct EmptyView: View {
+
+    var action: () -> Void
+
+    var body: some View {
+        VStack {
+            Spacer()
+            HStack() {
+                VStack() {
+                    Label {
+                        $0.numberOfLines = 0
+                        $0.textAlignment = .center
+                        $0.attributedText = NSAttributedString.emptyLabel
+                    }
+                    .offset(x: 0, y: -35)
+                    HStack(alignment: .bottom) {
+                        Spacer()
+                        Image("down_arrow")
+                            .offset(x: 0, y: -25)
+                        Button(action: {
+                            self.action()
+                        }) {
+                            Image("plus_icon")
+                            .renderingMode(.original)
+                        }
+                    }
+                }
+                .fixedSize(horizontal: false, vertical: true)
+            }
         }
     }
 }

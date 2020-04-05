@@ -28,6 +28,8 @@ enum TextStyle {
         case dark
         case darkBold
         case fade
+        case link
+        case white
     }
     case body(Body)
 
@@ -43,13 +45,14 @@ enum ColorStyle {
     case white
     case fade
     case light
+    case link
 }
 
 extension TextStyle {
 
     var uiFont: UIFont {
         switch self {
-        case .headingWhite, .bodyLarge(.dark), .body(.dark), .body(.fade):
+        case .headingWhite, .bodyLarge(.dark), .body(.dark), .body(.fade), .body(.link), .body(.white):
             return UIFont(name: "HelveticaNeue-Light", size: size)!
         case .headingWhiteBold, .heading2DarkBold, .heading3WhiteBold, .bodyLarge(.darkBold),
              .bodyLarge(.whiteBold), .body(.brandBold), .body(.darkBold), .bodySmall(.darkBold):
@@ -59,7 +62,7 @@ extension TextStyle {
 
     var font: Font {
         switch self {
-        case .headingWhite, .bodyLarge(.dark), .body(.dark), .body(.fade):
+        case .headingWhite, .bodyLarge(.dark), .body(.dark), .body(.fade), .body(.link), .body(.white):
             return .custom("HelveticaNeue-Light", size: size)
         case .headingWhiteBold, .heading2DarkBold, .heading3WhiteBold, .bodyLarge(.darkBold),
              .bodyLarge(.whiteBold), .body(.brandBold), .body(.darkBold), .bodySmall(.darkBold):
@@ -80,7 +83,7 @@ extension TextStyle {
 
     var color: ColorStyle {
         switch self {
-        case .headingWhite, .headingWhiteBold, .bodyLarge(.whiteBold), .heading3WhiteBold:
+        case .headingWhite, .headingWhiteBold, .bodyLarge(.whiteBold), .heading3WhiteBold, .body(.white):
             return .white
         case .body(.brandBold):
             return .brand
@@ -89,6 +92,8 @@ extension TextStyle {
             return .dark
         case .body(.fade):
             return .fade
+        case .body(.link):
+            return .link
         }
     }
 }
@@ -102,6 +107,7 @@ extension ColorStyle {
         case .white: return UIColor(red: 255/255.0, green: 255/255.0, blue: 255/255.0, alpha: 1.0)
         case .fade: return UIColor(red: 151/255.0, green: 151/255.0, blue: 151/255.0, alpha: 1.0)
         case .light: return UIColor(red: 234/255.0, green: 235/255.0, blue: 237/255.0, alpha: 1.0)
+        case .link: return .systemBlue
         }
     }
 
@@ -112,6 +118,7 @@ extension ColorStyle {
         case .white: return .init(red: 255/255.0, green: 255/255.0, blue: 255/255.0)
         case .fade: return .init(red: 151/255.0, green: 151/255.0, blue: 151/255.0)
         case .light: return .init(red: 234/255.0, green: 235/255.0, blue: 237/255.0)
+        case .link: return .blue
         }
     }
 }

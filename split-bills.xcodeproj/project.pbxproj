@@ -11,6 +11,9 @@
 		DF1A03DC2438575700AD4E64 /* SplitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1A03DB2438575700AD4E64 /* SplitView.swift */; };
 		DF1C7DB421290D1800B8FA0C /* UIStyleExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1C7DB321290D1800B8FA0C /* UIStyleExtensions.swift */; };
 		DF27336F24395C1D008005F8 /* UIKitClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF27336E24395C1D008005F8 /* UIKitClasses.swift */; };
+		DF4895E82439624700D10DBD /* NewSplitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4895E72439624700D10DBD /* NewSplitView.swift */; };
+		DF4895EA2439676100D10DBD /* SharedViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4895E92439676100D10DBD /* SharedViews.swift */; };
+		DF4895EC2439C86700D10DBD /* CollectionExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4895EB2439C86700D10DBD /* CollectionExtensions.swift */; };
 		DF4C6DC12437CC6800954DC7 /* NewSplitViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4C6DC02437CC6800954DC7 /* NewSplitViewModel.swift */; };
 		DF4C6DC32437D15C00954DC7 /* SplitViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4C6DC22437D15C00954DC7 /* SplitViewModel.swift */; };
 		DF4C6DC52437D57100954DC7 /* NewExpenseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4C6DC42437D57100954DC7 /* NewExpenseViewModel.swift */; };
@@ -52,6 +55,9 @@
 		DF1A03DB2438575700AD4E64 /* SplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitView.swift; sourceTree = "<group>"; };
 		DF1C7DB321290D1800B8FA0C /* UIStyleExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIStyleExtensions.swift; sourceTree = "<group>"; };
 		DF27336E24395C1D008005F8 /* UIKitClasses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitClasses.swift; sourceTree = "<group>"; };
+		DF4895E72439624700D10DBD /* NewSplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSplitView.swift; sourceTree = "<group>"; };
+		DF4895E92439676100D10DBD /* SharedViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedViews.swift; sourceTree = "<group>"; };
+		DF4895EB2439C86700D10DBD /* CollectionExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionExtensions.swift; sourceTree = "<group>"; };
 		DF4C6DC02437CC6800954DC7 /* NewSplitViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSplitViewModel.swift; sourceTree = "<group>"; };
 		DF4C6DC22437D15C00954DC7 /* SplitViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewModel.swift; sourceTree = "<group>"; };
 		DF4C6DC42437D57100954DC7 /* NewExpenseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewExpenseViewModel.swift; sourceTree = "<group>"; };
@@ -105,8 +111,8 @@
 			isa = PBXGroup;
 			children = (
 				DF27337024395C38008005F8 /* Main Screen */,
+				DF4895E62439622F00D10DBD /* Split */,
 				DF27336D24395C03008005F8 /* Utilities */,
-				DF1A03DB2438575700AD4E64 /* SplitView.swift */,
 			);
 			path = SwiftUI;
 			sourceTree = "<group>";
@@ -123,6 +129,7 @@
 			isa = PBXGroup;
 			children = (
 				DF27336E24395C1D008005F8 /* UIKitClasses.swift */,
+				DF4895E92439676100D10DBD /* SharedViews.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -133,6 +140,15 @@
 				DF1A03D82438054F00AD4E64 /* MainView.swift */,
 			);
 			path = "Main Screen";
+			sourceTree = "<group>";
+		};
+		DF4895E62439622F00D10DBD /* Split */ = {
+			isa = PBXGroup;
+			children = (
+				DF1A03DB2438575700AD4E64 /* SplitView.swift */,
+				DF4895E72439624700D10DBD /* NewSplitView.swift */,
+			);
+			path = Split;
 			sourceTree = "<group>";
 		};
 		DF4C6DBC2437672800954DC7 /* Main Screen */ = {
@@ -259,6 +275,7 @@
 			children = (
 				DF890F99211C542100305528 /* EurekaExtensions.swift */,
 				DF890F9C211C772F00305528 /* Playground.playground */,
+				DF4895EB2439C86700D10DBD /* CollectionExtensions.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -417,6 +434,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DF4C6DC32437D15C00954DC7 /* SplitViewModel.swift in Sources */,
+				DF4895EC2439C86700D10DBD /* CollectionExtensions.swift in Sources */,
 				DF890F9A211C542100305528 /* EurekaExtensions.swift in Sources */,
 				DF5CB50C211998A500F39DC0 /* Expense.swift in Sources */,
 				DF5CB50721187A9400F39DC0 /* SplitController.swift in Sources */,
@@ -425,7 +443,9 @@
 				DF1A03D92438054F00AD4E64 /* MainView.swift in Sources */,
 				DF4C6DC12437CC6800954DC7 /* NewSplitViewModel.swift in Sources */,
 				DF5CB4E02118483A00F39DC0 /* RootViewController.swift in Sources */,
+				DF4895EA2439676100D10DBD /* SharedViews.swift in Sources */,
 				DF1C7DB421290D1800B8FA0C /* UIStyleExtensions.swift in Sources */,
+				DF4895E82439624700D10DBD /* NewSplitView.swift in Sources */,
 				DF62DA9524375E7C002807B4 /* Coordinator.swift in Sources */,
 				DF5CB4DE2118483A00F39DC0 /* AppDelegate.swift in Sources */,
 				DF5CB5022118634C00F39DC0 /* Split.swift in Sources */,

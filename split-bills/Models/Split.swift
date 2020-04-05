@@ -8,17 +8,28 @@
 
 import Foundation
 
-struct Split: Codable, Identifiable {
+final class Split: Identifiable, ObservableObject {
 
     let id: Int64
-    let eventName: String
-    let participants: [Participant]
+    @Published var eventName: String
+    @Published var participants: [Participant]
+
+    init(id: Int64, eventName: String, participants: [Participant]) {
+        self.id = id
+        self.eventName = eventName
+        self.participants = participants
+    }
 }
 
-struct Participant: Codable {
+final class Participant: Codable, ObservableObject {
 
-    let name: String
-    let email: String?
+    var name: String
+    var email: String?
+
+    init(name: String, email: String? = nil) {
+        self.name = name
+        self.email = email
+    }
 }
 
 extension Participant: Equatable, Hashable {
