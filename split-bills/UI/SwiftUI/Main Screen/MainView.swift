@@ -15,8 +15,8 @@ struct MainView: View {
 
     @State private var showingNewSplit = false
 
-    // TODO: There should be a better way
     init() {
+        // TODO: There should be a better way
         let style = UINavigationController.Style.default
         let appearance = UINavigationBarAppearance()
         appearance.configureWithDefaultBackground()
@@ -33,56 +33,19 @@ struct MainView: View {
         NavigationView {
             Group {
                 if splitController.splits.isEmpty {
-                    EmptyView { self.showingNewSplit.toggle() }
+                    MainEmptyView { self.showingNewSplit.toggle() }
                         .sheet(isPresented: $showingNewSplit) {
                             NewSplitView(isPresented: self.$showingNewSplit).environmentObject(self.splitController)
                     }
                     .offset(x: -24, y: -44)
+                    .background(ColorStyle.light.color)
+                    .edgesIgnoringSafeArea(.bottom)
                 } else {
-                    List(splitController.splits) { split in
-                        NavigationLink(destination: SplitView(split: split)) {
-                            Text(split.eventName)
-                        }
-                    }
-                    .offset(x: 0, y: 140)
+                    List(splitController.splits, rowContent: SplitRow.init)
+                        .listStyle(GroupedListStyle())
                 }
             }
-            .background(ColorStyle.light.color)
-            .edgesIgnoringSafeArea(.all)
             .navigationBarTitle("root-controller.title")
-        }
-    }
-}
-
-fileprivate struct EmptyView: View {
-
-    var action: () -> Void
-
-    var body: some View {
-        VStack {
-            Spacer()
-            HStack() {
-                VStack() {
-                    Label {
-                        $0.numberOfLines = 0
-                        $0.textAlignment = .center
-                        $0.attributedText = NSAttributedString.emptyLabel
-                    }
-                    .offset(x: 0, y: -35)
-                    HStack(alignment: .bottom) {
-                        Spacer()
-                        Image("down_arrow")
-                            .offset(x: 0, y: -25)
-                        Button(action: {
-                            self.action()
-                        }) {
-                            Image("plus_icon")
-                            .renderingMode(.original)
-                        }
-                    }
-                }
-                .fixedSize(horizontal: false, vertical: true)
-            }
         }
     }
 }
@@ -93,39 +56,4 @@ struct MainView_Previews: PreviewProvider {
     static var previews: some View {
         MainView().environmentObject(dataSource)
     }
-}
-
-private extension NSAttributedString {
-
-    static let emptyLabel: NSAttributedString = {
-        let attributedString = NSMutableAttributedString()
-
-        let boldHeadingAttributes = [
-            NSAttributedString.Key.foregroundColor: ColorStyle.dark.value,
-            NSAttributedString.Key.font: TextStyle.heading2DarkBold.uiFont
-            ] as [NSAttributedString.Key : Any]
-
-        let boldAttributes = [
-            NSAttributedString.Key.foregroundColor: ColorStyle.dark.value,
-            NSAttributedString.Key.font: TextStyle.bodyLarge(.darkBold).uiFont
-            ] as [NSAttributedString.Key : Any]
-
-        let regularAttributes = [
-            NSAttributedString.Key.foregroundColor: ColorStyle.dark.value,
-            NSAttributedString.Key.font: TextStyle.bodyLarge(.dark).uiFont
-            ] as [NSAttributedString.Key : Any]
-
-        attributedString.append(NSAttributedString(
-            string: NSLocalizedString("root-controller.empty-view.text-1", comment: ""), attributes: regularAttributes))
-        attributedString.append(NSAttributedString(
-            string: "+", attributes: boldHeadingAttributes))
-        attributedString.append(NSAttributedString(
-            string: NSLocalizedString("root-controller.empty-view.text-2", comment: ""), attributes: regularAttributes))
-        attributedString.append(NSAttributedString(
-            string: NSLocalizedString("root-controller.empty-view.text-3", comment: ""), attributes: boldAttributes))
-        attributedString.append(NSAttributedString(
-            string: ".", attributes: regularAttributes))
-
-        return attributedString
-    }()
 }
