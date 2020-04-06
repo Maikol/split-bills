@@ -13,15 +13,8 @@ struct SplitView: View {
     var split: Split
 
     var body: some View {
-        VStack {
-            List {
-                Section(header: Text("Settle")) {
-                    Text("Text")
-                }
-                Section(header: Text("Overview")) {
-                    Text("Test")
-                }
-            }
+        Group {
+            SplitEmptyView()
         }
         .navigationBarTitle(Text(split.eventName), displayMode: .inline)
         .listStyle(GroupedListStyle())

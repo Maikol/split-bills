@@ -15,6 +15,7 @@ struct SplitRow: View {
     var body: some View {
         NavigationLink(destination: SplitView(split: split)) {
             Text(split.eventName)
+                .apply(style: .body(.dark))
         }
     }
 }

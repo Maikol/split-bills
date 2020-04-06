@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		508CE462243AC8D800707D50 /* SplitRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508CE461243AC8D800707D50 /* SplitRow.swift */; };
 		508CE464243ADFEC00707D50 /* MainEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508CE463243ADFEC00707D50 /* MainEmptyView.swift */; };
+		508CE466243B061100707D50 /* SplitEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508CE465243B061100707D50 /* SplitEmptyView.swift */; };
 		DF1A03D92438054F00AD4E64 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1A03D82438054F00AD4E64 /* MainView.swift */; };
 		DF1A03DC2438575700AD4E64 /* SplitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1A03DB2438575700AD4E64 /* SplitView.swift */; };
 		DF1C7DB421290D1800B8FA0C /* UIStyleExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1C7DB321290D1800B8FA0C /* UIStyleExtensions.swift */; };
@@ -55,6 +56,7 @@
 /* Begin PBXFileReference section */
 		508CE461243AC8D800707D50 /* SplitRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitRow.swift; sourceTree = "<group>"; };
 		508CE463243ADFEC00707D50 /* MainEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainEmptyView.swift; sourceTree = "<group>"; };
+		508CE465243B061100707D50 /* SplitEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitEmptyView.swift; sourceTree = "<group>"; };
 		DF1A03D82438054F00AD4E64 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		DF1A03DB2438575700AD4E64 /* SplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitView.swift; sourceTree = "<group>"; };
 		DF1C7DB321290D1800B8FA0C /* UIStyleExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIStyleExtensions.swift; sourceTree = "<group>"; };
@@ -153,6 +155,7 @@
 			children = (
 				DF1A03DB2438575700AD4E64 /* SplitView.swift */,
 				DF4895E72439624700D10DBD /* NewSplitView.swift */,
+				508CE465243B061100707D50 /* SplitEmptyView.swift */,
 			);
 			path = Split;
 			sourceTree = "<group>";
@@ -457,6 +460,7 @@
 				DF5CB4DE2118483A00F39DC0 /* AppDelegate.swift in Sources */,
 				DF5CB5022118634C00F39DC0 /* Split.swift in Sources */,
 				DF27336F24395C1D008005F8 /* UIKitClasses.swift in Sources */,
+				508CE466243B061100707D50 /* SplitEmptyView.swift in Sources */,
 				DFB90DB2212191BE0084C5E5 /* Button.swift in Sources */,
 				DF5CB5052118728F00F39DC0 /* database.swift in Sources */,
 				DF5CB4FA211855AA00F39DC0 /* NewSplitViewController.swift in Sources */,

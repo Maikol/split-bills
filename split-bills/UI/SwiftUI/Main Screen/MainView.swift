@@ -37,9 +37,6 @@ struct MainView: View {
                         .sheet(isPresented: $showingNewSplit) {
                             NewSplitView(isPresented: self.$showingNewSplit).environmentObject(self.splitController)
                     }
-                    .offset(x: -24, y: -44)
-                    .background(ColorStyle.light.color)
-                    .edgesIgnoringSafeArea(.bottom)
                 } else {
                     List(splitController.splits, rowContent: SplitRow.init)
                         .listStyle(GroupedListStyle())

@@ -41,7 +41,7 @@ final class SplitController: ObservableObject {
     }
 }
 
-struct ExpenseController {
+final class ExpenseController: ObservableObject {
 
     static let shared = ExpenseController()
 
