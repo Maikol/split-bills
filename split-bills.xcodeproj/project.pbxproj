@@ -27,7 +27,7 @@
 		DF5CB4FA211855AA00F39DC0 /* NewSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB4F9211855AA00F39DC0 /* NewSplitViewController.swift */; };
 		DF5CB5022118634C00F39DC0 /* Split.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB5012118634C00F39DC0 /* Split.swift */; };
 		DF5CB5052118728F00F39DC0 /* database.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB5042118728F00F39DC0 /* database.swift */; };
-		DF5CB50721187A9400F39DC0 /* SplitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB50621187A9400F39DC0 /* SplitController.swift */; };
+		DF5CB50721187A9400F39DC0 /* ApplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB50621187A9400F39DC0 /* ApplicationController.swift */; };
 		DF5CB50921198D9400F39DC0 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB50821198D9400F39DC0 /* SplitViewController.swift */; };
 		DF5CB50C211998A500F39DC0 /* Expense.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB50B211998A500F39DC0 /* Expense.swift */; };
 		DF5CB50E2119D80A00F39DC0 /* NewExpenseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB50D2119D80A00F39DC0 /* NewExpenseViewController.swift */; };
@@ -38,6 +38,7 @@
 		DFB90DAC211E7A570084C5E5 /* ExpenseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB90DAB211E7A570084C5E5 /* ExpenseTests.swift */; };
 		DFB90DB021218D5D0084C5E5 /* TextStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB90DAF21218D5D0084C5E5 /* TextStyle.swift */; };
 		DFB90DB2212191BE0084C5E5 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB90DB1212191BE0084C5E5 /* Button.swift */; };
+		DFCCD27E243B2C2B00CB35C6 /* NewExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFCCD27D243B2C2B00CB35C6 /* NewExpenseView.swift */; };
 		DFD8C5702220F13A0095B3A3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DFD8C5722220F13A0095B3A3 /* Localizable.strings */; };
 		DFD8C57422211C6B0095B3A3 /* DatabaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFD8C57322211C6B0095B3A3 /* DatabaseTests.swift */; };
 		DFD8C57722211CC70095B3A3 /* Mocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFD8C57622211CC70095B3A3 /* Mocks.swift */; };
@@ -76,7 +77,7 @@
 		DF5CB4F9211855AA00F39DC0 /* NewSplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSplitViewController.swift; sourceTree = "<group>"; };
 		DF5CB5012118634C00F39DC0 /* Split.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Split.swift; sourceTree = "<group>"; };
 		DF5CB5042118728F00F39DC0 /* database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = database.swift; sourceTree = "<group>"; };
-		DF5CB50621187A9400F39DC0 /* SplitController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitController.swift; sourceTree = "<group>"; };
+		DF5CB50621187A9400F39DC0 /* ApplicationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationController.swift; sourceTree = "<group>"; };
 		DF5CB50821198D9400F39DC0 /* SplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
 		DF5CB50B211998A500F39DC0 /* Expense.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Expense.swift; sourceTree = "<group>"; };
 		DF5CB50D2119D80A00F39DC0 /* NewExpenseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewExpenseViewController.swift; sourceTree = "<group>"; };
@@ -90,6 +91,7 @@
 		DFB90DAB211E7A570084C5E5 /* ExpenseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseTests.swift; sourceTree = "<group>"; };
 		DFB90DAF21218D5D0084C5E5 /* TextStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextStyle.swift; sourceTree = "<group>"; };
 		DFB90DB1212191BE0084C5E5 /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
+		DFCCD27D243B2C2B00CB35C6 /* NewExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewExpenseView.swift; sourceTree = "<group>"; };
 		DFD8C5712220F13A0095B3A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		DFD8C57322211C6B0095B3A3 /* DatabaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseTests.swift; sourceTree = "<group>"; };
 		DFD8C57622211CC70095B3A3 /* Mocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mocks.swift; sourceTree = "<group>"; };
@@ -116,8 +118,9 @@
 		DF1A03DA2438574600AD4E64 /* SwiftUI */ = {
 			isa = PBXGroup;
 			children = (
+				DFCCD27C243B2C1200CB35C6 /* Expenses */,
 				DF27337024395C38008005F8 /* Main Screen */,
-				DF4895E62439622F00D10DBD /* Split */,
+				DF4895E62439622F00D10DBD /* Splits */,
 				DF27336D24395C03008005F8 /* Utilities */,
 			);
 			path = SwiftUI;
@@ -150,14 +153,14 @@
 			path = "Main Screen";
 			sourceTree = "<group>";
 		};
-		DF4895E62439622F00D10DBD /* Split */ = {
+		DF4895E62439622F00D10DBD /* Splits */ = {
 			isa = PBXGroup;
 			children = (
 				DF1A03DB2438575700AD4E64 /* SplitView.swift */,
 				DF4895E72439624700D10DBD /* NewSplitView.swift */,
 				508CE465243B061100707D50 /* SplitEmptyView.swift */,
 			);
-			path = Split;
+			path = Splits;
 			sourceTree = "<group>";
 		};
 		DF4C6DBC2437672800954DC7 /* Main Screen */ = {
@@ -191,7 +194,7 @@
 		DF4C6DBF2437677B00954DC7 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				DF5CB50621187A9400F39DC0 /* SplitController.swift */,
+				DF5CB50621187A9400F39DC0 /* ApplicationController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -310,6 +313,14 @@
 			path = Style;
 			sourceTree = "<group>";
 		};
+		DFCCD27C243B2C1200CB35C6 /* Expenses */ = {
+			isa = PBXGroup;
+			children = (
+				DFCCD27D243B2C2B00CB35C6 /* NewExpenseView.swift */,
+			);
+			path = Expenses;
+			sourceTree = "<group>";
+		};
 		DFD8C57522211CAE0095B3A3 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -369,9 +380,11 @@
 				TargetAttributes = {
 					DF5CB4D92118483A00F39DC0 = {
 						CreatedOnToolsVersion = 10.0;
+						LastSwiftMigration = 1140;
 					};
 					DFB90DA0211E7A0F0084C5E5 = {
 						CreatedOnToolsVersion = 10.0;
+						LastSwiftMigration = 1140;
 						TestTargetID = DF5CB4D92118483A00F39DC0;
 					};
 				};
@@ -446,7 +459,7 @@
 				DF4895EC2439C86700D10DBD /* CollectionExtensions.swift in Sources */,
 				DF890F9A211C542100305528 /* EurekaExtensions.swift in Sources */,
 				DF5CB50C211998A500F39DC0 /* Expense.swift in Sources */,
-				DF5CB50721187A9400F39DC0 /* SplitController.swift in Sources */,
+				DF5CB50721187A9400F39DC0 /* ApplicationController.swift in Sources */,
 				DF5CB50921198D9400F39DC0 /* SplitViewController.swift in Sources */,
 				DF1A03DC2438575700AD4E64 /* SplitView.swift in Sources */,
 				DF1A03D92438054F00AD4E64 /* MainView.swift in Sources */,
@@ -458,6 +471,7 @@
 				508CE462243AC8D800707D50 /* SplitRow.swift in Sources */,
 				DF62DA9524375E7C002807B4 /* Coordinator.swift in Sources */,
 				DF5CB4DE2118483A00F39DC0 /* AppDelegate.swift in Sources */,
+				DFCCD27E243B2C2B00CB35C6 /* NewExpenseView.swift in Sources */,
 				DF5CB5022118634C00F39DC0 /* Split.swift in Sources */,
 				DF27336F24395C1D008005F8 /* UIKitClasses.swift in Sources */,
 				508CE466243B061100707D50 /* SplitEmptyView.swift in Sources */,
@@ -647,7 +661,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "maikol.split-bills-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -670,7 +684,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "maikol.split-bills-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -688,7 +702,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "maikol.split-bills-tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/split-bills.app/split-bills";
 			};
@@ -707,7 +721,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "maikol.split-bills-tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/split-bills.app/split-bills";
 			};

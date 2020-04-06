@@ -9,12 +9,24 @@
 import SwiftUI
 
 struct SplitView: View {
-    @EnvironmentObject var splitController: SplitController
-    var split: Split
+
+    @EnvironmentObject var appController: ApplicationController
+    @ObservedObject var split: Split
+
+    @State private var showingNewExpense = false
 
     var body: some View {
         Group {
-            SplitEmptyView()
+            if split.expenses.isEmpty {
+                SplitEmptyView() { self.showingNewExpense.toggle() }
+                    .sheet(isPresented: $showingNewExpense) {
+                        NewExpenseView(split: self.split)
+                }
+            } else {
+                List {
+                    Text("Test")
+                }
+            }
         }
         .navigationBarTitle(Text(split.eventName), displayMode: .inline)
         .listStyle(GroupedListStyle())

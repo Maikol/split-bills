@@ -10,7 +10,7 @@ import SwiftUI
 
 struct NewSplitView: View {
 
-    @EnvironmentObject var splitController: SplitController
+    @EnvironmentObject var splitController: ApplicationController
 
     @Binding var isPresented: Bool
 
@@ -76,7 +76,7 @@ struct NewSplitView: View {
 
     func createSplit() {
         split.participants.removeAll { $0.name.isEmpty }
-        splitController.create(eventName: split.eventName, participants: split.participants)
+        splitController.createEvent(name: split.eventName, participants: split.participants)
         isPresented.toggle()
     }
 }

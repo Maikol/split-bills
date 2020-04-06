@@ -8,26 +8,47 @@
 
 import Foundation
 
-final class SplitController: ObservableObject {
+final class ApplicationController: ObservableObject {
 
     @Published var splits: [Split]
 
-    static let shared = SplitController()
+    static let shared = ApplicationController()
 
     private let splitDatabase: SplitDatabase
+    private let expensesDatabase: ExpenseDatabase
 
     init() {
         splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
+        expensesDatabase = try! ExpenseDatabase(databasePath: URL.documentsDirectory.absoluteString)
         splits = try! splitDatabase.getAll()
     }
 
-    @discardableResult func create(eventName: String, participants: [Participant]) -> Split? {
+    @discardableResult func createEvent(name: String, participants: [Participant]) -> Split? {
         do {
-            let split = try self.splitDatabase.create(eventName: eventName, participants: participants)
+            let split = try self.splitDatabase.create(eventName: name, participants: participants)
             self.splits.append(split)
             return split
         } catch {
             print("failed to add split item")
+            return nil
+        }
+    }
+
+    @discardableResult func createExpense(
+        split: Split,
+        payer: Participant,
+        description: String,
+        amount: Double,
+        participantsWeight: [ExpenseWeight],
+        splitType: Expense.SplitType) -> Expense?
+    {
+        do {
+            let expense = Expense(id: 0, payer: payer, description: description, amount: amount, participantsWeight: participantsWeight, splitType: splitType)
+            let result = try expensesDatabase.add(expense: expense, splitName: split.eventName)
+            split.expenses.append(result)
+            return result
+        } catch {
+            print("failed to create expense")
             return nil
         }
     }
@@ -56,11 +77,11 @@ final class ExpenseController: ObservableObject {
     }
 
     func add(expense: Expense, in split: Split) {
-        try? expensesDatabase?.add(expense: expense, splitName: split.eventName)
+        _ = ((try? expensesDatabase?.add(expense: expense, splitName: split.eventName)) as Expense??)
     }
 
     func update(expense: Expense) {
-        try? expensesDatabase?.update(expense: expense)
+        ((try? expensesDatabase?.update(expense: expense)) as ()??)
     }
 
     func remove(expense: Expense) -> Bool {

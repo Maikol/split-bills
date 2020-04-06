@@ -27,3 +27,12 @@
 "split-controller.edit" = "Edit";
 "split-controller.delete" = "Delete";
 "split-controller.cancel" = "Cancel";
+
+"expenses.new.title" = "New Expense";
+"expenses.new.info-header" = "Info";
+"expenses.new.info-placeholder" = "What was for?";
+"expenses.new.payer-header" = "Payer";
+"expenses.new.amount-header" = "Amount";
+"expenses.new.split-header" = "Split";
+"expenses.new.split-equally-header" = "Equally between everyone";
+"expenses.new.split-differently" = "Split differently";

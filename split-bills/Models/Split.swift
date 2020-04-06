@@ -10,14 +10,17 @@ import Foundation
 
 final class Split: Identifiable, ObservableObject {
 
-    let id: Int64
     @Published var eventName: String
     @Published var participants: [Participant]
+    @Published var expenses:  [Expense]
 
-    init(id: Int64, eventName: String, participants: [Participant]) {
+    let id: Int64
+
+    init(id: Int64, eventName: String, participants: [Participant], expenses:  [Expense] = []) {
         self.id = id
         self.eventName = eventName
         self.participants = participants
+        self.expenses = expenses
     }
 }
 
@@ -93,3 +96,10 @@ extension Split: Equatable {
         return lhs.eventName == rhs.eventName // Maybe do more checks in the future
     }
 }
+
+#if DEBUG
+extension Split {
+
+    static let example = Split(id: 0, eventName: "Test", participants: [.init(name: "Maikol"), .init(name: "Caru")])
+}
+#endif

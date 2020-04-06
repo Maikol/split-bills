@@ -31,7 +31,7 @@ final class SplitViewModel {
     }
 
     func deleteSplit() {
-        SplitController.shared.remove(split: split)
+        ApplicationController.shared.remove(split: split)
         coordinator.splitDeleted()
     }
 

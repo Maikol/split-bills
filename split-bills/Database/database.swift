@@ -14,6 +14,7 @@ struct SplitDatabase {
     private static let databaseName = "split_database"
 
     private let participantsDatabase: ParticipantDatabase
+    private let expensesDatabase: ExpenseDatabase
 
     private let db: Connection
     private let table = Table("split3")
@@ -23,6 +24,7 @@ struct SplitDatabase {
 
     init(databasePath: String) throws {
         participantsDatabase = try ParticipantDatabase(databasePath: databasePath)
+        expensesDatabase = try ExpenseDatabase(databasePath: databasePath)
         db = try Connection("\(databasePath)/\(SplitDatabase.databaseName).sqlite3")
         try self.initializeDatabaseSchema()
     }
@@ -55,7 +57,8 @@ struct SplitDatabase {
 
     private func split(with row: SQLite.Row) throws -> Split? {
         let participants = try participantsDatabase.participants(for: row[id])
-        return Split(id: row[id], eventName: row[eventName], participants: participants)
+        let expenses = try expensesDatabase.getAll(splitName: row[eventName])
+        return Split(id: row[id], eventName: row[eventName], participants: participants, expenses: expenses)
     }
 }
 
@@ -129,7 +132,7 @@ struct ExpenseDatabase {
         weightsTable = try ExpsenseWeightDatabase(databasePath: databasePath)
         participantDatabase = try ParticipantDatabase(databasePath: databasePath)
 
-        db = try Connection("\(databasePath)/exprenses_database.sqlite3")
+        db = try Connection("\(databasePath)/expenses_database.sqlite3")
         try self.initializeDatabaseSchema()
     }
 
@@ -144,11 +147,19 @@ struct ExpenseDatabase {
         })
     }
 
-    func add(expense: Expense, splitName: String) throws {
+    func add(expense: Expense, splitName: String) throws -> Expense {
         let insert = table.insert(self.splitName <- splitName, payerName <- expense.payer.name, description <- expense.description, amount <- expense.amount, splitType <- expense.splitType.rawValue)
         let rowId = try db.run(insert)
 
         try expense.participantsWeight.forEach { try weightsTable.add(weight: $0, expenseId: rowId) }
+
+        return Expense(
+            id: rowId,
+            payer: expense.payer,
+            description: expense.description,
+            amount: expense.amount,
+            participantsWeight: expense.participantsWeight,
+            splitType: expense.splitType)
     }
 
     func update(expense: Expense) throws {

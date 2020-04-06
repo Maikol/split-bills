@@ -10,6 +10,8 @@ import SwiftUI
 
 struct SplitEmptyView: View {
 
+    let action: () -> Void
+
     var body: some View {
         VStack {
             Spacer()
@@ -26,7 +28,7 @@ struct SplitEmptyView: View {
                         Image("down_arrow")
                             .offset(x: 0, y: -25)
                         Button(action: {
-                            // Action
+                            self.action()
                         }) {
                             Image("plus_icon")
                             .renderingMode(.original)
@@ -73,6 +75,6 @@ private extension NSAttributedString {
 
 struct SplitEmptyView_Previews: PreviewProvider {
     static var previews: some View {
-        SplitEmptyView()
+        SplitEmptyView() {}
     }
 }

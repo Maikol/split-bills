@@ -20,7 +20,7 @@ final class NewSplitViewModel {
     }
 
     func createdNewSplit(name: String, participants: [Participant]) {
-        guard let split = SplitController.shared.create(eventName: name, participants: participants) else { return }
+        guard let split = ApplicationController.shared.createEvent(name: name, participants: participants) else { return }
 
         coordinator.open(split: split)
     }

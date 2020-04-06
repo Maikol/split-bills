@@ -11,7 +11,7 @@ import SwiftUI
 
 struct MainView: View {
 
-    @EnvironmentObject var splitController: SplitController
+    @EnvironmentObject var splitController: ApplicationController
 
     @State private var showingNewSplit = false
 
@@ -48,7 +48,7 @@ struct MainView: View {
 }
 
 struct MainView_Previews: PreviewProvider {
-    static let dataSource = SplitController()
+    static let dataSource = ApplicationController()
 
     static var previews: some View {
         MainView().environmentObject(dataSource)

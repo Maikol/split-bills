@@ -27,7 +27,7 @@ final class RootViewController: UIViewController,
 
     private let emptyStateView = EmptyStateView()
 
-    private var splits = SplitController.shared.splits
+    private var splits = ApplicationController.shared.splits
 
     init(coordinator: MainCoordinator) {
         self.coordinator = coordinator
@@ -122,7 +122,7 @@ final class RootViewController: UIViewController,
         guard editingStyle == .delete else { return }
 
         let split = splits.remove(at: indexPath.row)
-        SplitController.shared.remove(split: split)
+        ApplicationController.shared.remove(split: split)
 
         reloadData()
     }
@@ -141,7 +141,7 @@ final class RootViewController: UIViewController,
     // MARK: Reload
 
     private func reloadData() {
-        splits = SplitController.shared.splits
+        splits = ApplicationController.shared.splits
         emptyStateView.isHidden = !splits.isEmpty
         tableView.reloadData()
     }
