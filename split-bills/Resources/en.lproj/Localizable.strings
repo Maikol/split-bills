@@ -37,3 +37,5 @@
 "expenses.new.split-header" = "Split";
 "expenses.new.split-equally-header" = "Equally between everyone";
 "expenses.new.split-differently" = "Split differently";
+"expenses.new.add-new-expense" = "Add new expense";
+"expenses.new.save" = "Save";

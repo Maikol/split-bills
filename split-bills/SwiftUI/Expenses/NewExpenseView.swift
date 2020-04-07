@@ -10,33 +10,27 @@ import SwiftUI
 
 struct NewExpenseView: View {
 
-    static private let splitTypes = ["Equally", "Amount", "Weight"]
+    static private let splitTypes = ["Equally", "Amount"]
 
     var split: Split
 
     @Binding var isPresented: Bool
 
-    @ObservedObject private(set) var participants: Participants
-
-    @State private var payerIndex = 0
-    @State private var description = ""
-    @State private var amount = ""
-    @State private var splitEqually = true
-    @State private var splitTypeIndex = 0
+    @ObservedObject var viewModel: ExpenseViewModel
 
     init(split: Split, isPresented: Binding<Bool>) {
         self.split = split
         self._isPresented = isPresented
-        self.participants = Participants(names: split.participants.map { $0.name })
+        self.viewModel = ExpenseViewModel(participants: split.participants)
     }
 
     var body: some View {
         NavigationView {
             Form {
                 Section(header: FormSectionHeader(key: "expenses.new.info-header")) {
-                    TextField("expenses.new.info-placeholder", text: $description)
+                    TextField("expenses.new.info-placeholder", text: $viewModel.description)
 
-                    Picker(selection: $payerIndex, label: Text("expenses.new.payer-header").apply(style: .body(.darkBold))) {
+                    Picker(selection: $viewModel.payerIndex, label: Text("expenses.new.payer-header").apply(style: .body(.darkBold))) {
                         ForEach(0 ..< split.participants.count, id: \.self) {
                             Text(self.split.participants[$0].name)
                         }
@@ -45,7 +39,7 @@ struct NewExpenseView: View {
                     HStack {
                         Text("expenses.new.amount-header")
                         Spacer()
-                        TextField("0", text: $amount)
+                        TextField("0", text: $viewModel.amount)
                             .multilineTextAlignment(.trailing)
                             .keyboardType(.decimalPad)
                             .frame(width: 150)
@@ -53,30 +47,35 @@ struct NewExpenseView: View {
                 }
 
                 Section(header: FormSectionHeader(key: "expenses.new.split-header")) {
-                    Toggle(isOn: $splitEqually) {
+                    Toggle(isOn: $viewModel.splitEqually) {
                         Text("expenses.new.split-equally-header")
                     }
                 }
 
-                if !splitEqually {
+                if !viewModel.splitEqually {
                     Section(header: FormSectionHeader(key: "expenses.new.split-differently")) {
-                        Picker(selection: $splitTypeIndex, label: Text("")) {
+                        Picker(selection: $viewModel.splitTypeIndex, label: Text("")) {
                             ForEach(0 ..< NewExpenseView.splitTypes.count) {
                                 Text(NewExpenseView.splitTypes[$0]).tag($0)
                             }
                         }.pickerStyle(SegmentedPickerStyle())
                     }
 
-                    if splitTypeIndex == 0 {
-                        Section {
-                            ParticipantSelectionView(participants: participants)
-                        }
-                    } else if splitTypeIndex == 1 {
-                        Section {
-                            ParticipantAmountView(participants: participants)
-                        }
-                    }
+                    ParticipantsSectionView(viewModel: viewModel)
                 }
+
+                Section {
+                    Button(action: createExpense) {
+                        Text("expenses.new.add-new-expense")
+                            .apply(style: .body(.link))
+                            .alignment(.center)
+                    }
+                    Button(action: createExpense) {
+                        Text("new-split-controller.save")
+                            .apply(style: .body(.link))
+                            .alignment(.center)
+                    }
+                }.disabled(!viewModel.isValid)
             }
             .background(Color.light)
             .edgesIgnoringSafeArea(.bottom)
@@ -90,6 +89,10 @@ struct NewExpenseView: View {
                 }
             )
         }
+    }
+
+    func createExpense() {
+
     }
 }
 

@@ -8,49 +8,16 @@
 
 import SwiftUI
 
-struct ParticipantAmountRow: View {
-
-    var name: String
-    @Binding var amount: String
-
-    var body: some View {
-        HStack {
-            Text(name)
-                .apply(style: .body(.darkBold))
-            Spacer()
-            TextField("0", text: $amount)
-                .multilineTextAlignment(.trailing)
-                .keyboardType(.decimalPad)
-                .frame(width: 150)
-        }
-    }
-}
-
-struct ParticipantAmountView: View {
-
-    @ObservedObject var participants: Participants
-
-    var body: some View {
-        List {
-            ForEach(0 ..< participants.amounts.count, id: \.self) { index in
-                ParticipantAmountRow(
-                    name: self.participants.amounts[index].name,
-                    amount: self.$participants.amounts[index].amount)
-            }
-        }
-    }
-}
-
 struct ParticipantSelectionView: View {
 
-    @ObservedObject var participants: Participants
+    @ObservedObject var viewModel: ExpenseViewModel
 
     var body: some View {
         List {
-            ForEach(0 ..< participants.selections.count, id: \.self) { index in
+            ForEach(0 ..< viewModel.selections.count, id: \.self) { index in
                 ParticipantSelectRow(
-                    name: self.participants.selections[index].name,
-                    isSelected: self.$participants.selections[index].isSelected)
+                    name: self.viewModel.selections[index].name,
+                    isSelected: self.$viewModel.selections[index].isSelected)
             }
         }
     }
@@ -59,7 +26,7 @@ struct ParticipantSelectionView: View {
 struct ParticipantSelection_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            ParticipantSelectionView(participants: Participants(names: ["Test"]))
+            ParticipantSelectionView(viewModel: .example)
         }.navigationBarTitle(Text("New Expense"), displayMode: .inline)
     }
 }

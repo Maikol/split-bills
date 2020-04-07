@@ -7,10 +7,10 @@
 //
 
 import SwiftUI
+import Combine
 
-struct ParticipantSelectionModel: Identifiable, Hashable {
+struct ParticipantSelectionModel {
 
-    let id = UUID()
     let name: String
     var isSelected = true
 
@@ -19,24 +19,12 @@ struct ParticipantSelectionModel: Identifiable, Hashable {
     }
 }
 
-struct ParticipantAmountModel: Identifiable, Hashable {
+final class ParticipantEntryModel: ObservableObject {
 
-    let id = UUID()
     let name: String
-    var amount = ""
+    @Published var amount = ""
 
     init(name: String) {
         self.name = name
-    }
-}
-
-final class Participants: ObservableObject {
-
-    @Published var selections: [ParticipantSelectionModel]
-    @Published var amounts: [ParticipantAmountModel]
-
-    init(names: [String]) {
-        selections = names.map { ParticipantSelectionModel(name: $0) }
-        amounts = names.map { ParticipantAmountModel(name: $0) }
     }
 }
