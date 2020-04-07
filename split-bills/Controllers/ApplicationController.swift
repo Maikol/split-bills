@@ -56,6 +56,7 @@ final class ApplicationController: ObservableObject {
     func remove(split: Split) {
         do {
             try self.splitDatabase.remove(split: split)
+            splits.removeAll { $0.id == split.id }
         } catch {
             print("failed to delete split item")
         }

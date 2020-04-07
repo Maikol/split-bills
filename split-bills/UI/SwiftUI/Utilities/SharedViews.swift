@@ -14,7 +14,7 @@ struct FormSectionHeader: View {
     var body: some View {
         Text(key)
             .font(TextStyle.bodySmall(.darkBold).font)
-            .foregroundColor(ColorStyle.dark.color)
+            .foregroundColor(Color.dark)
             .padding(.top)
     }
 }
@@ -23,7 +23,7 @@ extension Text {
 
     func apply(style: TextStyle) -> some View {
         self.font(style.font)
-            .accentColor(style.color.color)
+            .accentColor(style.color)
     }
 }
 

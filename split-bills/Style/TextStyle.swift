@@ -81,7 +81,23 @@ extension TextStyle {
         }
     }
 
-    var color: ColorStyle {
+    var uiColor: ColorStyle {
+        switch self {
+        case .headingWhite, .headingWhiteBold, .bodyLarge(.whiteBold), .heading3WhiteBold, .body(.white):
+            return .white
+        case .body(.brandBold):
+            return .brand
+        case .heading2DarkBold, .body(.dark), .body(.darkBold), .bodyLarge(.dark),
+             .bodyLarge(.darkBold), .bodySmall(.darkBold):
+            return .dark
+        case .body(.fade):
+            return .fade
+        case .body(.link):
+            return .link
+        }
+    }
+
+    var color: Color {
         switch self {
         case .headingWhite, .headingWhiteBold, .bodyLarge(.whiteBold), .heading3WhiteBold, .body(.white):
             return .white
@@ -110,17 +126,16 @@ extension ColorStyle {
         case .link: return .systemBlue
         }
     }
+}
 
-    var color: Color {
-        switch self {
-        case .brand: return .init(red: 0, green: 105/255.0, blue: 137/255.0)
-        case .dark: return .init(red: 60/255.0, green: 68/255.0, blue: 71/255.0)
-        case .white: return .init(red: 255/255.0, green: 255/255.0, blue: 255/255.0)
-        case .fade: return .init(red: 151/255.0, green: 151/255.0, blue: 151/255.0)
-        case .light: return .init(red: 234/255.0, green: 235/255.0, blue: 237/255.0)
-        case .link: return .blue
-        }
-    }
+extension Color {
+
+    static let brand = Color("brand")
+    static let dark = Color("dark")
+    static let white = Color("white")
+    static let fade = Color("fade")
+    static let light = Color("light")
+    static let link = Color("link")
 }
 
 extension UILabel {
@@ -129,6 +144,6 @@ extension UILabel {
         self.init()
 
         font = style.uiFont
-        textColor = style.color.value
+        textColor = style.uiColor.value
     }
 }

@@ -39,7 +39,7 @@ struct MainEmptyView: View {
             }
         }
         .offset(x: -24, y: -44)
-        .background(ColorStyle.light.color)
+        .background(Color.light)
         .edgesIgnoringSafeArea(.bottom)
     }
 }

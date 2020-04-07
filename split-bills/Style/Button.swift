@@ -27,7 +27,7 @@ extension UIButton {
 
         titleLabel?.font = style.textStyle.uiFont
 
-        setTitleColor(style.textStyle.color.value, for: .normal)
+        setTitleColor(style.textStyle.uiColor.value, for: .normal)
         setTitleColor(style.highlightedColor?.value, for: .highlighted)
         setTitleColor(style.selectedColor?.value, for: .selected)
         setTitleColor(style.disabledColor?.value, for: .disabled)

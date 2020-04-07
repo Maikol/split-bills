@@ -45,7 +45,7 @@ extension UITextField {
 
     func apply(style: TextStyle, placeholder: Placeholder? = nil) {
         font = style.uiFont
-        textColor = style.color.value
+        textColor = style.uiColor.value
 
         if let placeholder = placeholder {
             attributedPlaceholder = NSAttributedString(
@@ -59,7 +59,7 @@ extension UILabel {
 
     func apply(style: TextStyle) {
         font = style.uiFont
-        textColor = style.color.value
+        textColor = style.uiColor.value
     }
 }
 

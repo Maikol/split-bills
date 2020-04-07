@@ -43,7 +43,7 @@ struct ParticipantSelectRow: View {
                 Spacer()
                 if isSelected {
                     Image(systemName: "checkmark")
-                        .foregroundColor(ColorStyle.brand.color)
+                        .foregroundColor(Color.brand)
                 }
             }
         }

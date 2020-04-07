@@ -38,11 +38,21 @@ struct MainView: View {
                             NewSplitView(isPresented: self.$showingNewSplit).environmentObject(self.splitController)
                     }
                 } else {
-                    List(splitController.splits, rowContent: SplitRow.init)
-                        .listStyle(GroupedListStyle())
+                    List {
+                        ForEach(splitController.splits) {
+                            SplitRow(split: $0)
+                        }.onDelete(perform: removeSplit)
+                    }.listStyle(GroupedListStyle())
                 }
             }
             .navigationBarTitle("root-controller.title")
+        }
+    }
+
+    private func removeSplit(at offsets: IndexSet) {
+        for index in offsets {
+            let split = splitController.splits[index]
+            splitController.remove(split: split)
         }
     }
 }
