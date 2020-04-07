@@ -27,6 +27,8 @@ struct MainView: View {
         UINavigationBar.appearance().standardAppearance = appearance
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
         UINavigationBar.appearance().tintColor = style.textColor.value
+
+        UITableView.appearance().backgroundColor = .clear
     }
 
     var body: some View {
@@ -34,17 +36,30 @@ struct MainView: View {
             Group {
                 if splitController.splits.isEmpty {
                     MainEmptyView { self.showingNewSplit.toggle() }
-                        .sheet(isPresented: $showingNewSplit) {
-                            NewSplitView(isPresented: self.$showingNewSplit).environmentObject(self.splitController)
-                    }
                 } else {
-                    List {
-                        ForEach(splitController.splits) {
-                            SplitRow(split: $0)
-                        }.onDelete(perform: removeSplit)
-                    }.listStyle(GroupedListStyle())
+                    ZStack(alignment: .bottomTrailing) {
+                        List {
+                            Section(header: FormSectionHeader(key: "root-controller.groups")) {
+                                ForEach(splitController.splits) {
+                                    SplitRow(split: $0)
+                                }.onDelete(perform: removeSplit)
+                            }
+                        }.listStyle(GroupedListStyle())
+
+                        Button(action: {
+                            self.showingNewSplit.toggle()
+                        }) {
+                            Image("plus_icon")
+                                .renderingMode(.original)
+                        }.offset(x: -24, y: -44)
+                    }
                 }
             }
+            .sheet(isPresented: $showingNewSplit) {
+                NewSplitView(isPresented: self.$showingNewSplit).environmentObject(self.splitController)
+            }
+            .background(Color.light)
+            .edgesIgnoringSafeArea(.bottom)
             .navigationBarTitle("root-controller.title")
         }
     }

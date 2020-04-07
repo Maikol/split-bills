@@ -8,79 +8,25 @@
 
 import SwiftUI
 
-struct ParticipantSelectionModel: Identifiable, Hashable {
-
-    let id = UUID()
-    let name: String
-    var isSelected = true
-
-    init(name: String) {
-        self.name = name
-    }
-}
-
-final class Participants: ObservableObject {
-
-    @Published var participants: [ParticipantSelectionModel]
-
-    init(names: [String]) {
-        participants = names.map { ParticipantSelectionModel(name: $0) }
-    }
-}
-
-struct ParticipantSelectRow: View {
-
-    var name: String
-    @Binding var isSelected: Bool
-
-    var body: some View {
-        Button(action: {
-            self.isSelected.toggle()
-        }) {
-            HStack {
-                Text(name)
-                    .apply(style: .body(.darkBold))
-                Spacer()
-                if isSelected {
-                    Image(systemName: "checkmark")
-                        .foregroundColor(Color.brand)
-                }
-            }
-        }
-
-    }
-}
-
-struct ParticipantSelection: View {
-
-    @ObservedObject var participants: Participants
-
-    var body: some View {
-        List {
-            ForEach(0 ..< participants.participants.count, id: \.self) { index in
-                ParticipantSelectRow(
-                    name: self.participants.participants[index].name,
-                    isSelected: self.$participants.participants[index].isSelected)
-            }
-        }
-    }
-}
-
 struct NewExpenseView: View {
 
     static private let splitTypes = ["Equally", "Amount", "Weight"]
 
     var split: Split
 
-    @ObservedObject private(set) var participants: Participants
-    @State var payerIndex = 0
-    @State var description = ""
-    @State var amount = ""
-    @State var splitEqually = true
-    @State var splitTypeIndex = 0
+    @Binding var isPresented: Bool
 
-    init(split: Split) {
+    @ObservedObject private(set) var participants: Participants
+
+    @State private var payerIndex = 0
+    @State private var description = ""
+    @State private var amount = ""
+    @State private var splitEqually = true
+    @State private var splitTypeIndex = 0
+
+    init(split: Split, isPresented: Binding<Bool>) {
         self.split = split
+        self._isPresented = isPresented
         self.participants = Participants(names: split.participants.map { $0.name })
     }
 
@@ -90,8 +36,8 @@ struct NewExpenseView: View {
                 Section(header: FormSectionHeader(key: "expenses.new.info-header")) {
                     TextField("expenses.new.info-placeholder", text: $description)
 
-                    Picker(selection: $payerIndex, label: Text("expenses.new.payer-header")) {
-                        ForEach(0 ..< split.participants.count) {
+                    Picker(selection: $payerIndex, label: Text("expenses.new.payer-header").apply(style: .body(.darkBold))) {
+                        ForEach(0 ..< split.participants.count, id: \.self) {
                             Text(self.split.participants[$0].name)
                         }
                     }
@@ -116,23 +62,35 @@ struct NewExpenseView: View {
                     Section(header: FormSectionHeader(key: "expenses.new.split-differently")) {
                         Picker(selection: $splitTypeIndex, label: Text("")) {
                             ForEach(0 ..< NewExpenseView.splitTypes.count) {
-                                Text(NewExpenseView.splitTypes[$0])
+                                Text(NewExpenseView.splitTypes[$0]).tag($0)
                             }
                         }.pickerStyle(SegmentedPickerStyle())
-                    }
 
-                    if splitTypeIndex == 0 {
-                        ParticipantSelection(participants: participants)
+                        if splitTypeIndex == 0 {
+                            ParticipantSelectionView(participants: participants)
+                        } else if splitTypeIndex == 1 {
+                            ParticipantAmountView(participants: participants)
+                        }
                     }
                 }
             }
+            .background(Color.light)
+            .edgesIgnoringSafeArea(.bottom)
             .navigationBarTitle(Text("expenses.new.title"), displayMode: .inline)
+            .navigationBarItems(trailing:
+                Button(action: {
+                    self.isPresented.toggle()
+                }) {
+                    Text("split-controller.cancel")
+                        .apply(style: .body(.white))
+                }
+            )
         }
     }
 }
 
 struct NewExpenseView_Previews: PreviewProvider {
     static var previews: some View {
-        NewExpenseView(split: .example)
+        NewExpenseView(split: .example, isPresented: .constant(true))
     }
 }

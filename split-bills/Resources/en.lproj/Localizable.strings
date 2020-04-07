@@ -7,6 +7,7 @@
 */
 
 "root-controller.title" = "Split Bills";
+"root-controller.groups" = "Groups";
 "root-controller.empty-view.text-1" = "You have not added any split bills.\n\nTap the ";
 "root-controller.empty-view.text-2" = " button to create a";
 "root-controller.empty-view.text-3" = " new bill";

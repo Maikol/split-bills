@@ -20,7 +20,7 @@ struct SplitView: View {
             if split.expenses.isEmpty {
                 SplitEmptyView() { self.showingNewExpense.toggle() }
                     .sheet(isPresented: $showingNewExpense) {
-                        NewExpenseView(split: self.split)
+                        NewExpenseView(split: self.split, isPresented: self.$showingNewExpense)
                 }
             } else {
                 List {

@@ -58,6 +58,8 @@ struct NewSplitView: View {
                     }
                 }.disabled(!split.isValid)
             }
+            .background(Color.light)
+            .edgesIgnoringSafeArea(.bottom)
             .navigationBarTitle(Text("new-split-controller.title"), displayMode: .inline)
             .navigationBarItems(trailing:
                 Button(action: {

@@ -10,6 +10,10 @@
 		508CE462243AC8D800707D50 /* SplitRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508CE461243AC8D800707D50 /* SplitRow.swift */; };
 		508CE464243ADFEC00707D50 /* MainEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508CE463243ADFEC00707D50 /* MainEmptyView.swift */; };
 		508CE466243B061100707D50 /* SplitEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508CE465243B061100707D50 /* SplitEmptyView.swift */; };
+		509738B7243C45FB0040AB93 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 509738B6243C45FB0040AB93 /* ViewExtensions.swift */; };
+		509738BA243C57EE0040AB93 /* Participants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 509738B9243C57EE0040AB93 /* Participants.swift */; };
+		50FD349B243C6528000B327A /* ParticipantSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FD349A243C6528000B327A /* ParticipantSelectionView.swift */; };
+		50FD349D243C65B5000B327A /* ParticipantSelectRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FD349C243C65B5000B327A /* ParticipantSelectRow.swift */; };
 		DF1A03D92438054F00AD4E64 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1A03D82438054F00AD4E64 /* MainView.swift */; };
 		DF1A03DC2438575700AD4E64 /* SplitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1A03DB2438575700AD4E64 /* SplitView.swift */; };
 		DF1C7DB421290D1800B8FA0C /* UIStyleExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1C7DB321290D1800B8FA0C /* UIStyleExtensions.swift */; };
@@ -58,6 +62,10 @@
 		508CE461243AC8D800707D50 /* SplitRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitRow.swift; sourceTree = "<group>"; };
 		508CE463243ADFEC00707D50 /* MainEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainEmptyView.swift; sourceTree = "<group>"; };
 		508CE465243B061100707D50 /* SplitEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitEmptyView.swift; sourceTree = "<group>"; };
+		509738B6243C45FB0040AB93 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
+		509738B9243C57EE0040AB93 /* Participants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Participants.swift; sourceTree = "<group>"; };
+		50FD349A243C6528000B327A /* ParticipantSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantSelectionView.swift; sourceTree = "<group>"; };
+		50FD349C243C65B5000B327A /* ParticipantSelectRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantSelectRow.swift; sourceTree = "<group>"; };
 		DF1A03D82438054F00AD4E64 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		DF1A03DB2438575700AD4E64 /* SplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitView.swift; sourceTree = "<group>"; };
 		DF1C7DB321290D1800B8FA0C /* UIStyleExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIStyleExtensions.swift; sourceTree = "<group>"; };
@@ -115,9 +123,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		509738B8243C57CC0040AB93 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				509738B9243C57EE0040AB93 /* Participants.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		DF1A03DA2438574600AD4E64 /* SwiftUI */ = {
 			isa = PBXGroup;
 			children = (
+				509738B8243C57CC0040AB93 /* Models */,
 				DFCCD27C243B2C1200CB35C6 /* Expenses */,
 				DF27337024395C38008005F8 /* Main Screen */,
 				DF4895E62439622F00D10DBD /* Splits */,
@@ -139,6 +156,7 @@
 			children = (
 				DF27336E24395C1D008005F8 /* UIKitClasses.swift */,
 				DF4895E92439676100D10DBD /* SharedViews.swift */,
+				509738B6243C45FB0040AB93 /* ViewExtensions.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -227,6 +245,7 @@
 				DF890F98211C541000305528 /* Utils */,
 				DF5CB5032118728300F39DC0 /* Database */,
 				DF5CB5002118634100F39DC0 /* Models */,
+				DF1A03DA2438574600AD4E64 /* SwiftUI */,
 				DF5CB4F82118559800F39DC0 /* UI */,
 				DF5CB4DD2118483A00F39DC0 /* AppDelegate.swift */,
 				DF5CB50A2119917E00F39DC0 /* Resources */,
@@ -239,7 +258,6 @@
 		DF5CB4F82118559800F39DC0 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				DF1A03DA2438574600AD4E64 /* SwiftUI */,
 				DF4C6DBE2437675D00954DC7 /* Expenses */,
 				DF4C6DBD2437673800954DC7 /* Splits */,
 				DF4C6DBC2437672800954DC7 /* Main Screen */,
@@ -317,6 +335,8 @@
 			isa = PBXGroup;
 			children = (
 				DFCCD27D243B2C2B00CB35C6 /* NewExpenseView.swift */,
+				50FD349A243C6528000B327A /* ParticipantSelectionView.swift */,
+				50FD349C243C65B5000B327A /* ParticipantSelectRow.swift */,
 			);
 			path = Expenses;
 			sourceTree = "<group>";
@@ -462,10 +482,13 @@
 				DF5CB50721187A9400F39DC0 /* ApplicationController.swift in Sources */,
 				DF5CB50921198D9400F39DC0 /* SplitViewController.swift in Sources */,
 				DF1A03DC2438575700AD4E64 /* SplitView.swift in Sources */,
+				509738BA243C57EE0040AB93 /* Participants.swift in Sources */,
 				DF1A03D92438054F00AD4E64 /* MainView.swift in Sources */,
 				DF4C6DC12437CC6800954DC7 /* NewSplitViewModel.swift in Sources */,
 				DF5CB4E02118483A00F39DC0 /* RootViewController.swift in Sources */,
 				DF4895EA2439676100D10DBD /* SharedViews.swift in Sources */,
+				50FD349D243C65B5000B327A /* ParticipantSelectRow.swift in Sources */,
+				50FD349B243C6528000B327A /* ParticipantSelectionView.swift in Sources */,
 				DF1C7DB421290D1800B8FA0C /* UIStyleExtensions.swift in Sources */,
 				DF4895E82439624700D10DBD /* NewSplitView.swift in Sources */,
 				508CE462243AC8D800707D50 /* SplitRow.swift in Sources */,
@@ -475,6 +498,7 @@
 				DF5CB5022118634C00F39DC0 /* Split.swift in Sources */,
 				DF27336F24395C1D008005F8 /* UIKitClasses.swift in Sources */,
 				508CE466243B061100707D50 /* SplitEmptyView.swift in Sources */,
+				509738B7243C45FB0040AB93 /* ViewExtensions.swift in Sources */,
 				DFB90DB2212191BE0084C5E5 /* Button.swift in Sources */,
 				DF5CB5052118728F00F39DC0 /* database.swift in Sources */,
 				DF5CB4FA211855AA00F39DC0 /* NewSplitViewController.swift in Sources */,
