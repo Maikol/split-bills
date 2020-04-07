@@ -1,0 +1,26 @@
+name: Main
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v1
+      with:
+        path: Carthage
+        key: ${{ runner.os }}-carthage-${{ hashFiles('**/Cartfile.resolved') }}
+    - name: Carthage bootstrap
+      run: |
+        carthage bootstrap --no-use-binaries --platform ios
+    - name: Build and Test
+      run: |
+        xcodebuild test -project split-bills.xcodeproj -scheme split-bills -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 8,OS=13.3"
+
