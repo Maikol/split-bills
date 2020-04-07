@@ -16,4 +16,4 @@ jobs:
     - name: Build and Test
       run: |
         xcodebuild test -project split-bills.xcodeproj -scheme split-bills -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 8,OS=13.3"
-	
+
