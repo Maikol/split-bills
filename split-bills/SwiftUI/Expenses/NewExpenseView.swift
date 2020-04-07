@@ -67,10 +67,12 @@ struct NewExpenseView: View {
                         }.pickerStyle(SegmentedPickerStyle())
                     }
 
-                    Section {
-                        if splitTypeIndex == 0 {
+                    if splitTypeIndex == 0 {
+                        Section {
                             ParticipantSelectionView(participants: participants)
-                        } else if splitTypeIndex == 1 {
+                        }
+                    } else if splitTypeIndex == 1 {
+                        Section {
                             ParticipantAmountView(participants: participants)
                         }
                     }
