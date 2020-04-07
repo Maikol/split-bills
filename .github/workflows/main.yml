@@ -14,10 +14,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: actions/cache@v1
+      id: carthage-cache
       with:
         path: Carthage
         key: ${{ runner.os }}-carthage-${{ hashFiles('**/Cartfile.resolved') }}
     - name: Carthage bootstrap
+      if: steps.carthage-cache.outputs.cache-hit != 'true'
       run: |
         carthage bootstrap --no-use-binaries --platform ios
     - name: Build and Test
