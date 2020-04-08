@@ -31,8 +31,9 @@ struct ExpenseWeight {
     let weight: Double
 }
 
-struct Payment {
+struct Payment: Identifiable {
 
+    let id = UUID()
     let payer: Participant
     let receiver: Participant
     let amount: Double

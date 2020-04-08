@@ -29,6 +29,10 @@
 "split-controller.delete" = "Delete";
 "split-controller.cancel" = "Cancel";
 
+"split.view.settle-header" = "Overview";
+"split.view.overview-header" = "Overview";
+"split.view.sttle.pays-to" = "pays to";
+
 "expenses.new.title" = "New Expense";
 "expenses.new.info-header" = "Info";
 "expenses.new.info-placeholder" = "What was for?";
