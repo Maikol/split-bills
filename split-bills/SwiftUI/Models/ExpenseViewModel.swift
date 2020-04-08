@@ -11,6 +11,11 @@ import SwiftUI
 
 final class ExpenseViewModel: ObservableObject {
 
+    enum SplitTpe: Int, CaseIterable {
+        case equally
+        case amount
+    }
+
     @Published var payerIndex = 0
     @Published var description = ""
 
@@ -41,14 +46,39 @@ final class ExpenseViewModel: ObservableObject {
                 return false
         }
 
-        return true
+        guard let splitType = SplitTpe(rawValue: splitTypeIndex) else {
+            fatalError("This shouln't happen")
+        }
+
+        if splitEqually {
+            return true
+        }
+
+        switch splitType {
+        case .equally:
+            return selections.contains { $0.isSelected }
+        case .amount:
+            let doubleAmounts = amounts.compactMap { Double($0.amount) }
+            let participantsAmount = doubleAmounts.reduce(0, +)
+            return fabs(amount - participantsAmount) < 0.01
+        }
     }
 
     init(participants: [Participant]) {
         self.participants = participants
 
-        selections = participants.map { ParticipantSelectionModel(name: $0.name) }
-        amounts = participants.map { ParticipantEntryModel(name: $0.name) }
+        selections = participants.map { ParticipantSelectionModel(participant: $0) }
+        amounts = participants.map { ParticipantEntryModel(participant: $0) }
+    }
+}
+
+extension ExpenseViewModel.SplitTpe {
+
+    var localized: String {
+        switch self {
+        case .equally: return NSLocalizedString("expenses.new.split-differently.equally", comment: "")
+        case .amount: return NSLocalizedString("expenses.new.split-differently.amount", comment: "")
+        }
     }
 }
 

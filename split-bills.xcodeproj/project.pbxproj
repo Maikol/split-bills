@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		50013913243D5AE300E36B85 /* NewExpenseInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50013912243D5AE300E36B85 /* NewExpenseInfoView.swift */; };
 		508CE462243AC8D800707D50 /* SplitRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508CE461243AC8D800707D50 /* SplitRow.swift */; };
 		508CE464243ADFEC00707D50 /* MainEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508CE463243ADFEC00707D50 /* MainEmptyView.swift */; };
 		508CE466243B061100707D50 /* SplitEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508CE465243B061100707D50 /* SplitEmptyView.swift */; };
@@ -40,7 +41,7 @@
 		DF890F9A211C542100305528 /* EurekaExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF890F99211C542100305528 /* EurekaExtensions.swift */; };
 		DFA39B08243C9E2100DEBDC6 /* ParticipantAmountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA39B07243C9E2100DEBDC6 /* ParticipantAmountView.swift */; };
 		DFA39B0A243C9E5B00DEBDC6 /* ParticipantTextEntryRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA39B09243C9E5B00DEBDC6 /* ParticipantTextEntryRow.swift */; };
-		DFA39B0C243CA0F400DEBDC6 /* ParticipantsSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA39B0B243CA0F400DEBDC6 /* ParticipantsSectionView.swift */; };
+		DFA39B0C243CA0F400DEBDC6 /* NewExpenseParticipantsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA39B0B243CA0F400DEBDC6 /* NewExpenseParticipantsView.swift */; };
 		DFA39B10243CA5DB00DEBDC6 /* ExpenseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA39B0F243CA5DB00DEBDC6 /* ExpenseViewModel.swift */; };
 		DFB90DA4211E7A0F0084C5E5 /* split_bills_tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB90DA3211E7A0F0084C5E5 /* split_bills_tests.swift */; };
 		DFB90DAC211E7A570084C5E5 /* ExpenseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB90DAB211E7A570084C5E5 /* ExpenseTests.swift */; };
@@ -63,6 +64,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		50013912243D5AE300E36B85 /* NewExpenseInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewExpenseInfoView.swift; sourceTree = "<group>"; };
 		508CE461243AC8D800707D50 /* SplitRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitRow.swift; sourceTree = "<group>"; };
 		508CE463243ADFEC00707D50 /* MainEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainEmptyView.swift; sourceTree = "<group>"; };
 		508CE465243B061100707D50 /* SplitEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitEmptyView.swift; sourceTree = "<group>"; };
@@ -99,7 +101,7 @@
 		DF890F9C211C772F00305528 /* Playground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Playground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		DFA39B07243C9E2100DEBDC6 /* ParticipantAmountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantAmountView.swift; sourceTree = "<group>"; };
 		DFA39B09243C9E5B00DEBDC6 /* ParticipantTextEntryRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantTextEntryRow.swift; sourceTree = "<group>"; };
-		DFA39B0B243CA0F400DEBDC6 /* ParticipantsSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantsSectionView.swift; sourceTree = "<group>"; };
+		DFA39B0B243CA0F400DEBDC6 /* NewExpenseParticipantsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewExpenseParticipantsView.swift; sourceTree = "<group>"; };
 		DFA39B0F243CA5DB00DEBDC6 /* ExpenseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewModel.swift; sourceTree = "<group>"; };
 		DFB90DA1211E7A0F0084C5E5 /* split-bills-tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "split-bills-tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFB90DA3211E7A0F0084C5E5 /* split_bills_tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = split_bills_tests.swift; sourceTree = "<group>"; };
@@ -348,7 +350,8 @@
 				50FD349C243C65B5000B327A /* ParticipantSelectRow.swift */,
 				DFA39B07243C9E2100DEBDC6 /* ParticipantAmountView.swift */,
 				DFA39B09243C9E5B00DEBDC6 /* ParticipantTextEntryRow.swift */,
-				DFA39B0B243CA0F400DEBDC6 /* ParticipantsSectionView.swift */,
+				DFA39B0B243CA0F400DEBDC6 /* NewExpenseParticipantsView.swift */,
+				50013912243D5AE300E36B85 /* NewExpenseInfoView.swift */,
 			);
 			path = Expenses;
 			sourceTree = "<group>";
@@ -490,9 +493,10 @@
 				DF4C6DC32437D15C00954DC7 /* SplitViewModel.swift in Sources */,
 				DF4895EC2439C86700D10DBD /* CollectionExtensions.swift in Sources */,
 				DF890F9A211C542100305528 /* EurekaExtensions.swift in Sources */,
+				50013913243D5AE300E36B85 /* NewExpenseInfoView.swift in Sources */,
 				DF5CB50C211998A500F39DC0 /* Expense.swift in Sources */,
 				DF5CB50721187A9400F39DC0 /* ApplicationController.swift in Sources */,
-				DFA39B0C243CA0F400DEBDC6 /* ParticipantsSectionView.swift in Sources */,
+				DFA39B0C243CA0F400DEBDC6 /* NewExpenseParticipantsView.swift in Sources */,
 				DF5CB50921198D9400F39DC0 /* SplitViewController.swift in Sources */,
 				DF1A03DC2438575700AD4E64 /* SplitView.swift in Sources */,
 				509738BA243C57EE0040AB93 /* Participants.swift in Sources */,

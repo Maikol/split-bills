@@ -1,5 +1,5 @@
 //
-//  ParticipantsSectionView.swift
+//  NewExpenseParticipantsView.swift
 //  split-bills
 //
 //  Created by Carlos Miguel de Elias on 7/4/20.
@@ -9,8 +9,6 @@
 import SwiftUI
 
 struct NewExpenseParticipantsView: View {
-
-    static private let splitTypes = ["Equally", "Amount"]
 
     @ObservedObject var viewModel: ExpenseViewModel
 
@@ -25,8 +23,8 @@ struct NewExpenseParticipantsView: View {
             if !viewModel.splitEqually {
                 Section(header: FormSectionHeader(key: "expenses.new.split-differently")) {
                     Picker(selection: $viewModel.splitTypeIndex, label: Text("")) {
-                        ForEach(0 ..< NewExpenseParticipantsView.splitTypes.count) {
-                            Text(NewExpenseParticipantsView.splitTypes[$0]).tag($0)
+                        ForEach(0 ..< ExpenseViewModel.SplitTpe.allCases.count) {
+                            Text(ExpenseViewModel.SplitTpe.allCases[$0].localized).tag($0)
                         }
                     }.pickerStyle(SegmentedPickerStyle())
                 }
@@ -37,17 +35,19 @@ struct NewExpenseParticipantsView: View {
     }
 
     private func containedView() -> AnyView {
-        switch viewModel.splitTypeIndex {
-        case 0:
+        guard let splitType = ExpenseViewModel.SplitTpe(rawValue: viewModel.splitTypeIndex) else {
+            fatalError("This shouldn't happen")
+        }
+
+        switch splitType {
+        case .equally:
             return AnyView(Section {
                 ParticipantSelectionView(viewModel: viewModel)
             })
-        case  1:
+        case .amount:
             return AnyView(Section {
                 ParticipantAmountView(viewModel: viewModel)
             })
-        default:
-            fatalError("This shouldn't happen")
         }
     }
 }

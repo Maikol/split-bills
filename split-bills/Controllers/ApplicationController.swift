@@ -34,16 +34,8 @@ final class ApplicationController: ObservableObject {
         }
     }
 
-    @discardableResult func createExpense(
-        split: Split,
-        payer: Participant,
-        description: String,
-        amount: Double,
-        participantsWeight: [ExpenseWeight],
-        splitType: Expense.SplitType) -> Expense?
-    {
+    @discardableResult func saveExpense(split: Split, expense: Expense) -> Expense? {
         do {
-            let expense = Expense(id: 0, payer: payer, description: description, amount: amount, participantsWeight: participantsWeight, splitType: splitType)
             let result = try expensesDatabase.add(expense: expense, splitName: split.eventName)
             split.expenses.append(result)
             return result

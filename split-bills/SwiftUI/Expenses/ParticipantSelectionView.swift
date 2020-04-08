@@ -1,5 +1,5 @@
 //
-//  ParticipantSelection.swift
+//  ParticipantSelectionView.swift
 //  split-bills
 //
 //  Created by Carlos DeElias on 7/4/20.
@@ -16,7 +16,7 @@ struct ParticipantSelectionView: View {
         List {
             ForEach(0 ..< viewModel.selections.count, id: \.self) { index in
                 ParticipantSelectRow(
-                    name: self.viewModel.selections[index].name,
+                    name: self.viewModel.selections[index].participant.name,
                     isSelected: self.$viewModel.selections[index].isSelected)
             }
         }

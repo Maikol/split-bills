@@ -11,7 +11,7 @@ import SwiftUI
 
 struct MainView: View {
 
-    @EnvironmentObject var splitController: ApplicationController
+    @EnvironmentObject var controller: ApplicationController
 
     @State private var showingNewSplit = false
 
@@ -34,13 +34,13 @@ struct MainView: View {
     var body: some View {
         NavigationView {
             Group {
-                if splitController.splits.isEmpty {
+                if controller.splits.isEmpty {
                     MainEmptyView { self.showingNewSplit.toggle() }
                 } else {
                     ZStack(alignment: .bottomTrailing) {
                         List {
                             Section(header: FormSectionHeader(key: "root-controller.groups")) {
-                                ForEach(splitController.splits) {
+                                ForEach(controller.splits) {
                                     SplitRow(split: $0)
                                 }.onDelete(perform: removeSplit)
                             }
@@ -56,7 +56,7 @@ struct MainView: View {
                 }
             }
             .sheet(isPresented: $showingNewSplit) {
-                NewSplitView(isPresented: self.$showingNewSplit).environmentObject(self.splitController)
+                NewSplitView(isPresented: self.$showingNewSplit).environmentObject(self.controller)
             }
             .background(Color.light)
             .edgesIgnoringSafeArea(.bottom)
@@ -66,8 +66,8 @@ struct MainView: View {
 
     private func removeSplit(at offsets: IndexSet) {
         for index in offsets {
-            let split = splitController.splits[index]
-            splitController.remove(split: split)
+            let split = controller.splits[index]
+            controller.remove(split: split)
         }
     }
 }

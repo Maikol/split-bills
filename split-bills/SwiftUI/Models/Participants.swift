@@ -9,22 +9,22 @@
 import SwiftUI
 import Combine
 
-struct ParticipantSelectionModel {
+final class ParticipantSelectionModel: ObservableObject {
 
-    let name: String
-    var isSelected = true
+    let participant: Participant
+    @Published var isSelected = true
 
-    init(name: String) {
-        self.name = name
+    init(participant: Participant) {
+        self.participant = participant
     }
 }
 
 final class ParticipantEntryModel: ObservableObject {
 
-    let name: String
+    let participant: Participant
     @Published var amount = ""
 
-    init(name: String) {
-        self.name = name
+    init(participant: Participant) {
+        self.participant = participant
     }
 }

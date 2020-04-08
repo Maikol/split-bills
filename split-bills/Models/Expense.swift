@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Expense {
+struct Expense: Identifiable {
 
     enum SplitType: Int {
         case equallyWithAll
@@ -51,7 +51,7 @@ extension Expense: Equatable {
 
 extension Expense {
 
-    static func equallySplited(with split: Split, payer: Participant, participants: [Participant], description: String, amount: Double, id: Int64?) -> Expense? {
+    static func equallySplited(with split: Split, payer: Participant, participants: [Participant], description: String, amount: Double, id: Int64? = nil) -> Expense? {
         guard participants.count > 0 else {
             print("Tried to create an expense with no participants")
             return nil
@@ -65,7 +65,7 @@ extension Expense {
     }
 
     typealias Amount = (Participant, Double)
-    static func splitByAmount(with split: Split, payer: Participant, amounts: [Amount], description: String, amount: Double, id: Int64?) -> Expense? {
+    static func splitByAmount(with split: Split, payer: Participant, amounts: [Amount], description: String, amount: Double, id: Int64? = nil) -> Expense? {
         guard amounts.count > 0 else {
             print("Tried to create an expense with no participants")
             return nil
@@ -76,7 +76,7 @@ extension Expense {
     }
 
     typealias Weight = (Participant, Double)
-    static func splitByWeight(with split: Split, payer: Participant, weights: [Weight], description: String, amount: Double, id: Int64?) -> Expense? {
+    static func splitByWeight(with split: Split, payer: Participant, weights: [Weight], description: String, amount: Double, id: Int64? = nil) -> Expense? {
         guard weights.count > 0 else {
             print("Tried to create an expense with no participants")
             return nil

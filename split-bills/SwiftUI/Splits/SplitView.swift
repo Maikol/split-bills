@@ -10,7 +10,8 @@ import SwiftUI
 
 struct SplitView: View {
 
-    @EnvironmentObject var appController: ApplicationController
+    @EnvironmentObject var controller: ApplicationController
+
     @ObservedObject var split: Split
 
     @State private var showingNewExpense = false
@@ -20,14 +21,18 @@ struct SplitView: View {
             if split.expenses.isEmpty {
                 SplitEmptyView() { self.showingNewExpense.toggle() }
                     .sheet(isPresented: $showingNewExpense) {
-                        NewExpenseView(split: self.split, isPresented: self.$showingNewExpense)
+                        NewExpenseView(split: self.split, isPresented: self.$showingNewExpense).environmentObject(self.controller)
                 }
             } else {
                 List {
-                    Text("Test")
+                    ForEach(split.expenses) {
+                        Text($0.description)
+                    }
                 }
             }
         }
+        .background(Color.light)
+        .edgesIgnoringSafeArea(.bottom)
         .navigationBarTitle(Text(split.eventName), displayMode: .inline)
         .listStyle(GroupedListStyle())
     }

@@ -10,7 +10,7 @@ import SwiftUI
 
 struct NewExpenseView: View {
 
-    static private let splitTypes = ["Equally", "Amount"]
+    @EnvironmentObject var controller: ApplicationController
 
     var split: Split
 
@@ -27,42 +27,13 @@ struct NewExpenseView: View {
     var body: some View {
         NavigationView {
             Form {
-                Section(header: FormSectionHeader(key: "expenses.new.info-header")) {
-                    TextField("expenses.new.info-placeholder", text: $viewModel.description)
+                NewExpenseInfoView(
+                    participants: viewModel.participants,
+                    description: $viewModel.description,
+                    payerIndex: $viewModel.payerIndex,
+                    amount: $viewModel.amount)
 
-                    Picker(selection: $viewModel.payerIndex, label: Text("expenses.new.payer-header").apply(style: .body(.darkBold))) {
-                        ForEach(0 ..< split.participants.count, id: \.self) {
-                            Text(self.split.participants[$0].name)
-                        }
-                    }
-
-                    HStack {
-                        Text("expenses.new.amount-header")
-                        Spacer()
-                        TextField("0", text: $viewModel.amount)
-                            .multilineTextAlignment(.trailing)
-                            .keyboardType(.decimalPad)
-                            .frame(width: 150)
-                    }
-                }
-
-                Section(header: FormSectionHeader(key: "expenses.new.split-header")) {
-                    Toggle(isOn: $viewModel.splitEqually) {
-                        Text("expenses.new.split-equally-header")
-                    }
-                }
-
-                if !viewModel.splitEqually {
-                    Section(header: FormSectionHeader(key: "expenses.new.split-differently")) {
-                        Picker(selection: $viewModel.splitTypeIndex, label: Text("")) {
-                            ForEach(0 ..< NewExpenseView.splitTypes.count) {
-                                Text(NewExpenseView.splitTypes[$0]).tag($0)
-                            }
-                        }.pickerStyle(SegmentedPickerStyle())
-                    }
-
-                    ParticipantsSectionView(viewModel: viewModel)
-                }
+                NewExpenseParticipantsView(viewModel: viewModel)
 
                 Section {
                     Button(action: createExpense) {
@@ -92,7 +63,34 @@ struct NewExpenseView: View {
     }
 
     func createExpense() {
+        let expense = viewModel.expense(with: split)
+        controller.saveExpense(split: split, expense: expense)
+        self.isPresented.toggle()
+    }
+}
 
+private extension ExpenseViewModel {
+
+    func expense(with split: Split) -> Expense {
+        guard let type = ExpenseViewModel.SplitTpe(rawValue: splitTypeIndex),
+            let amount = Double(amount) else {
+            fatalError("This shouldn't happen")
+        }
+
+        let payer = split.participants[payerIndex]
+
+        if splitEqually {
+            return .equallySplited(with: split, payer: payer, participants: participants, description: description, amount: amount)!
+        }
+
+        switch type {
+        case .equally:
+            let participating = selections.filter { !$0.isSelected }.map { $0.participant }
+            return .equallySplited(with: split, payer: payer, participants: participating, description: description, amount: amount)!
+        case .amount:
+            let participantsAmounts = amounts.compactMap { ($0.participant, Double($0.amount) ?? 0.0) }
+            return Expense.splitByAmount(with: split, payer: payer, amounts: participantsAmounts, description: description, amount: amount)!
+        }
     }
 }
 

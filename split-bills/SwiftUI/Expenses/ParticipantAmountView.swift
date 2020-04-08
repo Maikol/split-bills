@@ -16,7 +16,7 @@ struct ParticipantAmountView: View {
         List {
             ForEach(0 ..< viewModel.amounts.count, id: \.self) { index in
                 ParticipantTextEntryRow(
-                    name: self.viewModel.amounts[index].name,
+                    name: self.viewModel.amounts[index].participant.name,
                     amount: self.$viewModel.amounts[index].amount)
             }
         }

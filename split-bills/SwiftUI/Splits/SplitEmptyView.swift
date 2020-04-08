@@ -39,8 +39,6 @@ struct SplitEmptyView: View {
             }
         }
         .offset(x: -24, y: -44)
-        .background(Color.light)
-        .edgesIgnoringSafeArea(.bottom)
     }
 }
 

@@ -1,5 +1,5 @@
 //
-//  ParticipantAmountRow.swift
+//  ParticipantTextEntryRow.swift
 //  split-bills
 //
 //  Created by Carlos Miguel de Elias on 7/4/20.
