@@ -12,6 +12,7 @@ final class ApplicationController: ObservableObject {
 
     @Published var splits: [Split]
 
+    // Legacy
     static let shared = ApplicationController()
 
     private let splitDatabase: SplitDatabase
@@ -55,7 +56,8 @@ final class ApplicationController: ObservableObject {
     }
 }
 
-final class ExpenseController: ObservableObject {
+// Legacy
+struct ExpenseController {
 
     static let shared = ExpenseController()
 

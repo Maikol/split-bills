@@ -7,8 +7,8 @@
 //
 
 import UIKit
-import SwiftUI
 
+// Legacy
 final class MainCoordinator: Coordinator {
 
     var childCoordinators = [Coordinator]()

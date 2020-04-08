@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 
+// Legacy
 struct ButtonStyle {
 
     let textStyle: TextStyle

@@ -50,6 +50,7 @@ enum ColorStyle {
 
 extension TextStyle {
 
+    // Legacy
     var uiFont: UIFont {
         switch self {
         case .headingWhite, .bodyLarge(.dark), .body(.dark), .body(.fade), .body(.link), .body(.white):
@@ -81,6 +82,7 @@ extension TextStyle {
         }
     }
 
+    // Legacy
     var uiColor: ColorStyle {
         switch self {
         case .headingWhite, .headingWhiteBold, .bodyLarge(.whiteBold), .heading3WhiteBold, .body(.white):
@@ -116,6 +118,7 @@ extension TextStyle {
 
 extension ColorStyle {
 
+    // Legacy
     var value: UIColor {
         switch self {
         case .brand: return UIColor(red: 0, green: 105/255.0, blue: 137/255.0, alpha: 1.0)
