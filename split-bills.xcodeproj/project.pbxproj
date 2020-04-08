@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		50013913243D5AE300E36B85 /* NewExpenseInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50013912243D5AE300E36B85 /* NewExpenseInfoView.swift */; };
+		50013954243D967C00E36B85 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50013953243D967C00E36B85 /* SceneDelegate.swift */; };
 		508CE462243AC8D800707D50 /* SplitRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508CE461243AC8D800707D50 /* SplitRow.swift */; };
 		508CE464243ADFEC00707D50 /* MainEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508CE463243ADFEC00707D50 /* MainEmptyView.swift */; };
 		508CE466243B061100707D50 /* SplitEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508CE465243B061100707D50 /* SplitEmptyView.swift */; };
@@ -65,6 +66,7 @@
 
 /* Begin PBXFileReference section */
 		50013912243D5AE300E36B85 /* NewExpenseInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewExpenseInfoView.swift; sourceTree = "<group>"; };
+		50013953243D967C00E36B85 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		508CE461243AC8D800707D50 /* SplitRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitRow.swift; sourceTree = "<group>"; };
 		508CE463243ADFEC00707D50 /* MainEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainEmptyView.swift; sourceTree = "<group>"; };
 		508CE465243B061100707D50 /* SplitEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitEmptyView.swift; sourceTree = "<group>"; };
@@ -262,6 +264,7 @@
 				DF5CB50A2119917E00F39DC0 /* Resources */,
 				DF5CB4E62118483C00F39DC0 /* LaunchScreen.storyboard */,
 				DF5CB4E92118483C00F39DC0 /* Info.plist */,
+				50013953243D967C00E36B85 /* SceneDelegate.swift */,
 			);
 			path = "split-bills";
 			sourceTree = "<group>";
@@ -525,6 +528,7 @@
 				DFB90DB021218D5D0084C5E5 /* TextStyle.swift in Sources */,
 				DF62DA9724375ED8002807B4 /* MainCoordinator.swift in Sources */,
 				DF4C6DC52437D57100954DC7 /* NewExpenseViewModel.swift in Sources */,
+				50013954243D967C00E36B85 /* SceneDelegate.swift in Sources */,
 				DF5CB50E2119D80A00F39DC0 /* NewExpenseViewController.swift in Sources */,
 				508CE464243ADFEC00707D50 /* MainEmptyView.swift in Sources */,
 			);
