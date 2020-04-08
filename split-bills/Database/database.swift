@@ -17,7 +17,7 @@ struct SplitDatabase {
     private let expensesDatabase: ExpenseDatabase
 
     private let db: Connection
-    private let table = Table("split3")
+    private let table = Table("split")
 
     private let id = Expression<Int64>("id")
     private let eventName = Expression<String>("event_name")

@@ -52,10 +52,8 @@ extension Expense: Equatable {
 extension Expense {
 
     static func equallySplited(with split: Split, payer: Participant, participants: [Participant], description: String, amount: Double, id: Int64? = nil) -> Expense? {
-        guard participants.count > 0 else {
-            print("Tried to create an expense with no participants")
-            return nil
-        }
+        precondition(participants.count > 0, "There needs to be at least one participant")
+        precondition(amount > 0, "Expense needs to have a valid value")
 
         let weight = 1 / Double(participants.count)
         let participantsWeight = participants.map { ExpenseWeight(participant: $0, weight: weight) }
@@ -66,10 +64,8 @@ extension Expense {
 
     typealias Amount = (Participant, Double)
     static func splitByAmount(with split: Split, payer: Participant, amounts: [Amount], description: String, amount: Double, id: Int64? = nil) -> Expense? {
-        guard amounts.count > 0 else {
-            print("Tried to create an expense with no participants")
-            return nil
-        }
+        precondition(amounts.count > 0, "There needs to be at least one participant")
+        precondition(amount > 0, "Expense needs to have a valid value")
 
         let participantsWeight = amounts.map { ExpenseWeight(participant: $0.0, weight: $0.1 / amount) }
         return Expense(id: id ?? INT64_MAX, payer: payer, description: description, amount: amount, participantsWeight: participantsWeight, splitType: .byAmount)
@@ -77,10 +73,8 @@ extension Expense {
 
     typealias Weight = (Participant, Double)
     static func splitByWeight(with split: Split, payer: Participant, weights: [Weight], description: String, amount: Double, id: Int64? = nil) -> Expense? {
-        guard weights.count > 0 else {
-            print("Tried to create an expense with no participants")
-            return nil
-        }
+        precondition(weights.count > 0, "There needs to be at least one participant")
+        precondition(amount > 0, "Expense needs to have a valid value")
 
         let totalWeight = weights.map { $0.1 }.reduce(0) { return $0 + $1 }
         guard totalWeight > 0 else {

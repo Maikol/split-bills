@@ -46,15 +46,11 @@ final class ExpenseViewModel: ObservableObject {
                 return false
         }
 
-        guard let splitType = SplitTpe(rawValue: splitTypeIndex) else {
-            fatalError("This shouln't happen")
-        }
-
         if splitEqually {
             return true
         }
 
-        switch splitType {
+        switch SplitTpe(index: splitTypeIndex) {
         case .equally:
             return selections.contains { $0.isSelected }
         case .amount:
@@ -73,6 +69,14 @@ final class ExpenseViewModel: ObservableObject {
 }
 
 extension ExpenseViewModel.SplitTpe {
+
+    init(index: Int) {
+        guard let type = ExpenseViewModel.SplitTpe(rawValue: index) else {
+            fatalError("Index out of bounds \(index)")
+        }
+
+        self = type
+    }
 
     var localized: String {
         switch self {
