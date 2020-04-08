@@ -19,53 +19,28 @@ struct SplitView: View {
     var body: some View {
         Group {
             if split.expenses.isEmpty {
-                SplitEmptyView() { self.showingNewExpense.toggle() }
-                    .sheet(isPresented: $showingNewExpense) {
-                        NewExpenseView(split: self.split, isPresented: self.$showingNewExpense).environmentObject(self.controller)
+                SplitEmptyView() {
+                    self.showingNewExpense.toggle()
                 }
             } else {
-                List {
-                    Section(header: FormSectionHeader(key: "split.view.settle-header")) {
-                        ForEach(split.payments) { payment in
-                            HStack {
-                                Text(payment.payer.name)
-                                    .apply(style: .body(.darkBold))
-                                Text("split.view.sttle.pays-to")
-                                    .apply(style: .body(.dark))
-                                Text(payment.receiver.name)
-                                    .apply(style: .body(.darkBold))
-                                Spacer()
-                                Text(String(format: "%.2f", payment.amount))
-                                    .apply(style: .body(.darkBold))
-                            }
-                        }
-                    }
-
-                    Section(header: FormSectionHeader(key: "split.view.overview-header")) {
-                        ForEach(split.expenses) { expense in
-                            HStack {
-                                Text(expense.description)
-                                    .apply(style: .body(.dark))
-                                Spacer()
-                                Text(String(expense.amount))
-                                    .apply(style: .body(.darkBold))
-                            }
-                        }
+                ZStack(alignment: .bottomTrailing) {
+                    SplitContentView(split: split)
+                    PlusButton {
+                        self.showingNewExpense.toggle()
                     }
                 }
             }
+        }
+        .sheet(isPresented: $showingNewExpense) {
+            NewExpenseView(
+                split: self.split,
+                isPresented: self.$showingNewExpense
+            ).environmentObject(self.controller)
         }
         .background(Color.light)
         .edgesIgnoringSafeArea(.bottom)
         .navigationBarTitle(Text(split.eventName), displayMode: .inline)
         .listStyle(GroupedListStyle())
-    }
-}
-
-private extension Split {
-
-    var payments: [Payment] {
-        settle(expenses: expenses)
     }
 }
 

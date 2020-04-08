@@ -29,7 +29,7 @@
 "split-controller.delete" = "Delete";
 "split-controller.cancel" = "Cancel";
 
-"split.view.settle-header" = "Overview";
+"split.view.settle-header" = "Settle";
 "split.view.overview-header" = "Overview";
 "split.view.sttle.pays-to" = "pays to";
 
@@ -43,5 +43,4 @@
 "expenses.new.split-differently" = "Split differently";
 "expenses.new.split-differently.equally" = "Equally";
 "expenses.new.split-differently.amount" = "Amount";
-"expenses.new.add-new-expense" = "Add new expense";
 "expenses.new.save" = "Save";

@@ -28,11 +28,9 @@ struct NewExpenseInfoView: View {
 
             HStack {
                 Text("expenses.new.amount-header")
-                Spacer()
                 TextField("0", text: $amount)
                     .multilineTextAlignment(.trailing)
                     .keyboardType(.decimalPad)
-                    .frame(width: 150)
             }
         }
     }

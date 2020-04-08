@@ -27,12 +27,7 @@ struct SplitEmptyView: View {
                         Spacer()
                         Image("down_arrow")
                             .offset(x: 0, y: -25)
-                        Button(action: {
-                            self.action()
-                        }) {
-                            Image("plus_icon")
-                            .renderingMode(.original)
-                        }
+                        PlusButton(action: action)
                     }
                 }
                 .fixedSize(horizontal: false, vertical: true)

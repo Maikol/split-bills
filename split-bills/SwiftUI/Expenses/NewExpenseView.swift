@@ -37,17 +37,16 @@ struct NewExpenseView: View {
 
                 Section {
                     Button(action: createExpense) {
-                        Text("expenses.new.add-new-expense")
-                            .apply(style: .body(.link))
-                            .alignment(.center)
-                    }
-                    Button(action: createExpense) {
                         Text("new-split-controller.save")
                             .apply(style: .body(.link))
                             .alignment(.center)
                     }
                 }.disabled(!viewModel.isValid)
             }
+            .gesture(
+                DragGesture()
+                    .onChanged { _ in UIApplication.shared.endEditing() }
+            )
             .background(Color.light)
             .edgesIgnoringSafeArea(.bottom)
             .navigationBarTitle(Text("expenses.new.title"), displayMode: .inline)

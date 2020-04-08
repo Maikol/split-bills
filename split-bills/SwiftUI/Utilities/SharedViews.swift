@@ -17,3 +17,17 @@ struct FormSectionHeader: View {
             .padding(.top)
     }
 }
+
+struct PlusButton: View {
+
+    var action: () -> Void
+
+    var body: some View {
+        Button(action: {
+            self.action()
+        }) {
+            Image("plus_icon")
+                .renderingMode(.original)
+        }.offset(x: -24, y: -44)
+    }
+}

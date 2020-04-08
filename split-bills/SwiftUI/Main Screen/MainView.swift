@@ -46,12 +46,9 @@ struct MainView: View {
                             }
                         }.listStyle(GroupedListStyle())
 
-                        Button(action: {
+                        PlusButton {
                             self.showingNewSplit.toggle()
-                        }) {
-                            Image("plus_icon")
-                                .renderingMode(.original)
-                        }.offset(x: -24, y: -44)
+                        }
                     }
                 }
             }
