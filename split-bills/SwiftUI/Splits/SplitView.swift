@@ -61,6 +61,7 @@ struct SplitView: View {
         case let .expense(expense):
             return AnyView(ExpenseView(
                 isPresented: self.$showingModal,
+                split: self.split,
                 viewModel: expense.viewModel(with: self.split)
             ).environmentObject(self.controller))
         }
@@ -75,6 +76,7 @@ private extension Expense {
         }
 
         let viewModel = ExpenseViewModel(participants: split.participants)
+        viewModel.id = id
         viewModel.payerIndex = payerIndex
         viewModel.description = description
         viewModel.amount = String(amount)

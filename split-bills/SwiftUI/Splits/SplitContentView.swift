@@ -55,7 +55,7 @@ struct SplitContentView: View {
     private func removeExpense(at offsets: IndexSet) {
         for index in offsets {
             let expense = split.expenses[index]
-            controller.remove(expense: expense, for: split)
+            controller.remove(expense: expense, on: split)
         }
     }
 }

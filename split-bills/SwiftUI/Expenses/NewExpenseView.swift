@@ -66,30 +66,6 @@ struct NewExpenseView: View {
     }
 }
 
-private extension ExpenseViewModel {
-
-    func expense(with split: Split) -> Expense {
-        guard let amount = Double(amount) else {
-            fatalError("Trying to save an expense with no value")
-        }
-
-        let payer = split.participants[payerIndex]
-
-        if splitEqually {
-            return .equallySplited(with: split, payer: payer, participants: participants, description: description, amount: amount)!
-        }
-
-        switch SplitTpe(index: splitTypeIndex) {
-        case .equally:
-            let participating = selections.filter { $0.isSelected }.map { $0.participant }
-            return .equallySplited(with: split, payer: payer, participants: participating, description: description, amount: amount)!
-        case .amount:
-            let participantsAmounts = amounts.compactMap { ($0.participant, Double($0.amount) ?? 0.0) }
-            return Expense.splitByAmount(with: split, payer: payer, amounts: participantsAmounts, description: description, amount: amount)!
-        }
-    }
-}
-
 struct NewExpenseView_Previews: PreviewProvider {
     static var previews: some View {
         NewExpenseView(split: .example, isPresented: .constant(true))

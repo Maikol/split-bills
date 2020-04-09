@@ -16,6 +16,8 @@ final class ExpenseViewModel: ObservableObject {
         case amount
     }
 
+    // TODO: clean this up when moving to core data
+    var id: Int64? = nil
     @Published var payerIndex = 0
     @Published var description = ""
 
@@ -82,6 +84,30 @@ extension ExpenseViewModel.SplitTpe {
         switch self {
         case .equally: return NSLocalizedString("expenses.new.split-differently.equally", comment: "")
         case .amount: return NSLocalizedString("expenses.new.split-differently.amount", comment: "")
+        }
+    }
+}
+
+extension ExpenseViewModel {
+
+    func expense(with split: Split) -> Expense {
+        guard let amount = Double(amount) else {
+            fatalError("Trying to save an expense with no value")
+        }
+
+        let payer = split.participants[payerIndex]
+
+        if splitEqually {
+            return .equallySplited(with: split, payer: payer, participants: participants, description: description, amount: amount, id: id)!
+        }
+
+        switch SplitTpe(index: splitTypeIndex) {
+        case .equally:
+            let participating = selections.filter { $0.isSelected }.map { $0.participant }
+            return .equallySplited(with: split, payer: payer, participants: participating, description: description, amount: amount, id: id)!
+        case .amount:
+            let participantsAmounts = amounts.compactMap { ($0.participant, Double($0.amount) ?? 0.0) }
+            return Expense.splitByAmount(with: split, payer: payer, amounts: participantsAmounts, description: description, amount: amount, id: id)!
         }
     }
 }

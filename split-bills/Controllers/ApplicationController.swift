@@ -46,6 +46,20 @@ final class ApplicationController: ObservableObject {
         }
     }
 
+    func update(expense: Expense, on split: Split) {
+        guard let index = split.expenses.firstIndex(where: { $0.id == expense.id }) else {
+            print("failed to update expense")
+            return
+        }
+
+        do {
+            try expensesDatabase.update(expense: expense)
+            split.expenses[index] = expense
+        } catch {
+            print("failed to update expense")
+        }
+    }
+
     func remove(split: Split) {
         do {
             try self.splitDatabase.remove(split: split)
@@ -55,7 +69,7 @@ final class ApplicationController: ObservableObject {
         }
     }
 
-    func remove(expense: Expense, for split: Split) {
+    func remove(expense: Expense, on split: Split) {
         do {
             try expensesDatabase.remove(expense: expense)
             split.expenses.removeAll { $0.id == expense.id }

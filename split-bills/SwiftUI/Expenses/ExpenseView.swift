@@ -10,8 +10,11 @@ import SwiftUI
 
 struct ExpenseView: View {
 
+    @EnvironmentObject var controller: ApplicationController
+
     @Binding var isPresented: Bool
 
+    var split: Split
     @ObservedObject var viewModel: ExpenseViewModel
 
     var body: some View {
@@ -50,12 +53,14 @@ struct ExpenseView: View {
     }
 
     func saveExpense() {
-
+        let expense = viewModel.expense(with: split)
+        controller.update(expense: expense, on: split)
+        self.isPresented.toggle()
     }
 }
 
 struct ExpenseView_Previews: PreviewProvider {
     static var previews: some View {
-        ExpenseView(isPresented: .constant(true), viewModel: .example)
+        ExpenseView(isPresented: .constant(true), split: .example, viewModel: .example)
     }
 }
