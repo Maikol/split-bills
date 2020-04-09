@@ -1,5 +1,5 @@
 //
-//  SharedViews.swift
+//  FormSectionHeader.swift
 //  split-bills
 //
 //  Created by Carlos Miguel de Elias on 5/4/20.
@@ -15,19 +15,5 @@ struct FormSectionHeader: View {
         Text(key)
             .apply(style: .bodySmall(.darkBold))
             .padding(.top)
-    }
-}
-
-struct PlusButton: View {
-
-    var action: () -> Void
-
-    var body: some View {
-        Button(action: {
-            self.action()
-        }) {
-            Image("plus_icon")
-                .renderingMode(.original)
-        }.offset(x: -24, y: -44)
     }
 }

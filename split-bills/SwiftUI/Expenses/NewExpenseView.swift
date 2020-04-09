@@ -26,27 +26,25 @@ struct NewExpenseView: View {
 
     var body: some View {
         NavigationView {
-            Form {
-                NewExpenseInfoView(
-                    participants: viewModel.participants,
-                    description: $viewModel.description,
-                    payerIndex: $viewModel.payerIndex,
-                    amount: $viewModel.amount)
+            KeyboardHost {
+                Form {
+                    NewExpenseInfoView(
+                        participants: viewModel.participants,
+                        description: $viewModel.description,
+                        payerIndex: $viewModel.payerIndex,
+                        amount: $viewModel.amount)
 
-                NewExpenseParticipantsView(viewModel: viewModel)
+                    NewExpenseParticipantsView(viewModel: viewModel)
 
-                Section {
-                    Button(action: createExpense) {
-                        Text("new-split-controller.save")
-                            .apply(style: .body(.link))
-                            .alignment(.center)
-                    }
-                }.disabled(!viewModel.isValid)
+                    Section {
+                        Button(action: createExpense) {
+                            Text("new-split-controller.save")
+                                .apply(style: .body(.link))
+                                .alignment(.center)
+                        }
+                    }.disabled(!viewModel.isValid)
+                }
             }
-            .gesture(
-                DragGesture()
-                    .onChanged { _ in UIApplication.shared.endEditing() }
-            )
             .background(Color.light)
             .edgesIgnoringSafeArea(.bottom)
             .navigationBarTitle(Text("expenses.new.title"), displayMode: .inline)

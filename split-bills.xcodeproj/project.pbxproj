@@ -12,6 +12,8 @@
 		508CE462243AC8D800707D50 /* SplitRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508CE461243AC8D800707D50 /* SplitRow.swift */; };
 		508CE464243ADFEC00707D50 /* MainEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508CE463243ADFEC00707D50 /* MainEmptyView.swift */; };
 		508CE466243B061100707D50 /* SplitEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508CE465243B061100707D50 /* SplitEmptyView.swift */; };
+		508FC565243F1F6D008DA135 /* PlusButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508FC564243F1F6D008DA135 /* PlusButton.swift */; };
+		508FC567243F1F88008DA135 /* KeyboardHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508FC566243F1F88008DA135 /* KeyboardHost.swift */; };
 		509738B7243C45FB0040AB93 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 509738B6243C45FB0040AB93 /* ViewExtensions.swift */; };
 		509738BA243C57EE0040AB93 /* Participants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 509738B9243C57EE0040AB93 /* Participants.swift */; };
 		50FD349B243C6528000B327A /* ParticipantSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FD349A243C6528000B327A /* ParticipantSelectionView.swift */; };
@@ -21,7 +23,7 @@
 		DF1C7DB421290D1800B8FA0C /* UIStyleExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1C7DB321290D1800B8FA0C /* UIStyleExtensions.swift */; };
 		DF27336F24395C1D008005F8 /* UIKitClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF27336E24395C1D008005F8 /* UIKitClasses.swift */; };
 		DF4895E82439624700D10DBD /* NewSplitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4895E72439624700D10DBD /* NewSplitView.swift */; };
-		DF4895EA2439676100D10DBD /* SharedViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4895E92439676100D10DBD /* SharedViews.swift */; };
+		DF4895EA2439676100D10DBD /* FormSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4895E92439676100D10DBD /* FormSectionHeader.swift */; };
 		DF4895EC2439C86700D10DBD /* CollectionExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4895EB2439C86700D10DBD /* CollectionExtensions.swift */; };
 		DF4C6DC12437CC6800954DC7 /* NewSplitViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4C6DC02437CC6800954DC7 /* NewSplitViewModel.swift */; };
 		DF4C6DC32437D15C00954DC7 /* SplitViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4C6DC22437D15C00954DC7 /* SplitViewModel.swift */; };
@@ -71,6 +73,8 @@
 		508CE461243AC8D800707D50 /* SplitRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitRow.swift; sourceTree = "<group>"; };
 		508CE463243ADFEC00707D50 /* MainEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainEmptyView.swift; sourceTree = "<group>"; };
 		508CE465243B061100707D50 /* SplitEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitEmptyView.swift; sourceTree = "<group>"; };
+		508FC564243F1F6D008DA135 /* PlusButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlusButton.swift; sourceTree = "<group>"; };
+		508FC566243F1F88008DA135 /* KeyboardHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardHost.swift; sourceTree = "<group>"; };
 		509738B6243C45FB0040AB93 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		509738B9243C57EE0040AB93 /* Participants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Participants.swift; sourceTree = "<group>"; };
 		50FD349A243C6528000B327A /* ParticipantSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantSelectionView.swift; sourceTree = "<group>"; };
@@ -80,7 +84,7 @@
 		DF1C7DB321290D1800B8FA0C /* UIStyleExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIStyleExtensions.swift; sourceTree = "<group>"; };
 		DF27336E24395C1D008005F8 /* UIKitClasses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitClasses.swift; sourceTree = "<group>"; };
 		DF4895E72439624700D10DBD /* NewSplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSplitView.swift; sourceTree = "<group>"; };
-		DF4895E92439676100D10DBD /* SharedViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedViews.swift; sourceTree = "<group>"; };
+		DF4895E92439676100D10DBD /* FormSectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormSectionHeader.swift; sourceTree = "<group>"; };
 		DF4895EB2439C86700D10DBD /* CollectionExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionExtensions.swift; sourceTree = "<group>"; };
 		DF4C6DC02437CC6800954DC7 /* NewSplitViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSplitViewModel.swift; sourceTree = "<group>"; };
 		DF4C6DC22437D15C00954DC7 /* SplitViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewModel.swift; sourceTree = "<group>"; };
@@ -137,6 +141,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		508FC563243F1F3F008DA135 /* Shared Views */ = {
+			isa = PBXGroup;
+			children = (
+				DF4895E92439676100D10DBD /* FormSectionHeader.swift */,
+				508FC564243F1F6D008DA135 /* PlusButton.swift */,
+				508FC566243F1F88008DA135 /* KeyboardHost.swift */,
+			);
+			path = "Shared Views";
+			sourceTree = "<group>";
+		};
 		509738B8243C57CC0040AB93 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -149,6 +163,7 @@
 		DF1A03DA2438574600AD4E64 /* SwiftUI */ = {
 			isa = PBXGroup;
 			children = (
+				508FC563243F1F3F008DA135 /* Shared Views */,
 				509738B8243C57CC0040AB93 /* Models */,
 				DFCCD27C243B2C1200CB35C6 /* Expenses */,
 				DF27337024395C38008005F8 /* Main Screen */,
@@ -170,7 +185,6 @@
 			isa = PBXGroup;
 			children = (
 				DF27336E24395C1D008005F8 /* UIKitClasses.swift */,
-				DF4895E92439676100D10DBD /* SharedViews.swift */,
 				509738B6243C45FB0040AB93 /* ViewExtensions.swift */,
 			);
 			path = Utilities;
@@ -499,6 +513,7 @@
 				DF4C6DC32437D15C00954DC7 /* SplitViewModel.swift in Sources */,
 				DF4895EC2439C86700D10DBD /* CollectionExtensions.swift in Sources */,
 				DF890F9A211C542100305528 /* EurekaExtensions.swift in Sources */,
+				508FC565243F1F6D008DA135 /* PlusButton.swift in Sources */,
 				50013913243D5AE300E36B85 /* NewExpenseInfoView.swift in Sources */,
 				DF5CB50C211998A500F39DC0 /* Expense.swift in Sources */,
 				DF5CB50721187A9400F39DC0 /* ApplicationController.swift in Sources */,
@@ -509,7 +524,7 @@
 				DF1A03D92438054F00AD4E64 /* MainView.swift in Sources */,
 				DF4C6DC12437CC6800954DC7 /* NewSplitViewModel.swift in Sources */,
 				DF5CB4E02118483A00F39DC0 /* RootViewController.swift in Sources */,
-				DF4895EA2439676100D10DBD /* SharedViews.swift in Sources */,
+				DF4895EA2439676100D10DBD /* FormSectionHeader.swift in Sources */,
 				50FD349D243C65B5000B327A /* ParticipantSelectRow.swift in Sources */,
 				50FD349B243C6528000B327A /* ParticipantSelectionView.swift in Sources */,
 				DF1C7DB421290D1800B8FA0C /* UIStyleExtensions.swift in Sources */,
@@ -523,6 +538,7 @@
 				DFA39B08243C9E2100DEBDC6 /* ParticipantAmountView.swift in Sources */,
 				DF27336F24395C1D008005F8 /* UIKitClasses.swift in Sources */,
 				508CE466243B061100707D50 /* SplitEmptyView.swift in Sources */,
+				508FC567243F1F88008DA135 /* KeyboardHost.swift in Sources */,
 				DFA39B0A243C9E5B00DEBDC6 /* ParticipantTextEntryRow.swift in Sources */,
 				509738B7243C45FB0040AB93 /* ViewExtensions.swift in Sources */,
 				DFB90DB2212191BE0084C5E5 /* Button.swift in Sources */,

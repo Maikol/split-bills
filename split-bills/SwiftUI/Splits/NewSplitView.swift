@@ -22,41 +22,43 @@ struct NewSplitView: View {
 
     var body: some View {
         NavigationView {
-            Form {
-                Section(header: FormSectionHeader(key: "new-split-controller.event-info")) {
-                    TextField("new-split-controller.event-name", text: $split.eventName)
-                }
+            KeyboardHost {
+                Form {
+                    Section(header: FormSectionHeader(key: "new-split-controller.event-info")) {
+                        TextField("new-split-controller.event-name", text: $split.eventName)
+                    }
 
-                Section(header: FormSectionHeader(key: "new-split-controller.participants")) {
-                    TextField("new-split-controller.participant-placeholder.you", text: $split.participants[0].name)
-                    TextField("new-split-controller.participant-placeholder.participant-1", text: $split.participants[1].name)
-                    ForEach(2 ..< split.participants.count, id: \.self) { index in
-                        ParticipantRow(
-                            label: "Participant \(index)",
-                            participant: self.split.participants[index])
-                        {
-                            self.split.participants.remove(at: index)
+                    Section(header: FormSectionHeader(key: "new-split-controller.participants")) {
+                        TextField("new-split-controller.participant-placeholder.you", text: $split.participants[0].name)
+                        TextField("new-split-controller.participant-placeholder.participant-1", text: $split.participants[1].name)
+                        ForEach(2 ..< split.participants.count, id: \.self) { index in
+                            ParticipantRow(
+                                label: "Participant \(index)",
+                                participant: self.split.participants[index])
+                            {
+                                self.split.participants.remove(at: index)
+                            }
+                        }
+                        Button(action: {
+                            self.split.participants.append(Participant(name: ""))
+                        }) {
+                            HStack {
+                                Image(systemName: "plus.circle.fill")
+                                    .accentColor(.green)
+                                Text("new-split-controller.add-participant")
+                                    .apply(style: .body(.link))
+                            }
                         }
                     }
-                    Button(action: {
-                        self.split.participants.append(Participant(name: ""))
-                    }) {
-                        HStack {
-                            Image(systemName: "plus.circle.fill")
-                                .accentColor(.green)
-                            Text("new-split-controller.add-participant")
+
+                    Section {
+                        Button(action: createSplit) {
+                            Text("new-split-controller.save")
                                 .apply(style: .body(.link))
+                                .alignment(.center)
                         }
-                    }
+                    }.disabled(!split.isValid)
                 }
-
-                Section {
-                    Button(action: createSplit) {
-                        Text("new-split-controller.save")
-                            .apply(style: .body(.link))
-                            .alignment(.center)
-                    }
-                }.disabled(!split.isValid)
             }
             .background(Color.light)
             .edgesIgnoringSafeArea(.bottom)
