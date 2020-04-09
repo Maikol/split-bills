@@ -56,7 +56,7 @@ final class ExpenseViewModel: ObservableObject {
         case .amount:
             let doubleAmounts = amounts.compactMap { Double($0.amount) }
             let participantsAmount = doubleAmounts.reduce(0, +)
-            return fabs(amount - participantsAmount) < 0.01
+            return fabs(amount - participantsAmount) < 0.02
         }
     }
 

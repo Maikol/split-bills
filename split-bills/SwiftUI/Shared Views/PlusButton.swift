@@ -18,6 +18,6 @@ struct PlusButton: View {
         }) {
             Image("plus_icon")
                 .renderingMode(.original)
-        }.offset(x: -24, y: -44)
+        }
     }
 }

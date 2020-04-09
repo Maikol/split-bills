@@ -10,7 +10,11 @@ import SwiftUI
 
 struct SplitContentView: View {
 
+    @EnvironmentObject var controller: ApplicationController
+
     @ObservedObject var split: Split
+
+    var expenseTappedAction: (Expense) -> Void
 
     var body: some View {
         List {
@@ -32,15 +36,26 @@ struct SplitContentView: View {
 
             Section(header: FormSectionHeader(key: "split.view.overview-header")) {
                 ForEach(split.expenses) { expense in
-                    HStack {
-                        Text(expense.description)
-                            .apply(style: .body(.dark))
-                        Spacer()
-                        Text(String(expense.amount))
-                            .apply(style: .body(.darkBold))
+                    Button(action: {
+                        self.expenseTappedAction(expense)
+                    }) {
+                        HStack {
+                            Text(expense.description)
+                                .apply(style: .body(.dark))
+                            Spacer()
+                            Text(String(expense.amount))
+                                .apply(style: .body(.darkBold))
+                        }
                     }
-                }
+                }.onDelete(perform: removeExpense)
             }
+        }
+    }
+
+    private func removeExpense(at offsets: IndexSet) {
+        for index in offsets {
+            let expense = split.expenses[index]
+            controller.remove(expense: expense, for: split)
         }
     }
 }
@@ -54,6 +69,6 @@ private extension Split {
 
 struct SplitContentView_Previews: PreviewProvider {
     static var previews: some View {
-        SplitContentView(split: .example)
+        SplitContentView(split: .example, expenseTappedAction: { _ in })
     }
 }

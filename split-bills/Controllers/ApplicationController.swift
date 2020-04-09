@@ -54,6 +54,15 @@ final class ApplicationController: ObservableObject {
             print("failed to delete split item")
         }
     }
+
+    func remove(expense: Expense, for split: Split) {
+        do {
+            try expensesDatabase.remove(expense: expense)
+            split.expenses.removeAll { $0.id == expense.id }
+        } catch {
+            print("failed to remove expense")
+        }
+    }
 }
 
 // Legacy

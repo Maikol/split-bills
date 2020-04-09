@@ -81,7 +81,7 @@ private extension ExpenseViewModel {
 
         switch SplitTpe(index: splitTypeIndex) {
         case .equally:
-            let participating = selections.filter { !$0.isSelected }.map { $0.participant }
+            let participating = selections.filter { $0.isSelected }.map { $0.participant }
             return .equallySplited(with: split, payer: payer, participants: participating, description: description, amount: amount)!
         case .amount:
             let participantsAmounts = amounts.compactMap { ($0.participant, Double($0.amount) ?? 0.0) }

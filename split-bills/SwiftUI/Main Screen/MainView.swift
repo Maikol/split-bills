@@ -48,7 +48,7 @@ struct MainView: View {
 
                         PlusButton {
                             self.showingNewSplit.toggle()
-                        }
+                        }.offset(x: -24, y: -44)
                     }
                 }
             }

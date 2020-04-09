@@ -12,19 +12,21 @@ import Combine
 final class ParticipantSelectionModel: ObservableObject {
 
     let participant: Participant
-    @Published var isSelected = true
+    @Published var isSelected: Bool
 
-    init(participant: Participant) {
+    init(participant: Participant, isSelected: Bool = true) {
         self.participant = participant
+        self.isSelected = isSelected
     }
 }
 
 final class ParticipantEntryModel: ObservableObject {
 
     let participant: Participant
-    @Published var amount = ""
+    @Published var amount: String
 
-    init(participant: Participant) {
+    init(participant: Participant, amount: String = "") {
         self.participant = participant
+        self.amount = amount
     }
 }
