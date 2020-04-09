@@ -21,12 +21,12 @@
 "new-split-controller.participant-placeholder.you" = "You";
 "new-split-controller.participant-placeholder.participant-1" = "Participant 1";
 "new-split-controller.save" = "Save";
+"new-split-controller.delete" = "Delete";
 
 "split-controller.empty-view.text-1" = "Add ";
 "split-controller.empty-view.text-2" = "New Expenses";
 "split-controller.empty-view.text-3" = " to this bill";
 "split-controller.edit" = "Edit";
-"split-controller.delete" = "Delete";
 "split-controller.cancel" = "Cancel";
 
 "split.view.settle-header" = "Settle";
@@ -44,3 +44,6 @@
 "expenses.new.split-differently.equally" = "Equally";
 "expenses.new.split-differently.amount" = "Amount";
 "expenses.new.save" = "Save";
+"expenses.new.delete" = "Delete";
+"expenses.new.cancel" = "Cancel";
+"expenses.new.delete-confirmation" = "Are you sure?";

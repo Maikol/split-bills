@@ -17,6 +17,8 @@ struct ExpenseView: View {
     var split: Split
     @ObservedObject var viewModel: ExpenseViewModel
 
+    @State private var showingDeleteAlert = false
+
     var body: some View {
         NavigationView {
             KeyboardHost {
@@ -35,8 +37,24 @@ struct ExpenseView: View {
                                 .apply(style: .body(.link))
                                 .alignment(.center)
                         }
+                        Button(action: {
+                            self.showingDeleteAlert.toggle()
+                        }) {
+                            Text("expenses.new.delete")
+                                .font(TextStyle.body(.dark).font)
+                                .alignment(.center)
+                        }.foregroundColor(.error)
                     }.disabled(!viewModel.isValid)
                 }
+            }
+            .alert(isPresented: $showingDeleteAlert) {
+                Alert(
+                    title: Text("expenses.new.delete-confirmation"),
+                    primaryButton: .cancel(),
+                    secondaryButton: .destructive(Text("expenses.new.delete"), action: {
+                        self.deleteExpense()
+                    })
+                )
             }
             .background(Color.light)
             .edgesIgnoringSafeArea(.bottom)
@@ -55,6 +73,12 @@ struct ExpenseView: View {
     func saveExpense() {
         let expense = viewModel.expense(with: split)
         controller.update(expense: expense, on: split)
+        self.isPresented.toggle()
+    }
+
+    func deleteExpense() {
+        let expense = viewModel.expense(with: split)
+        controller.remove(expense: expense, on: split)
         self.isPresented.toggle()
     }
 }

@@ -139,6 +139,7 @@ extension Color {
     static let fade = Color("fade")
     static let light = Color("light")
     static let link = Color("link")
+    static let error = Color("error")
 }
 
 extension UILabel {
