@@ -43,12 +43,12 @@ private extension NSAttributedString {
         let attributedString = NSMutableAttributedString()
 
         let boldAttributes = [
-            .foregroundColor: ColorStyle.dark.value,
+            .foregroundColor: UIColor.dark,
             .font: TextStyle.bodyLarge(.darkBold).uiFont
             ] as [NSAttributedString.Key : Any]
 
         let regularAttributes = [
-            .foregroundColor: ColorStyle.dark.value,
+            .foregroundColor: UIColor.dark,
             .font: TextStyle.bodyLarge(.dark).uiFont
             ] as [NSAttributedString.Key : Any]
 

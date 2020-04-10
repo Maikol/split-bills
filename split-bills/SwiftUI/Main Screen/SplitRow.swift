@@ -11,17 +11,27 @@ import SwiftUI
 struct SplitRow: View {
 
     var split: Split
+    var deleteAction: () -> Void
 
     var body: some View {
         NavigationLink(destination: SplitView(split: split)) {
             Text(split.eventName)
                 .apply(style: .body(.dark))
+                .contextMenu {
+                    Button(action: {
+                        self.deleteAction()
+                    }) {
+                        Text("Delete")
+                            .foregroundColor(.error)
+                        Image(systemName: "trash")
+                    }.foregroundColor(.primary)
+            }
         }
     }
 }
 
 struct SplitRow_Previews: PreviewProvider {
     static var previews: some View {
-        SplitRow(split: Split(id: 0, eventName: "Test", participants: []))
+        SplitRow(split: Split(id: 0, eventName: "Test", participants: [])) {}
     }
 }

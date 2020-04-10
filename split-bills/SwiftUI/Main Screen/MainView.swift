@@ -40,8 +40,10 @@ struct MainView: View {
                     ZStack(alignment: .bottomTrailing) {
                         List {
                             Section(header: FormSectionHeader(key: "root-controller.groups")) {
-                                ForEach(controller.splits) {
-                                    SplitRow(split: $0)
+                                ForEach(controller.splits) { split in
+                                    SplitRow(split: split) {
+                                        self.remove(split: split)
+                                    }
                                 }.onDelete(perform: removeSplit)
                             }
                         }.listStyle(GroupedListStyle())
@@ -64,8 +66,12 @@ struct MainView: View {
     private func removeSplit(at offsets: IndexSet) {
         for index in offsets {
             let split = controller.splits[index]
-            controller.remove(split: split)
+            remove(split: split)
         }
+    }
+
+    private func remove(split: Split) {
+        controller.remove(split: split)
     }
 }
 
