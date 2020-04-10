@@ -11,6 +11,7 @@ import SwiftUI
 struct SplitRow: View {
 
     var split: Split
+    var editAction: () -> Void
     var deleteAction: () -> Void
 
     var body: some View {
@@ -19,10 +20,16 @@ struct SplitRow: View {
                 .apply(style: .body(.dark))
                 .contextMenu {
                     Button(action: {
+                        self.editAction()
+                    }) {
+                        Text("Edit")
+                        Image(systemName: "pencil")
+                    }
+                    Button(action: {
                         self.deleteAction()
                     }) {
                         Text("Delete")
-                            .foregroundColor(.error)
+                            .foregroundColor(.error) // Not working
                         Image(systemName: "trash")
                     }.foregroundColor(.primary)
             }
@@ -32,6 +39,6 @@ struct SplitRow: View {
 
 struct SplitRow_Previews: PreviewProvider {
     static var previews: some View {
-        SplitRow(split: Split(id: 0, eventName: "Test", participants: [])) {}
+        SplitRow(split: Split(id: 0, eventName: "Test", participants: []), editAction: {}) {}
     }
 }

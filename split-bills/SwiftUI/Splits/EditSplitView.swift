@@ -1,24 +1,22 @@
 //
-//  NewSplitView.swift
+//  EditSplitView.swift
 //  split-bills
 //
-//  Created by Carlos Miguel de Elias on 5/4/20.
+//  Created by Carlos Miguel de Elias on 11/4/20.
 //  Copyright © 2020 Carlos Miguel de Elias. All rights reserved.
 //
 
 import SwiftUI
 
-struct NewSplitView: View {
+struct EditSplitView: View {
 
     @EnvironmentObject var controller: ApplicationController
 
+    @ObservedObject var split: Split
+
     @Binding var isPresented: Bool
 
-    @ObservedObject private var split = Split(
-        id: 0,
-        eventName: "",
-        participants: [Participant(name: ""), Participant(name: "")]
-    )
+    var exisintgParticipansCount: Int
 
     var body: some View {
         NavigationView {
@@ -29,9 +27,10 @@ struct NewSplitView: View {
                     }
 
                     Section(header: FormSectionHeader(key: "new-split-controller.participants")) {
-                        TextField("new-split-controller.participant-placeholder.you", text: $split.participants[0].name)
-                        TextField("new-split-controller.participant-placeholder.participant-1", text: $split.participants[1].name)
-                        ForEach(2 ..< split.participants.count, id: \.self) { index in
+                        ForEach(0 ..< exisintgParticipansCount, id: \.self) { index in
+                            TextField("Participant \(index + 1)", text: self.$split.participants[index].name)
+                        }
+                        ForEach(exisintgParticipansCount ..< split.participants.count, id: \.self) { index in
                             SplitParticipantRow(
                                 label: "Participant \(index)",
                                 participant: self.split.participants[index])
@@ -52,7 +51,7 @@ struct NewSplitView: View {
                     }
 
                     Section {
-                        Button(action: createSplit) {
+                        Button(action: saveSplit) {
                             Text("new-split-controller.save")
                                 .font(.headline)
                                 .accentColor(.link)
@@ -75,19 +74,15 @@ struct NewSplitView: View {
         }
     }
 
-    private func deleteParticipant(at offsets: IndexSet) {
-        split.participants.remove(atOffsets: offsets)
-    }
-
-    func createSplit() {
+    func saveSplit() {
         split.participants.removeAll { $0.name.isEmpty }
-        controller.createEvent(name: split.eventName, participants: split.participants)
+        controller.update(split: split)
         isPresented.toggle()
     }
 }
 
-struct NewSplitView_Previews: PreviewProvider {
+struct SplitEditView_Previews: PreviewProvider {
     static var previews: some View {
-        NewSplitView(isPresented: .constant(true))
+        EditSplitView(split: .example, isPresented: .constant(true), exisintgParticipansCount: 2)
     }
 }

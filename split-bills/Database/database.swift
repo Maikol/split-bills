@@ -55,6 +55,17 @@ struct SplitDatabase {
         return try db.prepare(table).compactMap { try split(with: $0) }
     }
 
+    func update(split: Split) throws {
+        let row = table.filter(id == split.id)
+        let update = row.update(eventName <- split.eventName)
+
+        try db.run(update)
+        let oldParticipants = try participantsDatabase.participants(for: split.id)
+        let newParticipants = split.participants.difference(from: oldParticipants)
+
+        try newParticipants.forEach { try participantsDatabase.add(participant: $0, splitId: split.id) }
+    }
+
     private func split(with row: SQLite.Row) throws -> Split? {
         let participants = try participantsDatabase.participants(for: row[id])
         let expenses = try expensesDatabase.getAll(splitName: row[eventName])

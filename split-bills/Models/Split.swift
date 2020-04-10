@@ -22,6 +22,16 @@ final class Split: Identifiable, ObservableObject {
         self.participants = participants
         self.expenses = expenses
     }
+
+    var isValid: Bool {
+        guard !eventName.isEmpty,
+            let firstParticipant = participants.first, !firstParticipant.name.isEmpty,
+            let secondParticipant = participants[safe: 1], !secondParticipant.name.isEmpty else {
+                return false
+        }
+
+        return true
+    }
 }
 
 final class Participant: Codable, ObservableObject {

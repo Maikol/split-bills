@@ -11,9 +11,15 @@ import SwiftUI
 
 struct MainView: View {
 
+    private enum SplitSheet {
+        case new
+        case edit(Split)
+    }
+
     @EnvironmentObject var controller: ApplicationController
 
-    @State private var showingNewSplit = false
+    @State private var selectedSheet = SplitSheet.new
+    @State private var showingSplitSheet = false
 
     init() {
         // TODO: There should be a better way
@@ -35,13 +41,21 @@ struct MainView: View {
         NavigationView {
             Group {
                 if controller.splits.isEmpty {
-                    MainEmptyView { self.showingNewSplit.toggle() }
+                    MainEmptyView {
+                        self.selectedSheet = .new
+                        self.showingSplitSheet.toggle()
+                    }
                 } else {
                     ZStack(alignment: .bottomTrailing) {
                         List {
                             Section(header: FormSectionHeader(key: "root-controller.groups")) {
                                 ForEach(controller.splits) { split in
-                                    SplitRow(split: split) {
+                                    SplitRow(
+                                        split: split,
+                                        editAction: {
+                                            self.selectedSheet = .edit(split)
+                                            self.showingSplitSheet.toggle()
+                                    }) {
                                         self.remove(split: split)
                                     }
                                 }.onDelete(perform: removeSplit)
@@ -49,17 +63,33 @@ struct MainView: View {
                         }.listStyle(GroupedListStyle())
 
                         PlusButton {
-                            self.showingNewSplit.toggle()
+                            self.selectedSheet = .new
+                            self.showingSplitSheet.toggle()
                         }.offset(x: -24, y: -44)
                     }
                 }
             }
-            .sheet(isPresented: $showingNewSplit) {
-                NewSplitView(isPresented: self.$showingNewSplit).environmentObject(self.controller)
+            .sheet(isPresented: $showingSplitSheet) {
+                self.containedSheet()
             }
             .background(Color.background)
             .edgesIgnoringSafeArea(.bottom)
             .navigationBarTitle("root-controller.title")
+        }
+    }
+
+    private func containedSheet() -> AnyView {
+        switch selectedSheet {
+        case .new:
+            return AnyView(NewSplitView(isPresented: self.$showingSplitSheet).environmentObject(self.controller))
+        case let .edit(split):
+            return AnyView(
+                EditSplitView(
+                    split: split,
+                    isPresented: self.$showingSplitSheet,
+                    exisintgParticipansCount: split.participants.count
+                ).environmentObject(self.controller)
+            )
         }
     }
 

@@ -35,6 +35,14 @@ final class ApplicationController: ObservableObject {
         }
     }
 
+    func update(split: Split) {
+        do {
+            try splitDatabase.update(split: split)
+        } catch {
+            print("failed to update split")
+        }
+    }
+
     @discardableResult func saveExpense(split: Split, expense: Expense) -> Expense? {
         do {
             let result = try expensesDatabase.add(expense: expense, splitName: split.eventName)
