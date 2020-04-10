@@ -54,13 +54,14 @@ struct NewSplitView: View {
                     Section {
                         Button(action: createSplit) {
                             Text("new-split-controller.save")
-                                .apply(style: .body(.link))
+                                .font(.headline)
+                                .accentColor(.link)
                                 .alignment(.center)
                         }
                     }.disabled(!split.isValid)
                 }
             }
-            .background(Color.light)
+            .background(Color.background)
             .edgesIgnoringSafeArea(.bottom)
             .navigationBarTitle(Text("new-split-controller.title"), displayMode: .inline)
             .navigationBarItems(trailing:

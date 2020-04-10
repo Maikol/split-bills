@@ -34,14 +34,14 @@ struct ExpenseView: View {
                     Section {
                         Button(action: saveExpense) {
                             Text("new-split-controller.save")
-                                .apply(style: .body(.link))
+                                .font(.headline)
                                 .alignment(.center)
-                        }
+                        }.foregroundColor(.link)
                         Button(action: {
                             self.showingDeleteAlert.toggle()
                         }) {
                             Text("expenses.new.delete")
-                                .font(TextStyle.body(.dark).font)
+                                .font(.headline)
                                 .alignment(.center)
                         }.foregroundColor(.error)
                     }.disabled(!viewModel.isValid)
@@ -56,7 +56,7 @@ struct ExpenseView: View {
                     })
                 )
             }
-            .background(Color.light)
+            .background(Color.background)
             .edgesIgnoringSafeArea(.bottom)
             .navigationBarTitle(Text(viewModel.description), displayMode: .inline)
             .navigationBarItems(trailing:

@@ -45,7 +45,7 @@ struct SplitView: View {
         .sheet(isPresented: $showingModal) {
             self.containedSheet()
         }
-        .background(Color.light)
+        .background(Color.background)
         .edgesIgnoringSafeArea(.bottom)
         .navigationBarTitle(Text(split.eventName), displayMode: .inline)
         .listStyle(GroupedListStyle())

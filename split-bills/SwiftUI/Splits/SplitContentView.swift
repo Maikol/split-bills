@@ -46,7 +46,7 @@ struct SplitContentView: View {
                             Text(String(expense.amount))
                                 .apply(style: .body(.darkBold))
                         }
-                    }
+                    }.foregroundColor(.primary)
                 }.onDelete(perform: removeExpense)
             }
         }
@@ -63,7 +63,7 @@ struct SplitContentView: View {
 private extension Split {
 
     var payments: [Payment] {
-        settle(expenses: expenses)
+        settle(expenses: expenses).sorted { $0.payer.name < $1.payer.name }
     }
 }
 

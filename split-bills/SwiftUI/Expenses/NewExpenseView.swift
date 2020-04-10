@@ -45,7 +45,7 @@ struct NewExpenseView: View {
                     }.disabled(!viewModel.isValid)
                 }
             }
-            .background(Color.light)
+            .background(Color.background)
             .edgesIgnoringSafeArea(.bottom)
             .navigationBarTitle(Text("expenses.new.title"), displayMode: .inline)
             .navigationBarItems(trailing:

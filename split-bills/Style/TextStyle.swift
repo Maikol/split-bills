@@ -137,9 +137,20 @@ extension Color {
     static let dark = Color("dark")
     static let white = Color("white")
     static let fade = Color("fade")
-    static let light = Color("light")
+    static let background = Color("background")
     static let link = Color("link")
     static let error = Color("error")
+}
+
+extension UIColor {
+
+    static let brand = UIColor(named: "brand")
+    static let dark = UIColor(named: "dark")
+    static let white = UIColor(named: "white")
+    static let fade = UIColor(named: "fade")
+    static let background = UIColor(named: "background")
+    static let link = UIColor(named: "link")
+    static let error = UIColor(named: "error")
 }
 
 extension UILabel {

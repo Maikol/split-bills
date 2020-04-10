@@ -20,7 +20,7 @@ struct MainView: View {
         let style = UINavigationController.Style.default
         let appearance = UINavigationBarAppearance()
         appearance.configureWithDefaultBackground()
-        appearance.backgroundColor = style.backgroundColor.value
+        appearance.backgroundColor = UIColor.brand
         appearance.titleTextAttributes = [.foregroundColor: style.textColor.value, .font: style.font]
         appearance.largeTitleTextAttributes = [.foregroundColor: style.textColor.value, .font: style.largeFont]
 
@@ -55,7 +55,7 @@ struct MainView: View {
             .sheet(isPresented: $showingNewSplit) {
                 NewSplitView(isPresented: self.$showingNewSplit).environmentObject(self.controller)
             }
-            .background(Color.light)
+            .background(Color.background)
             .edgesIgnoringSafeArea(.bottom)
             .navigationBarTitle("root-controller.title")
         }

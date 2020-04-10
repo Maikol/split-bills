@@ -397,7 +397,7 @@
 				DF5CB4D62118483A00F39DC0 /* Sources */,
 				DF5CB4D72118483A00F39DC0 /* Frameworks */,
 				DF5CB4D82118483A00F39DC0 /* Resources */,
-				DF5CB4F22118498100F39DC0 /* ShellScript */,
+				DF5CB4F22118498100F39DC0 /* Run Script */,
 			);
 			buildRules = (
 			);
@@ -487,9 +487,9 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		DF5CB4F22118498100F39DC0 /* ShellScript */ = {
+		DF5CB4F22118498100F39DC0 /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			files = (
 			);
 			inputPaths = (
@@ -497,6 +497,7 @@
 				"$(SRCROOT)/Carthage/Build/iOS/Eureka.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/SQLite.framework",
 			);
+			name = "Run Script";
 			outputPaths = (
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/SnapKit.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Eureka.framework",
