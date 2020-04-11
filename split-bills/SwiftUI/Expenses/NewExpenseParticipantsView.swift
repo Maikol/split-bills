@@ -29,25 +29,25 @@ struct NewExpenseParticipantsView: View {
                     }.pickerStyle(SegmentedPickerStyle())
                 }
 
-                containedView()
+                containedView
             }
         }
     }
 
-    private func containedView() -> AnyView {
+    private var containedView: some View {
         guard let splitType = ExpenseViewModel.SplitTpe(rawValue: viewModel.splitTypeIndex) else {
             fatalError("This shouldn't happen")
         }
 
         switch splitType {
         case .equally:
-            return AnyView(Section {
+            return Section {
                 ParticipantSelectionView(viewModel: viewModel)
-            })
+            }.eraseToAnyView()
         case .amount:
-            return AnyView(Section {
+            return Section {
                 ParticipantAmountView(viewModel: viewModel)
-            })
+            }.eraseToAnyView()
         }
     }
 }

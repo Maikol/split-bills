@@ -21,4 +21,8 @@ extension View {
     func alignment(_ alignment: Alignment) -> some View {
         return self.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: alignment)
     }
+
+    func eraseToAnyView() -> AnyView {
+        return AnyView(self)
+    }
 }

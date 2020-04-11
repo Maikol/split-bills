@@ -70,7 +70,7 @@ struct MainView: View {
                 }
             }
             .sheet(isPresented: $showingSplitSheet) {
-                self.containedSheet()
+                self.containedSheet
             }
             .background(Color.background)
             .edgesIgnoringSafeArea(.bottom)
@@ -78,18 +78,16 @@ struct MainView: View {
         }
     }
 
-    private func containedSheet() -> AnyView {
+    private var containedSheet: some View {
         switch selectedSheet {
         case .new:
-            return AnyView(NewSplitView(isPresented: self.$showingSplitSheet).environmentObject(self.controller))
+            return NewSplitView(isPresented: self.$showingSplitSheet).environmentObject(self.controller).eraseToAnyView()
         case let .edit(split):
-            return AnyView(
-                EditSplitView(
-                    split: split,
-                    isPresented: self.$showingSplitSheet,
-                    exisintgParticipansCount: split.participants.count
-                ).environmentObject(self.controller)
-            )
+            return EditSplitView(
+                split: split,
+                isPresented: self.$showingSplitSheet,
+                exisintgParticipansCount: split.participants.count
+            ).environmentObject(self.controller).eraseToAnyView()
         }
     }
 

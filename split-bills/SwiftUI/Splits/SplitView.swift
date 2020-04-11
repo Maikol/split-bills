@@ -43,7 +43,7 @@ struct SplitView: View {
             }
         }
         .sheet(isPresented: $showingModal) {
-            self.containedSheet()
+            self.containedSheet
         }
         .background(Color.background)
         .edgesIgnoringSafeArea(.bottom)
@@ -51,19 +51,19 @@ struct SplitView: View {
         .listStyle(GroupedListStyle())
     }
 
-    func containedSheet() -> AnyView {
+    private var containedSheet: some View {
         switch sheetType {
         case .newExpense:
-            return AnyView(NewExpenseView(
+            return NewExpenseView(
                 split: self.split,
                 isPresented: self.$showingModal
-            ).environmentObject(self.controller))
+                ).environmentObject(self.controller).eraseToAnyView()
         case let .expense(expense):
-            return AnyView(ExpenseView(
+            return ExpenseView(
                 isPresented: self.$showingModal,
                 split: self.split,
                 viewModel: expense.viewModel(with: self.split)
-            ).environmentObject(self.controller))
+            ).environmentObject(self.controller).eraseToAnyView()
         }
     }
 }

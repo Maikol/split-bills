@@ -276,6 +276,7 @@
 		DF5CB4DC2118483A00F39DC0 /* split-bills */ = {
 			isa = PBXGroup;
 			children = (
+				DF72A4FC244188540034742B /* App */,
 				DF4C6DBF2437677B00954DC7 /* Controllers */,
 				DF62DA9324375E4B002807B4 /* Coordinator */,
 				DF1C7DB221290C2400B8FA0C /* UI Extensions */,
@@ -285,8 +286,6 @@
 				DF5CB5002118634100F39DC0 /* Models */,
 				DF1A03DA2438574600AD4E64 /* SwiftUI */,
 				DF5CB4F82118559800F39DC0 /* UI */,
-				DF5CB4DD2118483A00F39DC0 /* AppDelegate.swift */,
-				50013953243D967C00E36B85 /* SceneDelegate.swift */,
 				DF5CB50A2119917E00F39DC0 /* Resources */,
 				DF5CB4E62118483C00F39DC0 /* LaunchScreen.storyboard */,
 				DF5CB4E92118483C00F39DC0 /* Info.plist */,
@@ -337,6 +336,15 @@
 				DF62DA9624375ED8002807B4 /* MainCoordinator.swift */,
 			);
 			path = Coordinator;
+			sourceTree = "<group>";
+		};
+		DF72A4FC244188540034742B /* App */ = {
+			isa = PBXGroup;
+			children = (
+				DF5CB4DD2118483A00F39DC0 /* AppDelegate.swift */,
+				50013953243D967C00E36B85 /* SceneDelegate.swift */,
+			);
+			path = App;
 			sourceTree = "<group>";
 		};
 		DF890F98211C541000305528 /* Utils */ = {
