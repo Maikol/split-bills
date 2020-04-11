@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Expense {
+struct Expense: Identifiable {
 
     enum SplitType: Int {
         case equallyWithAll
@@ -31,8 +31,9 @@ struct ExpenseWeight {
     let weight: Double
 }
 
-struct Payment {
+struct Payment: Identifiable {
 
+    let id = UUID()
     let payer: Participant
     let receiver: Participant
     let amount: Double
@@ -51,11 +52,9 @@ extension Expense: Equatable {
 
 extension Expense {
 
-    static func equallySplited(with split: Split, payer: Participant, participants: [Participant], description: String, amount: Double, id: Int64?) -> Expense? {
-        guard participants.count > 0 else {
-            print("Tried to create an expense with no participants")
-            return nil
-        }
+    static func equallySplited(with split: Split, payer: Participant, participants: [Participant], description: String, amount: Double, id: Int64? = nil) -> Expense? {
+        precondition(participants.count > 0, "There needs to be at least one participant")
+        precondition(amount > 0, "Expense needs to have a valid value")
 
         let weight = 1 / Double(participants.count)
         let participantsWeight = participants.map { ExpenseWeight(participant: $0, weight: weight) }
@@ -65,22 +64,18 @@ extension Expense {
     }
 
     typealias Amount = (Participant, Double)
-    static func splitByAmount(with split: Split, payer: Participant, amounts: [Amount], description: String, amount: Double, id: Int64?) -> Expense? {
-        guard amounts.count > 0 else {
-            print("Tried to create an expense with no participants")
-            return nil
-        }
+    static func splitByAmount(with split: Split, payer: Participant, amounts: [Amount], description: String, amount: Double, id: Int64? = nil) -> Expense? {
+        precondition(amounts.count > 0, "There needs to be at least one participant")
+        precondition(amount > 0, "Expense needs to have a valid value")
 
         let participantsWeight = amounts.map { ExpenseWeight(participant: $0.0, weight: $0.1 / amount) }
         return Expense(id: id ?? INT64_MAX, payer: payer, description: description, amount: amount, participantsWeight: participantsWeight, splitType: .byAmount)
     }
 
     typealias Weight = (Participant, Double)
-    static func splitByWeight(with split: Split, payer: Participant, weights: [Weight], description: String, amount: Double, id: Int64?) -> Expense? {
-        guard weights.count > 0 else {
-            print("Tried to create an expense with no participants")
-            return nil
-        }
+    static func splitByWeight(with split: Split, payer: Participant, weights: [Weight], description: String, amount: Double, id: Int64? = nil) -> Expense? {
+        precondition(weights.count > 0, "There needs to be at least one participant")
+        precondition(amount > 0, "Expense needs to have a valid value")
 
         let totalWeight = weights.map { $0.1 }.reduce(0) { return $0 + $1 }
         guard totalWeight > 0 else {

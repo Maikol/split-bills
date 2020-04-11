@@ -8,17 +8,41 @@
 
 import Foundation
 
-struct Split {
+final class Split: Identifiable, ObservableObject {
+
+    @Published var eventName: String
+    @Published var participants: [Participant]
+    @Published var expenses:  [Expense]
 
     let id: Int64
-    let eventName: String
-    let participants: [Participant]
+
+    init(id: Int64, eventName: String, participants: [Participant], expenses:  [Expense] = []) {
+        self.id = id
+        self.eventName = eventName
+        self.participants = participants
+        self.expenses = expenses
+    }
+
+    var isValid: Bool {
+        guard !eventName.isEmpty,
+            let firstParticipant = participants.first, !firstParticipant.name.isEmpty,
+            let secondParticipant = participants[safe: 1], !secondParticipant.name.isEmpty else {
+                return false
+        }
+
+        return true
+    }
 }
 
-struct Participant {
+final class Participant: Codable, ObservableObject {
 
-    let name: String
-    let email: String?
+    var name: String
+    var email: String?
+
+    init(name: String, email: String? = nil) {
+        self.name = name
+        self.email = email
+    }
 }
 
 extension Participant: Equatable, Hashable {
@@ -27,8 +51,8 @@ extension Participant: Equatable, Hashable {
         return lhs.name == rhs.name
     }
 
-    var hashValue: Int {
-        return name.hashValue
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(name.hashValue)
     }
 }
 
@@ -82,3 +106,10 @@ extension Split: Equatable {
         return lhs.eventName == rhs.eventName // Maybe do more checks in the future
     }
 }
+
+#if DEBUG
+extension Split {
+
+    static let example = Split(id: 0, eventName: "Test", participants: [.init(name: "Maikol"), .init(name: "Caru")])
+}
+#endif
