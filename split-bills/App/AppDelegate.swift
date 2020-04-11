@@ -7,29 +7,12 @@
 //
 
 import UIKit
-import Eureka
 import SwiftUI
 
 @UIApplicationMain
 final class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    // Legacy
-    var window: UIWindow?
-    var coordinator: MainCoordinator?
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Legacy
-        // let rootNavigationViewController = UINavigationController()
-        //
-        // coordinator = MainCoordinator(navigationController: rootNavigationViewController)
-        // coordinator?.start()
-        //
-        // window = UIWindow(frame: UIScreen.main.bounds)
-        // window!.rootViewController = rootNavigationViewController
-        // window!.makeKeyAndVisible()
-        //
-        // Form.setUpDefaultStyle()
-
         return true
     }
 

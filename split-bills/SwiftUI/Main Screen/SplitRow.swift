@@ -17,7 +17,7 @@ struct SplitRow: View {
     var body: some View {
         NavigationLink(destination: SplitView(split: split)) {
             Text(split.eventName)
-                .apply(style: .body(.dark))
+                .apply(font: .body, color: .dark)
                 .contextMenu {
                     Button(action: {
                         self.editAction()

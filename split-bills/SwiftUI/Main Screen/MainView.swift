@@ -23,16 +23,15 @@ struct MainView: View {
 
     init() {
         // TODO: There should be a better way
-        let style = UINavigationController.Style.default
         let appearance = UINavigationBarAppearance()
         appearance.configureWithDefaultBackground()
         appearance.backgroundColor = UIColor.brand
-        appearance.titleTextAttributes = [.foregroundColor: style.textColor.value, .font: style.font]
-        appearance.largeTitleTextAttributes = [.foregroundColor: style.textColor.value, .font: style.largeFont]
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
 
         UINavigationBar.appearance().standardAppearance = appearance
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
-        UINavigationBar.appearance().tintColor = style.textColor.value
+        UINavigationBar.appearance().tintColor = .white
 
         UITableView.appearance().backgroundColor = .clear
     }

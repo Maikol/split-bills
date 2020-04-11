@@ -16,7 +16,7 @@ struct ParticipantTextEntryRow: View {
     var body: some View {
         HStack {
             Text(name)
-                .apply(style: .body(.darkBold))
+                .apply(font: .body, color: .dark, weight: .bold)
             Spacer()
             TextField("0", text: $amount)
                 .multilineTextAlignment(.trailing)

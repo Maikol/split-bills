@@ -87,55 +87,6 @@ final class ApplicationController: ObservableObject {
     }
 }
 
-// Legacy
-struct ExpenseController {
-
-    static let shared = ExpenseController()
-
-    private let expensesDatabase: ExpenseDatabase?
-
-    init() {
-        do {
-            expensesDatabase = try ExpenseDatabase(databasePath: URL.documentsDirectory.absoluteString)
-        } catch {
-            expensesDatabase = nil
-        }
-    }
-
-    func add(expense: Expense, in split: Split) {
-        _ = ((try? expensesDatabase?.add(expense: expense, splitName: split.eventName)) as Expense??)
-    }
-
-    func update(expense: Expense) {
-        ((try? expensesDatabase?.update(expense: expense)) as ()??)
-    }
-
-    func remove(expense: Expense) -> Bool {
-        guard let expenseDatabase = self.expensesDatabase else {
-            return false
-        }
-
-        do {
-            try expenseDatabase.remove(expense: expense)
-            return true
-        } catch {
-            return false
-        }
-    }
-
-    func getAll(for split: Split) -> [Expense] {
-        guard let expensesDatabase = expensesDatabase else {
-            return []
-        }
-
-        do {
-            return try expensesDatabase.getAll(splitName: split.eventName)
-        } catch {
-            return []
-        }
-    }
-}
-
 extension URL {
 
     static var documentsDirectory: URL {

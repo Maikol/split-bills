@@ -44,12 +44,12 @@ private extension NSAttributedString {
 
         let boldAttributes = [
             .foregroundColor: UIColor.dark,
-            .font: TextStyle.bodyLarge(.darkBold).uiFont
+            .font: UIFont.preferredFont(forTextStyle: .title3).bold()
             ] as [NSAttributedString.Key : Any]
 
         let regularAttributes = [
             .foregroundColor: UIColor.dark,
-            .font: TextStyle.bodyLarge(.dark).uiFont
+            .font: UIFont.preferredFont(forTextStyle: .title3)
             ] as [NSAttributedString.Key : Any]
 
         attributedString.append(NSAttributedString(

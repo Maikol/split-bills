@@ -13,7 +13,7 @@ struct FormSectionHeader: View {
 
     var body: some View {
         Text(key)
-            .apply(style: .bodySmall(.darkBold))
+            .apply(font: .subheadline, color: .dark, weight: .bold)
             .padding(.top)
     }
 }

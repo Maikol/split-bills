@@ -49,18 +49,18 @@ private extension NSAttributedString {
         let attributedString = NSMutableAttributedString()
 
         let boldHeadingAttributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.dark,
-            NSAttributedString.Key.font: TextStyle.heading2DarkBold.uiFont
+            .foregroundColor: UIColor.dark,
+            .font: UIFont.preferredFont(forTextStyle: .title2).bold()
             ] as [NSAttributedString.Key : Any]
 
         let boldAttributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.dark,
-            NSAttributedString.Key.font: TextStyle.bodyLarge(.darkBold).uiFont
+            .foregroundColor: UIColor.dark,
+            .font: UIFont.preferredFont(forTextStyle: .title3).bold()
             ] as [NSAttributedString.Key : Any]
 
         let regularAttributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.dark,
-            NSAttributedString.Key.font: TextStyle.bodyLarge(.dark).uiFont
+            .foregroundColor: UIColor.dark,
+            .font: UIFont.preferredFont(forTextStyle: .title3)
             ] as [NSAttributedString.Key : Any]
 
         attributedString.append(NSAttributedString(

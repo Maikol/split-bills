@@ -39,7 +39,7 @@ struct NewExpenseView: View {
                     Section {
                         Button(action: createExpense) {
                             Text("new-split-controller.save")
-                                .apply(style: .body(.link))
+                                .apply(font: .body, color: .link)
                                 .alignment(.center)
                         }
                     }.disabled(!viewModel.isValid)
@@ -53,7 +53,7 @@ struct NewExpenseView: View {
                     self.isPresented.toggle()
                 }) {
                     Text("split-controller.cancel")
-                        .apply(style: .body(.white))
+                        .apply(font: .body, color: .white)
                 }
             )
         }

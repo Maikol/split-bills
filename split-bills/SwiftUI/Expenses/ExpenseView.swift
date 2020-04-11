@@ -64,7 +64,7 @@ struct ExpenseView: View {
                     self.isPresented.toggle()
                 }) {
                     Text("split-controller.cancel")
-                        .apply(style: .body(.white))
+                        .apply(font: .body, color: .white)
                 }
             )
         }

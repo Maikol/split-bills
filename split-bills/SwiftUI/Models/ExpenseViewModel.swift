@@ -44,7 +44,7 @@ final class ExpenseViewModel: ObservableObject {
 
     var isValid: Bool {
         guard !description.isEmpty,
-            let amount = Double(string: amount), amount > 0 else {
+            let amount = Double(amount), amount > 0 else {
                 return false
         }
 

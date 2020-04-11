@@ -19,7 +19,7 @@ struct ParticipantSelectRow: View {
         }) {
             HStack {
                 Text(name)
-                    .apply(style: .body(.darkBold))
+                    .apply(font: .body, color: .dark, weight: .bold)
                 Spacer()
                 if isSelected {
                     Image(systemName: "checkmark")

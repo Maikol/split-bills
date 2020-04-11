@@ -22,14 +22,14 @@ struct SplitContentView: View {
                 ForEach(split.payments) { payment in
                     HStack {
                         Text(payment.payer.name)
-                            .apply(style: .body(.darkBold))
+                            .apply(font: .body, color: .dark, weight: .bold)
                         Text("split.view.sttle.pays-to")
-                            .apply(style: .body(.dark))
+                            .apply(font: .body, color: .dark)
                         Text(payment.receiver.name)
-                            .apply(style: .body(.darkBold))
+                            .apply(font: .body, color: .dark, weight: .bold)
                         Spacer()
                         Text(String(format: "%.2f", payment.amount))
-                            .apply(style: .body(.darkBold))
+                            .apply(font: .body, color: .dark, weight: .bold)
                     }
                 }
             }
@@ -41,10 +41,10 @@ struct SplitContentView: View {
                     }) {
                         HStack {
                             Text(expense.description)
-                                .apply(style: .body(.dark))
+                                .apply(font: .body, color: .dark)
                             Spacer()
                             Text(String(expense.amount))
-                                .apply(style: .body(.darkBold))
+                                .apply(font: .body, color: .dark, weight: .bold)
                         }
                     }.foregroundColor(.primary)
                 }.onDelete(perform: removeExpense)

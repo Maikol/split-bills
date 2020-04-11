@@ -20,7 +20,7 @@ struct NewExpenseInfoView: View {
         Section(header: FormSectionHeader(key: "expenses.new.info-header")) {
             TextField("expenses.new.info-placeholder", text: $description)
 
-            Picker(selection: $payerIndex, label: Text("expenses.new.payer-header").apply(style: .body(.darkBold))) {
+            Picker(selection: $payerIndex, label: Text("expenses.new.payer-header").apply(font: .body, color: .dark, weight: .bold)) {
                 ForEach(0 ..< participants.count, id: \.self) {
                     Text(self.participants[$0].name)
                 }

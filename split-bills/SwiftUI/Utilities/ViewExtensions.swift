@@ -10,9 +10,10 @@ import SwiftUI
 
 extension Text {
 
-    func apply(style: TextStyle) -> some View {
-        self.font(style.font)
-            .accentColor(style.color)
+    func apply(font: Font, color: Color, weight: Font.Weight = .regular) -> some View {
+        self.font(font)
+            .fontWeight(weight)
+            .accentColor(color)
     }
 }
 

@@ -45,7 +45,7 @@ struct EditSplitView: View {
                                 Image(systemName: "plus.circle.fill")
                                     .accentColor(.green)
                                 Text("new-split-controller.add-participant")
-                                    .apply(style: .body(.link))
+                                    .apply(font: .body, color: .link)
                             }
                         }
                     }
@@ -68,7 +68,7 @@ struct EditSplitView: View {
                     self.isPresented.toggle()
                 }) {
                     Text("split-controller.cancel")
-                        .apply(style: .body(.white))
+                        .apply(font: .body, color: .white)
                 }
             )
         }
