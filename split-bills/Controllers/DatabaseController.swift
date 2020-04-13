@@ -1,5 +1,5 @@
 //
-//  SplitController.swift
+//  DatabaseController.swift
 //  split-bills
 //
 //  Created by Carlos Miguel de Elias on 6/8/18.
@@ -7,13 +7,14 @@
 //
 
 import Foundation
+import Combine
 
-final class ApplicationController: ObservableObject {
+final class DatabaseController: ObservableObject {
 
     @Published var splits: [Split]
 
     // Legacy
-    static let shared = ApplicationController()
+    static let shared = DatabaseController()
 
     private let splitDatabase: SplitDatabase
     private let expensesDatabase: ExpenseDatabase
@@ -87,6 +88,43 @@ final class ApplicationController: ObservableObject {
     }
 }
 
+enum DatabaseAPI {
+
+    static func splits() -> AnyPublisher<[SplitDTO], Never> {
+        return Deferred {
+            Future<[SplitDTO], Never> { promise in
+                let splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
+                let splits = try! splitDatabase.getAll().map {
+                    SplitDTO(id: $0.id, name: $0.eventName, participants: $0.participants.map { .init(name: $0.name) })
+                }
+                promise(.success(splits))
+            }
+        }.eraseToAnyPublisher()
+    }
+
+    static func removeSplit(id: Int64, name: String) -> AnyPublisher<Void, Never> {
+        return Deferred {
+            Future<Void, Never> { promise in
+                let splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
+                try! splitDatabase.remove(split: Split(id: id, eventName: name, participants: []))
+                promise(.success(()))
+            }
+        }.eraseToAnyPublisher()
+    }
+}
+
+// MARK: - DTOs
+
+struct SplitDTO {
+    let id: Int64
+    let name: String
+    let participants: [ParticipantDTO]
+}
+
+struct ParticipantDTO {
+    let name: String
+}
+
 extension URL {
 
     static var documentsDirectory: URL {
@@ -99,3 +137,9 @@ extension URL {
         return documentsURL
     }
 }
+
+#if DEBUG
+extension SplitDTO {
+    static let example = SplitDTO(id: 0, name: "Dinner", participants: [.init(name: "Bob"), .init(name: "Alice")])
+}
+#endif

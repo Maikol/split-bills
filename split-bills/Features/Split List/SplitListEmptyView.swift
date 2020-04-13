@@ -1,5 +1,5 @@
 //
-//  MainEmptyView.swift
+//  SplitListEmptyView.swift
 //  split-bills
 //
 //  Created by Carlos DeElias on 6/4/20.
@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct MainEmptyView: View {
+struct SplitListEmptyView: View {
 
     var action: () -> Void
 
@@ -39,7 +39,7 @@ struct MainEmptyView: View {
 
 struct MainEmptyView_Previews: PreviewProvider {
     static var previews: some View {
-        MainEmptyView(action: {})
+        SplitListEmptyView(action: {})
     }
 }
 

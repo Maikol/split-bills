@@ -15,7 +15,7 @@ struct SplitView: View {
         case expense(Expense)
     }
 
-    @EnvironmentObject var controller: ApplicationController
+    @EnvironmentObject var controller: DatabaseController
 
     @ObservedObject var split: Split
 

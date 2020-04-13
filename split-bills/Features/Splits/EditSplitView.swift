@@ -10,7 +10,7 @@ import SwiftUI
 
 struct EditSplitView: View {
 
-    @EnvironmentObject var controller: ApplicationController
+    @EnvironmentObject var controller: DatabaseController
 
     @ObservedObject var split: Split
 

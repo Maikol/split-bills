@@ -10,7 +10,7 @@ import SwiftUI
 
 struct ExpenseView: View {
 
-    @EnvironmentObject var controller: ApplicationController
+    @EnvironmentObject var controller: DatabaseController
 
     @Binding var isPresented: Bool
 

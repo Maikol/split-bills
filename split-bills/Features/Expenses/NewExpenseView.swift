@@ -10,7 +10,7 @@ import SwiftUI
 
 struct NewExpenseView: View {
 
-    @EnvironmentObject var controller: ApplicationController
+    @EnvironmentObject var controller: DatabaseController
 
     var split: Split
 
