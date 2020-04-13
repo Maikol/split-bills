@@ -15,7 +15,6 @@ final class SplitListViewModel: ObservableObject {
     @Published var sheet: Sheet? = nil
 
     private var bag = Set<AnyCancellable>()
-
     private let input = PassthroughSubject<Event, Never>()
 
     init() {
@@ -56,20 +55,22 @@ extension SplitListViewModel {
         case onAppear
         case onSplitsLoaded([ListItem])
         case onRemoveSplit(ListItem)
+        case onRemoveSplits(offsets: IndexSet)
         case onReload
 
-        var removedSplit: ListItem? {
+        fileprivate func splitsToRemove(from listItems: [ListItem]) -> [ListItem] {
             switch self {
-            case let .onRemoveSplit(item):
-                return item
+            case let .onRemoveSplit(item) where listItems.contains(item):
+                return [item]
+            case let .onRemoveSplits(offsets):
+                return offsets.map { listItems[$0] }
             default:
-                return nil
+                return []
             }
         }
     }
 
     struct Sheet: Identifiable {
-
         enum Style {
             case new
             case edit(ListItem)
@@ -79,15 +80,13 @@ extension SplitListViewModel {
         let style: Style
     }
 
-    struct ListItem: Identifiable {
+    struct ListItem: Identifiable, Equatable {
         let id: Int64
         let name: String
-        let participants: [String]
 
         init(split: SplitDTO) {
             id = split.id
             name = split.name
-            participants = split.participants.map { $0.name }
         }
     }
 }
@@ -135,11 +134,13 @@ extension SplitListViewModel {
 
     static func whenRemovingSplit(input: AnyPublisher<Event, Never>) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
-            guard case .loaded = state else { return Empty().eraseToAnyPublisher() }
+            guard case let .loaded(items) = state else { return Empty().eraseToAnyPublisher() }
 
-            return input.compactMap { $0.removedSplit }
-                .flatMap { DatabaseAPI.removeSplit(id: $0.id, name: $0.name) }
-                .map { Event.onReload }
+            return input.map { $0.splitsToRemove(from: items) }
+                .filter { $0.isEmpty }
+                .compactMap { $0.map { DatabaseAPI.removeSplit(id: $0.id, name: $0.name) } }
+                .collect()
+                .map { _ in Event.onReload }
                 .eraseToAnyPublisher()
         }
     }

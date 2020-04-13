@@ -11,7 +11,7 @@ import SwiftUI
 struct SplitParticipantRow: View {
 
     var label: String
-    @ObservedObject var participant: Participant
+    @Binding var name: String
     var deleteAction: () -> Void
 
     var body: some View {
@@ -20,13 +20,13 @@ struct SplitParticipantRow: View {
                 Image(systemName: "minus.circle.fill")
                     .accentColor(.red)
             }
-            TextField(label, text: $participant.name)
+            TextField(label, text: $name)
         }
     }
 }
 
 struct SplitParticipantRow_Previews: PreviewProvider {
     static var previews: some View {
-        SplitParticipantRow(label: "Test", participant: .init(name: "Bob")) {}
+        SplitParticipantRow(label: "Test", name: .constant("Bob")) {}
     }
 }

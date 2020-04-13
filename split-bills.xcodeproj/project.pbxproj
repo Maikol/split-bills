@@ -38,6 +38,7 @@
 		DF5CB50721187A9400F39DC0 /* DatabaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB50621187A9400F39DC0 /* DatabaseController.swift */; };
 		DF5CB50C211998A500F39DC0 /* Expense.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB50B211998A500F39DC0 /* Expense.swift */; };
 		DF9ADEF52448667900F10906 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = DF9ADEF42448667900F10906 /* SQLite */; };
+		DF8DB77424448994002FADE0 /* NewSplitViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8DB77324448994002FADE0 /* NewSplitViewModel.swift */; };
 		DFA39B08243C9E2100DEBDC6 /* ParticipantAmountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA39B07243C9E2100DEBDC6 /* ParticipantAmountView.swift */; };
 		DFA39B0A243C9E5B00DEBDC6 /* ParticipantTextEntryRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA39B09243C9E5B00DEBDC6 /* ParticipantTextEntryRow.swift */; };
 		DFA39B0C243CA0F400DEBDC6 /* NewExpenseParticipantsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA39B0B243CA0F400DEBDC6 /* NewExpenseParticipantsView.swift */; };
@@ -96,6 +97,7 @@
 		DF5CB50621187A9400F39DC0 /* DatabaseController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseController.swift; sourceTree = "<group>"; };
 		DF5CB50B211998A500F39DC0 /* Expense.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Expense.swift; sourceTree = "<group>"; };
 		DF890F9C211C772F00305528 /* Playground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Playground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		DF8DB77324448994002FADE0 /* NewSplitViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSplitViewModel.swift; sourceTree = "<group>"; };
 		DFA39B07243C9E2100DEBDC6 /* ParticipantAmountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantAmountView.swift; sourceTree = "<group>"; };
 		DFA39B09243C9E5B00DEBDC6 /* ParticipantTextEntryRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantTextEntryRow.swift; sourceTree = "<group>"; };
 		DFA39B0B243CA0F400DEBDC6 /* NewExpenseParticipantsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewExpenseParticipantsView.swift; sourceTree = "<group>"; };
@@ -162,10 +164,11 @@
 		DF1A03DA2438574600AD4E64 /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				DF27337024395C38008005F8 /* Split List */,
+				DF88DEEF24446CC400151756 /* New Split */,
 				508FC563243F1F3F008DA135 /* Shared Views */,
 				509738B8243C57CC0040AB93 /* Models */,
 				DFCCD27C243B2C1200CB35C6 /* Expenses */,
-				DF27337024395C38008005F8 /* Split List */,
 				DF4895E62439622F00D10DBD /* Splits */,
 				DF27336D24395C03008005F8 /* Utilities */,
 			);
@@ -196,11 +199,8 @@
 			isa = PBXGroup;
 			children = (
 				DF1A03DB2438575700AD4E64 /* SplitView.swift */,
-				DF4895E72439624700D10DBD /* NewSplitView.swift */,
 				508CE465243B061100707D50 /* SplitEmptyView.swift */,
 				DFB105B0243DEB560086F8F3 /* SplitContentView.swift */,
-				DF5A4F882440F2B600402147 /* EditSplitView.swift */,
-				DF5A4F8A2440F37A00402147 /* SplitParticipantRow.swift */,
 			);
 			path = Splits;
 			sourceTree = "<group>";
@@ -290,6 +290,17 @@
 				DF5CB4E92118483C00F39DC0 /* Info.plist */,
 			);
 			path = "Supporting FIles";
+			sourceTree = "<group>";
+		};
+		DF88DEEF24446CC400151756 /* New Split */ = {
+			isa = PBXGroup;
+			children = (
+				DF8DB77324448994002FADE0 /* NewSplitViewModel.swift */,
+				DF4895E72439624700D10DBD /* NewSplitView.swift */,
+				DF5A4F882440F2B600402147 /* EditSplitView.swift */,
+				DF5A4F8A2440F37A00402147 /* SplitParticipantRow.swift */,
+			);
+			path = "New Split";
 			sourceTree = "<group>";
 		};
 		DF890F98211C541000305528 /* Utils */ = {
@@ -465,6 +476,7 @@
 				DF1A03D92438054F00AD4E64 /* SplitListView.swift in Sources */,
 				DF4895EA2439676100D10DBD /* FormSectionHeader.swift in Sources */,
 				50FD349D243C65B5000B327A /* ParticipantSelectRow.swift in Sources */,
+				DF8DB77424448994002FADE0 /* NewSplitViewModel.swift in Sources */,
 				50FD349B243C6528000B327A /* ParticipantSelectionView.swift in Sources */,
 				508FC569243F4964008DA135 /* ExpenseView.swift in Sources */,
 				DF5A4F8B2440F37A00402147 /* SplitParticipantRow.swift in Sources */,

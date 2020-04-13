@@ -33,3 +33,18 @@ extension Publishers {
         .eraseToAnyPublisher()
     }
 }
+
+public struct Mutation<State> {
+
+    let mutate: (inout State) -> Void
+
+    init<V>(keyPath: WritableKeyPath<State, V>, value: V) {
+        self.mutate = { state in
+            state[keyPath: keyPath] = value
+        }
+    }
+
+    init(mutate: @escaping (inout State) -> Void) {
+        self.mutate = mutate
+    }
+}

@@ -11,12 +11,7 @@ import SwiftUI
 
 struct SplitListView: View {
 
-    @EnvironmentObject var controller: DatabaseController
-
     @ObservedObject var viewModel: SplitListViewModel
-
-    // TODO: REMOVE
-    @State private var showingSplitSheet = false
 
     init(viewModel: SplitListViewModel) {
         self.viewModel = viewModel
@@ -90,25 +85,17 @@ struct SplitListView: View {
     private func present(with sheet: SplitListViewModel.Sheet) -> some View {
         switch sheet.style {
         case .new:
-            return NewSplitView(isPresented: self.$showingSplitSheet).environmentObject(self.controller).eraseToAnyView()
+            return NewSplitView(viewModel: NewSplitViewModel()).eraseToAnyView()
         case let .edit(split):
             return EditSplitView(
-                split: split,
-                isPresented: self.$showingSplitSheet,
-                exisintgParticipansCount: split.participants.count
-            ).environmentObject(self.controller).eraseToAnyView()
+                split: .example, // FIXME
+                exisintgParticipansCount: 5 // FIXME
+            ).eraseToAnyView()
         }
     }
 
     private func removeSplit(at offsets: IndexSet) {
-        for index in offsets {
-            let split = controller.splits[index]
-            remove(split: split)
-        }
-    }
-
-    private func remove(split: Split) {
-        controller.remove(split: split)
+        viewModel.send(event: .onRemoveSplits(offsets: offsets))
     }
 }
 
