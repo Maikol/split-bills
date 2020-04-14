@@ -11,15 +11,8 @@ import SwiftUI
 struct NewSplitView: View {
 
     @Environment(\.presentationMode) var presentationMode
-    @EnvironmentObject var controller: DatabaseController
 
     @ObservedObject var viewModel: NewSplitViewModel
-
-    @ObservedObject private var split = Split(
-        id: 0,
-        eventName: "",
-        participants: [Participant(name: ""), Participant(name: "")]
-    )
 
     var body: some View {
         NavigationView {
@@ -79,11 +72,11 @@ struct NewSplitView: View {
                        NewSplitViewModel.Event.onParticipantNameChange(value, index)
                    }
                 ) {
-                    self.split.participants.remove(at: index)
+//                    self.split.participants.remove(at: index)
                 }
             }
             Button(action: {
-                self.split.participants.append(Participant(name: ""))
+                self.viewModel.send(event: .addParticipant)
             }) {
                 HStack {
                     Image(systemName: "plus.circle.fill")
@@ -103,11 +96,7 @@ struct NewSplitView: View {
                     .accentColor(.link)
                     .alignment(.center)
             }
-        }.disabled(!split.isValid)
-    }
-
-    private func deleteParticipant(at offsets: IndexSet) {
-        split.participants.remove(atOffsets: offsets)
+        }.disabled(!viewModel.state.isValid)
     }
 
     func createSplit() {

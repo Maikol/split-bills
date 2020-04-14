@@ -23,6 +23,7 @@ final class NewSplitViewModel: ObservableObject {
             reduce: self.reduce,
             scheduler: RunLoop.main,
             feedbacks: [
+                Self.whenCreatingSplit(input: input.eraseToAnyPublisher()),
                 Self.userInput(input: input.eraseToAnyPublisher())
             ]
         )
@@ -57,6 +58,16 @@ extension NewSplitViewModel {
     struct State: Equatable {
         var name = ""
         var participants = ["", ""] // We require two empty participants
+
+        var isValid: Bool {
+            guard !name.isEmpty,
+                let firstParticipant = participants.first, !firstParticipant.isEmpty,
+                let secondParticipant = participants[safe: 1], !secondParticipant.isEmpty else {
+                    return false
+            }
+
+            return true
+        }
     }
 
     enum Event: Equatable {
@@ -65,6 +76,8 @@ extension NewSplitViewModel {
         case onNameChange(String)
         case onParticipantNameChange(String, Index)
         case createSplit
+        case didCreateSplit
+        case addParticipant
     }
 }
 
@@ -82,13 +95,19 @@ extension NewSplitViewModel {
             return self.state
         case .createSplit:
             return state
+        case .didCreateSplit:
+            return state
+        case .addParticipant:
+            self.state.participants.append("")
+            return self.state
         }
     }
 
     static func whenCreatingSplit(input: AnyPublisher<Event, Never>) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             return input.filter { $0 == .createSplit }
-                .map { _ in DatabaseAPI.createSplit(name: state.name, participants: state.participants) }
+                .flatMap { _ in DatabaseAPI.createSplit(name: state.name, participants: state.participants) }
+                .map { Event.didCreateSplit }
                 .eraseToAnyPublisher()
         }
     }

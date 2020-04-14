@@ -33,7 +33,9 @@ struct SplitListView: View {
     var body: some View {
         NavigationView {
             content
-                .sheet(item: $viewModel.sheet) { sheet in
+                .sheet(item: $viewModel.sheet, onDismiss: {
+                    self.viewModel.send(event: .onReload)
+                }) { sheet in
                     self.present(with: sheet)
                 }
                 .background(Color.background)
