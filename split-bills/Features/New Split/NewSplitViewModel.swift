@@ -56,13 +56,22 @@ final class NewSplitViewModel: ObservableObject {
 extension NewSplitViewModel {
 
     struct State: Equatable {
+
+        struct Participant: Identifiable, Equatable, Hashable {
+            let id = UUID()
+            var name: String
+            let index: Int
+            var removed = false
+        }
+
         var name = ""
-        var participants = ["", ""] // We require two empty participants
+        var participants: [Participant] = [.init(name: "", index: 0), .init(name: "", index: 1)] // We require two empty participants
 
         var isValid: Bool {
             guard !name.isEmpty,
-                let firstParticipant = participants.first, !firstParticipant.isEmpty,
-                let secondParticipant = participants[safe: 1], !secondParticipant.isEmpty else {
+                let firstParticipant = participants.first, !firstParticipant.name.isEmpty, !firstParticipant.removed,
+                let secondParticipant = participants[safe: 1], !secondParticipant.name.isEmpty, !secondParticipant.removed
+            else {
                     return false
             }
 
@@ -78,6 +87,7 @@ extension NewSplitViewModel {
         case createSplit
         case didCreateSplit
         case addParticipant
+        case removeParticipant(Index)
     }
 }
 
@@ -91,14 +101,17 @@ extension NewSplitViewModel {
             self.state.name = string
             return self.state
         case let .onParticipantNameChange(string, index):
-            self.state.participants[index] = string
+            self.state.participants[index].name = string
             return self.state
         case .createSplit:
             return state
         case .didCreateSplit:
             return state
         case .addParticipant:
-            self.state.participants.append("")
+            self.state.participants.append(.init(name: "", index: self.state.participants.count))
+            return self.state
+        case let .removeParticipant(index):
+            self.state.participants[index].removed = true
             return self.state
         }
     }
@@ -106,7 +119,10 @@ extension NewSplitViewModel {
     static func whenCreatingSplit(input: AnyPublisher<Event, Never>) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             return input.filter { $0 == .createSplit }
-                .flatMap { _ in DatabaseAPI.createSplit(name: state.name, participants: state.participants) }
+                .flatMap { _ -> AnyPublisher<Void, Never> in
+                    let participants = state.participants.filter { !$0.name.isEmpty && !$0.removed }.map { $0.name }
+                    return DatabaseAPI.createSplit(name: state.name, participants: participants)
+                }
                 .map { Event.didCreateSplit }
                 .eraseToAnyPublisher()
         }

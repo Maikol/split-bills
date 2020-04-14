@@ -55,26 +55,26 @@ struct NewSplitView: View {
         Section(header: FormSectionHeader(key: "new-split-controller.participants")) {
             TextField(
                 "new-split-controller.participant-placeholder.you",
-                text: viewModel.binding(for: \.participants[0]) { value in
+                text: viewModel.binding(for: \.participants[0].name) { value in
                     NewSplitViewModel.Event.onParticipantNameChange(value, 0)
                 }
             )
 
             TextField(
                 "new-split-controller.participant-placeholder.participant-1",
-                text: viewModel.binding(for: \.participants[1]) { value in
+                text: viewModel.binding(for: \.participants[1].name) { value in
                     NewSplitViewModel.Event.onParticipantNameChange(value, 1)
                 }
             )
 
-            ForEach(2 ..< viewModel.state.participants.count, id: \.self) { index in
+            ForEach(viewModel.state.participants.filter { $0.index > 1 && !$0.removed }.enumeratedArray(), id: \.element) { index, participant in
                 SplitParticipantRow(
-                    label: "Participant \(index)",
-                    name: self.viewModel.binding(for: \.participants[index]) { value in
-                       NewSplitViewModel.Event.onParticipantNameChange(value, index)
+                    label: "Participant \(index + 3)",
+                    name: self.viewModel.binding(for: \.participants[participant.index].name) { value in
+                       NewSplitViewModel.Event.onParticipantNameChange(value, participant.index)
                    }
                 ) {
-//                    self.split.participants.remove(at: index)
+                    self.viewModel.send(event: .removeParticipant(participant.index))
                 }
             }
             Button(action: {

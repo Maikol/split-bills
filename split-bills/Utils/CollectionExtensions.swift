@@ -25,3 +25,9 @@ extension Array where Element: Hashable {
         return Array(thisSet.symmetricDifference(otherSet))
     }
 }
+
+extension Collection {
+  func enumeratedArray() -> Array<(offset: Int, element: Self.Element)> {
+    return Array(self.enumerated())
+  }
+}
