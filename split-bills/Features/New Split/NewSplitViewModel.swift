@@ -59,13 +59,15 @@ extension NewSplitViewModel {
 
         struct Participant: Identifiable, Equatable, Hashable {
             let id = UUID()
-            var name: String
             let index: Int
+            var name = ""
+            // Deleting items from the array was crashing Binding, probably because this isn't observed
             var removed = false
         }
 
         var name = ""
-        var participants: [Participant] = [.init(name: "", index: 0), .init(name: "", index: 1)] // We require two empty participants
+        // We require at least two participants for a split
+        var participants: [Participant] = [.init(index: 0), .init(index: 1)]
 
         var isValid: Bool {
             guard !name.isEmpty,
@@ -108,7 +110,7 @@ extension NewSplitViewModel {
         case .didCreateSplit:
             return state
         case .addParticipant:
-            self.state.participants.append(.init(name: "", index: self.state.participants.count))
+            self.state.participants.append(.init(index: self.state.participants.count))
             return self.state
         case let .removeParticipant(index):
             self.state.participants[index].removed = true

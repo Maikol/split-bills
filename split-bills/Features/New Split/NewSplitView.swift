@@ -53,40 +53,10 @@ struct NewSplitView: View {
 
     private var eventParticipantsView: some View {
         Section(header: FormSectionHeader(key: "new-split-controller.participants")) {
-            TextField(
-                "new-split-controller.participant-placeholder.you",
-                text: viewModel.binding(for: \.participants[0].name) { value in
-                    NewSplitViewModel.Event.onParticipantNameChange(value, 0)
-                }
-            )
-
-            TextField(
-                "new-split-controller.participant-placeholder.participant-1",
-                text: viewModel.binding(for: \.participants[1].name) { value in
-                    NewSplitViewModel.Event.onParticipantNameChange(value, 1)
-                }
-            )
-
-            ForEach(viewModel.state.participants.filter { $0.index > 1 && !$0.removed }.enumeratedArray(), id: \.element) { index, participant in
-                SplitParticipantRow(
-                    label: "Participant \(index + 3)",
-                    name: self.viewModel.binding(for: \.participants[participant.index].name) { value in
-                       NewSplitViewModel.Event.onParticipantNameChange(value, participant.index)
-                   }
-                ) {
-                    self.viewModel.send(event: .removeParticipant(participant.index))
-                }
-            }
-            Button(action: {
-                self.viewModel.send(event: .addParticipant)
-            }) {
-                HStack {
-                    Image(systemName: "plus.circle.fill")
-                        .accentColor(.green)
-                    Text("new-split-controller.add-participant")
-                        .apply(font: .body, color: .link)
-                }
-            }
+            requiredParticipantTextField(withIndex: 0)
+            requiredParticipantTextField(withIndex: 1)
+            dynamicListOfParticipants
+            addParticipantButton
         }
     }
 
@@ -99,6 +69,41 @@ struct NewSplitView: View {
                     .alignment(.center)
             }
         }.disabled(!viewModel.state.isValid)
+    }
+
+    private func requiredParticipantTextField(withIndex index: Int) -> some View {
+        TextField(
+            "new-split-controller.participant-placeholder.participant-1",
+            text: viewModel.binding(for: \.participants[index].name) { value in
+                NewSplitViewModel.Event.onParticipantNameChange(value, index)
+            }
+        )
+    }
+
+    private var dynamicListOfParticipants: some View {
+        ForEach(viewModel.state.participants.filter { $0.index > 1 && !$0.removed }.enumeratedArray(), id: \.element) { index, participant in
+            SplitParticipantRow(
+                label: "Participant \(index + 3)",
+                name: self.viewModel.binding(for: \.participants[participant.index].name) { value in
+                   NewSplitViewModel.Event.onParticipantNameChange(value, participant.index)
+               }
+            ) {
+                self.viewModel.send(event: .removeParticipant(participant.index))
+            }
+        }
+    }
+
+    private var addParticipantButton: some View {
+        Button(action: {
+            self.viewModel.send(event: .addParticipant)
+        }) {
+            HStack {
+                Image(systemName: "plus.circle.fill")
+                    .accentColor(.green)
+                Text("new-split-controller.add-participant")
+                    .apply(font: .body, color: .link)
+            }
+        }
     }
 
     func createSplit() {
