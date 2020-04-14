@@ -25,6 +25,7 @@ final class SplitListViewModel: ObservableObject {
             feedbacks: [
                 Self.whenLoading(),
                 Self.whenRemovingSplit(input: input.eraseToAnyPublisher()),
+                Self.whenReloading(input: input.eraseToAnyPublisher()),
                 Self.userInput(input: input.eraseToAnyPublisher())
             ]
         )
@@ -51,9 +52,10 @@ extension SplitListViewModel {
         case loaded([ListItem])
     }
 
-    enum Event {
+    enum Event: Equatable {
         case onAppear
         case onSplitsLoaded([ListItem])
+        case onSplitsReloaded([ListItem])
         case onRemoveSplit(ListItem)
         case onRemoveSplits(offsets: IndexSet)
         case onReload
@@ -113,8 +115,8 @@ extension SplitListViewModel {
             }
         case .loaded:
             switch event {
-            case .onReload:
-                return .loading
+            case let .onSplitsReloaded(splits):
+                return .loaded(splits)
             default:
                 return state
             }
@@ -137,10 +139,24 @@ extension SplitListViewModel {
             guard case let .loaded(items) = state else { return Empty().eraseToAnyPublisher() }
 
             return input.map { $0.splitsToRemove(from: items) }
-                .filter { $0.isEmpty }
-                .compactMap { $0.map { DatabaseAPI.removeSplit(id: $0.id, name: $0.name) } }
-                .collect()
-                .map { _ in Event.onReload }
+                .filter { !$0.isEmpty }
+                .map { $0.map { DatabaseAPI.removeSplit(id: $0.id, name: $0.name) } }
+                .flatMap { Publishers.MergeMany($0) }
+                .flatMap { _ in DatabaseAPI.splits() }
+                .map { $0.map(ListItem.init) }
+                .map(Event.onSplitsReloaded)
+                .eraseToAnyPublisher()
+        }
+    }
+
+    static func whenReloading(input: AnyPublisher<Event, Never>) -> Feedback<State, Event> {
+        Feedback { (state: State) -> AnyPublisher<Event, Never> in
+            guard case .loaded = state else { return Empty().eraseToAnyPublisher() }
+
+            return input.filter { $0 == .onReload }
+                .flatMap { _ in DatabaseAPI.splits() }
+                .map { $0.map(ListItem.init) }
+                .map(Event.onSplitsReloaded)
                 .eraseToAnyPublisher()
         }
     }

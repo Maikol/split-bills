@@ -16,28 +16,30 @@ struct NewSplitView: View {
 
     var body: some View {
         NavigationView {
-            content
-                .background(Color.background)
-                .edgesIgnoringSafeArea(.bottom)
-                .navigationBarTitle(Text("new-split-controller.title"), displayMode: .inline)
-                .navigationBarItems(trailing:
-                    Button(action: {
-                        self.presentationMode.wrappedValue.dismiss()
-                    }) {
-                        Text("split-controller.cancel")
-                            .apply(font: .body, color: .white)
-                    }
-                )
+            ZStack {
+                Color.background
+                    .edgesIgnoringSafeArea(.bottom)
+                KeyboardHost {
+                    content
+                }
+            }
+            .navigationBarTitle(Text("new-split-controller.title"), displayMode: .inline)
+            .navigationBarItems(trailing:
+                Button(action: {
+                    self.presentationMode.wrappedValue.dismiss()
+                }) {
+                    Text("split-controller.cancel")
+                        .apply(font: .body, color: .white)
+                }
+            )
         }
     }
 
     private var content: some View {
-        KeyboardHost {
-            Form {
-                eventInfoView
-                eventParticipantsView
-                actionButtonView
-            }
+        Form {
+            eventInfoView
+            eventParticipantsView
+            actionButtonView
         }
     }
 
