@@ -91,10 +91,7 @@ struct SplitListView: View {
         case .new:
             return NewSplitView(viewModel: NewSplitViewModel()).eraseToAnyView()
         case let .edit(split):
-            return EditSplitView(
-                split: .example, // FIXME
-                exisintgParticipansCount: 5 // FIXME
-            ).eraseToAnyView()
+            return EditSplitView(viewModel: EditSplitViewModel(splitId: split.id)).eraseToAnyView()
         }
     }
 

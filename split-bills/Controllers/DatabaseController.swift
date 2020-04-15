@@ -102,6 +102,18 @@ enum DatabaseAPI {
         }.eraseToAnyPublisher()
     }
 
+    static func split(withId id: Int64) -> AnyPublisher<SplitDTO?, Never> {
+        return Deferred {
+            Future<SplitDTO?, Never> { promise in
+                let splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
+                let splits = try! splitDatabase.get(withId: id).map {
+                    SplitDTO(id: $0.id, name: $0.eventName, participants: $0.participants.map { .init(name: $0.name) })
+                }
+                promise(.success(splits))
+            }
+        }.eraseToAnyPublisher()
+    }
+
     static func createSplit(name: String, participants: [String]) -> AnyPublisher<Void, Never> {
         return Deferred {
             Future<Void, Never> { promise in
@@ -129,6 +141,8 @@ struct SplitDTO {
     let id: Int64
     let name: String
     let participants: [ParticipantDTO]
+
+    static let empty = SplitDTO(id: 0, name: "", participants: [])
 }
 
 struct ParticipantDTO {

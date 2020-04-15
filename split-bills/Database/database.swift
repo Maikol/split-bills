@@ -55,6 +55,11 @@ struct SplitDatabase {
         return try db.prepare(table).compactMap { try split(with: $0) }
     }
 
+    func get(withId id: Int64) throws -> Split? {
+        let query = table.filter(self.id == id)
+        return try db.prepare(query).compactMap { try split(with: $0) }.first
+    }
+
     func update(split: Split) throws {
         let row = table.filter(id == split.id)
         let update = row.update(eventName <- split.eventName)
