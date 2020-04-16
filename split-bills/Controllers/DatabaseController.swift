@@ -124,6 +124,16 @@ enum DatabaseAPI {
         }.eraseToAnyPublisher()
     }
 
+    static func updateSplit(id: Int64, name: String, newParticipants: [String]) -> AnyPublisher<Void, Never> {
+        return Deferred {
+            Future<Void, Never> { promise in
+                let splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
+                _ = try! splitDatabase.update(splitId: id, name: name, newParticipants: newParticipants.map { .init(name: $0) })
+                promise(.success(()))
+            }
+        }.eraseToAnyPublisher()
+    }
+
     static func removeSplit(id: Int64, name: String) -> AnyPublisher<Void, Never> {
         return Deferred {
             Future<Void, Never> { promise in

@@ -60,6 +60,7 @@ struct SplitDatabase {
         return try db.prepare(query).compactMap { try split(with: $0) }.first
     }
 
+    @available(*, deprecated, renamed: "update(splitId:name:newParticipants:)")
     func update(split: Split) throws {
         let row = table.filter(id == split.id)
         let update = row.update(eventName <- split.eventName)
@@ -69,6 +70,14 @@ struct SplitDatabase {
         let newParticipants = split.participants.difference(from: oldParticipants)
 
         try newParticipants.forEach { try participantsDatabase.add(participant: $0, splitId: split.id) }
+    }
+
+    func update(splitId: Int64, name: String, newParticipants: [ParticipantDTO]) throws {
+        let row = table.filter(id == splitId)
+        let update = row.update(eventName <- name)
+
+        try db.run(update)
+        try newParticipants.forEach { try participantsDatabase.add(participant: Participant(name: $0.name), splitId: splitId) }
     }
 
     private func split(with row: SQLite.Row) throws -> Split? {
