@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -34,6 +34,7 @@
 		DF5CB5052118728F00F39DC0 /* database.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB5042118728F00F39DC0 /* database.swift */; };
 		DF5CB50721187A9400F39DC0 /* ApplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB50621187A9400F39DC0 /* ApplicationController.swift */; };
 		DF5CB50C211998A500F39DC0 /* Expense.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB50B211998A500F39DC0 /* Expense.swift */; };
+		DF9ADEF52448667900F10906 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = DF9ADEF42448667900F10906 /* SQLite */; };
 		DFA39B08243C9E2100DEBDC6 /* ParticipantAmountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA39B07243C9E2100DEBDC6 /* ParticipantAmountView.swift */; };
 		DFA39B0A243C9E5B00DEBDC6 /* ParticipantTextEntryRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA39B09243C9E5B00DEBDC6 /* ParticipantTextEntryRow.swift */; };
 		DFA39B0C243CA0F400DEBDC6 /* NewExpenseParticipantsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA39B0B243CA0F400DEBDC6 /* NewExpenseParticipantsView.swift */; };
@@ -110,6 +111,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF9ADEF52448667900F10906 /* SQLite in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -335,13 +337,15 @@
 				DF5CB4D62118483A00F39DC0 /* Sources */,
 				DF5CB4D72118483A00F39DC0 /* Frameworks */,
 				DF5CB4D82118483A00F39DC0 /* Resources */,
-				DF5CB4F22118498100F39DC0 /* Run Script */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = "split-bills";
+			packageProductDependencies = (
+				DF9ADEF42448667900F10906 /* SQLite */,
+			);
 			productName = "split-bills";
 			productReference = DF5CB4DA2118483A00F39DC0 /* split-bills.app */;
 			productType = "com.apple.product-type.application";
@@ -394,6 +398,9 @@
 				Base,
 			);
 			mainGroup = DF5CB4D12118483A00F39DC0;
+			packageReferences = (
+				DF9ADEF32448667900F10906 /* XCRemoteSwiftPackageReference "SQLite" */,
+			);
 			productRefGroup = DF5CB4DB2118483A00F39DC0 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -423,25 +430,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		DF5CB4F22118498100F39DC0 /* Run Script */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 12;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/SQLite.framework",
-			);
-			name = "Run Script";
-			outputPaths = (
-				"$(BUILD_PRODUCTS_DIC)/$(FRAMWEORKS_FOLDER_PATH)/SQLite.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n/usr/local/bin/carthage copy-frameworks\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		DF5CB4D62118483A00F39DC0 /* Sources */ = {
@@ -755,6 +743,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		DF9ADEF32448667900F10906 /* XCRemoteSwiftPackageReference "SQLite" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stephencelis/SQLite.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.12.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		DF9ADEF42448667900F10906 /* SQLite */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DF9ADEF32448667900F10906 /* XCRemoteSwiftPackageReference "SQLite" */;
+			productName = SQLite;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = DF5CB4D22118483A00F39DC0 /* Project object */;
 }
