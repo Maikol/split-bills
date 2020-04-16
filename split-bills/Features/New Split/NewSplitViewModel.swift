@@ -61,18 +61,19 @@ extension NewSplitViewModel {
             let id = UUID()
             let index: Int
             var name = ""
-            // Deleting items from the array was crashing Binding, probably because this isn't observed
+            // Deleting items from the array was crashing Binding
             var removed = false
         }
 
         var name = ""
         // We require at least two participants for a split
-        var participants: [Participant] = [.init(index: 0), .init(index: 1)]
+        var requiredParticipants: [Participant] = [.init(index: 0), .init(index: 1)]
+        var addedParticipants = [Participant]()
 
         var isValid: Bool {
             guard !name.isEmpty,
-                let firstParticipant = participants.first, !firstParticipant.name.isEmpty, !firstParticipant.removed,
-                let secondParticipant = participants[safe: 1], !secondParticipant.name.isEmpty, !secondParticipant.removed
+                let firstParticipant = requiredParticipants.first, !firstParticipant.name.isEmpty, !firstParticipant.removed,
+                let secondParticipant = requiredParticipants[safe: 1], !secondParticipant.name.isEmpty, !secondParticipant.removed
             else {
                     return false
             }
@@ -85,7 +86,8 @@ extension NewSplitViewModel {
         typealias Index = Int
 
         case onNameChange(String)
-        case onParticipantNameChange(String, Index)
+        case onRequiredParticipantNameChange(String, Index)
+        case onAddedParticipantNameChange(String, Index)
         case createSplit
         case didCreateSplit
         case addParticipant
@@ -102,18 +104,21 @@ extension NewSplitViewModel {
         case let .onNameChange(string):
             self.state.name = string
             return self.state
-        case let .onParticipantNameChange(string, index):
-            self.state.participants[index].name = string
+        case let .onRequiredParticipantNameChange(string, index):
+            self.state.requiredParticipants[index].name = string
+            return self.state
+        case let .onAddedParticipantNameChange(string, index):
+            self.state.addedParticipants[index].name = string
             return self.state
         case .createSplit:
             return state
         case .didCreateSplit:
             return state
         case .addParticipant:
-            self.state.participants.append(.init(index: self.state.participants.count))
+            self.state.addedParticipants.append(.init(index: self.state.addedParticipants.count))
             return self.state
         case let .removeParticipant(index):
-            self.state.participants[index].removed = true
+            self.state.addedParticipants[index].removed = true
             return self.state
         }
     }
@@ -122,8 +127,9 @@ extension NewSplitViewModel {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             return input.filter { $0 == .createSplit }
                 .flatMap { _ -> AnyPublisher<Void, Never> in
-                    let participants = state.participants.filter { !$0.name.isEmpty && !$0.removed }.map { $0.name }
-                    return DatabaseAPI.createSplit(name: state.name, participants: participants)
+                    let requiredParticipants = state.requiredParticipants.map { $0.name }
+                    let participants = state.addedParticipants.filter { !$0.name.isEmpty && !$0.removed }.map { $0.name }
+                    return DatabaseAPI.createSplit(name: state.name, participants: requiredParticipants + participants)
                 }
                 .map { Event.didCreateSplit }
                 .eraseToAnyPublisher()

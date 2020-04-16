@@ -117,6 +117,7 @@ extension EditSplitViewModel {
         let id = UUID()
         let index: Int
         var name = ""
+        // Deleting items from the array was crashing Binding
         var removed = false
     }
 }

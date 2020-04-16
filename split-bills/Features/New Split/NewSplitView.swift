@@ -74,22 +74,28 @@ struct NewSplitView: View {
     private func requiredParticipantTextField(withIndex index: Int) -> some View {
         TextField(
             "new-split-controller.participant-placeholder.participant-1",
-            text: viewModel.binding(for: \.participants[index].name) { value in
-                NewSplitViewModel.Event.onParticipantNameChange(value, index)
+            text: viewModel.binding(for: \.requiredParticipants[index].name) { value in
+                NewSplitViewModel.Event.onRequiredParticipantNameChange(value, index)
             }
         )
     }
 
     private var dynamicListOfParticipants: some View {
-        ForEach(viewModel.state.participants.filter { $0.index > 1 && !$0.removed }.enumeratedArray(), id: \.element) { index, participant in
-            SplitParticipantRow(
-                label: "Participant \(index + 3)",
-                name: self.viewModel.binding(for: \.participants[participant.index].name) { value in
-                   NewSplitViewModel.Event.onParticipantNameChange(value, participant.index)
-               }
-            ) {
-                self.viewModel.send(event: .removeParticipant(participant.index))
-            }
+        ForEach(0 ..< viewModel.state.activeAddedParticipants.count, id: \.self) { index in
+            self.addedParticipantView(
+                withIndex: index + self.viewModel.state.requiredParticipants.count + 1,
+                participant: self.viewModel.state.activeAddedParticipants[index])
+        }
+    }
+
+    private func addedParticipantView(withIndex index: Int, participant: NewSplitViewModel.State.Participant) -> some View {
+        SplitParticipantRow(
+            label: "Participant \(index)",
+            name: self.viewModel.binding(for: \.addedParticipants[participant.index].name) { value in
+               NewSplitViewModel.Event.onAddedParticipantNameChange(value, participant.index)
+           }
+        ) {
+            self.viewModel.send(event: .removeParticipant(participant.index))
         }
     }
 
@@ -109,6 +115,13 @@ struct NewSplitView: View {
     func createSplit() {
         viewModel.send(event: .createSplit)
         presentationMode.wrappedValue.dismiss()
+    }
+}
+
+extension NewSplitViewModel.State {
+
+    var activeAddedParticipants: [NewSplitViewModel.State.Participant] {
+        addedParticipants.filter { !$0.removed }
     }
 }
 
