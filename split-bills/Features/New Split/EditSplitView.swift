@@ -36,9 +36,9 @@ struct EditSplitView: View {
     private var contentView: some View {
         switch viewModel.state {
         case .idle:
-            return Color.clear.eraseToAnyView()
+            return Color.background.eraseToAnyView()
         case .loading:
-            return Color.clear.eraseToAnyView()
+            return Color.background.eraseToAnyView()
         case let .loaded(item):
             return form(for: item).eraseToAnyView()
         case .saving:

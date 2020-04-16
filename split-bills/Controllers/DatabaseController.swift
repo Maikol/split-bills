@@ -94,9 +94,7 @@ enum DatabaseAPI {
         return Deferred {
             Future<[SplitDTO], Never> { promise in
                 let splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
-                let splits = try! splitDatabase.getAll().map {
-                    SplitDTO(id: $0.id, name: $0.eventName, participants: $0.participants.map { .init(name: $0.name) })
-                }
+                let splits = try! splitDatabase.latestSplits()
                 promise(.success(splits))
             }
         }.eraseToAnyPublisher()
@@ -106,9 +104,7 @@ enum DatabaseAPI {
         return Deferred {
             Future<SplitDTO?, Never> { promise in
                 let splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
-                let splits = try! splitDatabase.get(withId: id).map {
-                    SplitDTO(id: $0.id, name: $0.eventName, participants: $0.participants.map { .init(name: $0.name) })
-                }
+                let splits = try! splitDatabase.split(withId: id)
                 promise(.success(splits))
             }
         }.eraseToAnyPublisher()
@@ -151,12 +147,33 @@ struct SplitDTO {
     let id: Int64
     let name: String
     let participants: [ParticipantDTO]
+    let expenses: [ExpenseDTO]
 
-    static let empty = SplitDTO(id: 0, name: "", participants: [])
+    static let empty = SplitDTO(id: 0, name: "", participants: [], expenses: [])
 }
 
 struct ParticipantDTO {
     let name: String
+}
+
+struct ExpenseDTO {
+    let id: Int64
+    let name: String
+    let payer: ParticipantDTO
+    let amount: Double
+    let participantsWeight: [ExpenseWeightDTO]
+    let expenseType: ExpenseTypeDTO
+}
+
+struct ExpenseWeightDTO {
+    let participant: ParticipantDTO
+    let weight: Double
+}
+
+enum ExpenseTypeDTO: Int {
+    case equallyWithAll
+    case equallyCustom
+    case byAmount
 }
 
 extension URL {
@@ -174,6 +191,26 @@ extension URL {
 
 #if DEBUG
 extension SplitDTO {
-    static let example = SplitDTO(id: 0, name: "Dinner", participants: [.init(name: "Bob"), .init(name: "Alice")])
+    static let example = SplitDTO(id: 0, name: "Dinner", participants: .example, expenses: [])
+}
+
+extension ParticipantDTO {
+    static let bob = ParticipantDTO(name: "Bob")
+    static let alice = ParticipantDTO(name: "Alice")
+}
+
+extension Array where Element == ParticipantDTO {
+    static let example: [ParticipantDTO] = [.bob, .alice]
+}
+
+extension Array where Element == ExpenseDTO {
+    static let example: [ExpenseDTO] = [.init(
+        id: 0,
+        name: "drinks",
+        payer: .alice,
+        amount: 40.0,
+        participantsWeight: [.init(participant: .alice, weight: 0.5), .init(participant: .bob, weight: 0.5)],
+        expenseType: .equallyWithAll)
+    ]
 }
 #endif

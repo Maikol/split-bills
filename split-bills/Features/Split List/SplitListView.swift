@@ -37,7 +37,7 @@ struct SplitListView: View {
                     .edgesIgnoringSafeArea(.bottom)
                 content
             }
-            .sheet(item: $viewModel.sheet, onDismiss: {
+            .sheet(item: $viewModel.activeSheet, onDismiss: {
                 self.viewModel.send(event: .onReload)
             }) { sheet in
                 self.present(with: sheet)
@@ -50,12 +50,12 @@ struct SplitListView: View {
     private var content: some View {
         switch viewModel.state {
         case .idle:
-            return Color.clear.eraseToAnyView()
+            return Color.background.eraseToAnyView()
         case .loading:
-            return EmptyView().eraseToAnyView()
+            return Color.background.eraseToAnyView()
         case let .loaded(items) where items.isEmpty:
             return SplitListEmptyView {
-                self.viewModel.sheet = .init(style: .new)
+                self.viewModel.presentSheet(with: .new)
             }.eraseToAnyView()
         case let .loaded(items):
             return ZStack(alignment: .bottomTrailing) {
@@ -66,7 +66,7 @@ struct SplitListView: View {
                 }.listStyle(GroupedListStyle())
 
                 PlusButton {
-                    self.viewModel.sheet = .init(style: .new)
+                    self.viewModel.presentSheet(with: .new)
                 }.offset(x: -24, y: -44)
             }.eraseToAnyView()
         }
@@ -74,11 +74,11 @@ struct SplitListView: View {
 
     private func list(of items: [SplitListViewModel.ListItem]) -> some View {
         ForEach(items) { item in
-            NavigationLink(destination: SplitView(split: Split(id: item.id, eventName: item.name, participants: []))) {
+            NavigationLink(destination: SplitDetailView(viewMode: SplitDetailViewModel(splitId: item.id))) {
                 SplitListItemView(
                     item: item,
                     editAction: {
-                        self.viewModel.sheet = .init(style: .edit(item))
+                        self.viewModel.presentSheet(with: .edit(item))
                 }) {
                     self.viewModel.send(event: .onRemoveSplit(item))
                 }

@@ -12,7 +12,7 @@ import Combine
 final class SplitListViewModel: ObservableObject {
 
     @Published private(set) var state = State.idle
-    @Published var sheet: Sheet? = nil
+    @Published var activeSheet: Sheet? = nil
 
     private var bag = Set<AnyCancellable>()
     private let input = PassthroughSubject<Event, Never>()
@@ -39,6 +39,10 @@ final class SplitListViewModel: ObservableObject {
 
     func send(event: Event) {
         input.send(event)
+    }
+
+    func presentSheet(with style: Sheet.Style) {
+        self.activeSheet = .init(style: style)
     }
 }
 
