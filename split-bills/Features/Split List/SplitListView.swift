@@ -74,7 +74,7 @@ struct SplitListView: View {
 
     private func list(of items: [SplitListViewModel.ListItem]) -> some View {
         ForEach(items) { item in
-            NavigationLink(destination: SplitDetailView(viewMode: SplitDetailViewModel(splitId: item.id))) {
+            NavigationLink(destination: SplitDetailView(viewModel: SplitDetailViewModel(splitId: item.id))) {
                 SplitListItemView(
                     item: item,
                     editAction: {

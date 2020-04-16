@@ -55,6 +55,7 @@ extension SplitDetailViewModel {
 
     enum Event {
         case onAppear
+        case onReload
         case onLoaded(SplitItem)
         case onRemoveExpense(Expense)
         case onRemoveExpenses(offsets: IndexSet)
@@ -72,7 +73,7 @@ extension SplitDetailViewModel {
             id = split.id
             name = split.name
             participants = split.participants.map { Participant(name: $0.name) }
-            expenses = split.expenses.map { .init(id: $0.id, name: $0.name) }
+            expenses = split.expenses.map { .init(expense: $0) }
         }
     }
 
@@ -82,8 +83,21 @@ extension SplitDetailViewModel {
     }
 
     struct Expense: Identifiable {
-        let id: ItemId
+        let id: Int64
         let name: String
+        let payer: Participant
+        let amount: Double
+        let participantsWeight: [ExpenseWeight]
+        let expenseType: ExpenseType
+
+        init(expense: ExpenseDTO) {
+            id = expense.id
+            name = expense.name
+            payer = .init(name: expense.payer.name)
+            amount = expense.amount
+            participantsWeight = expense.participantsWeight.map { .init(expenseWeight: $0) }
+            expenseType = .init(expenseType: expense.expenseType)
+        }
     }
 
     struct Payment: Identifiable {
@@ -91,6 +105,33 @@ extension SplitDetailViewModel {
         let payer: Participant
         let receiver: Participant
         let amount: Double
+    }
+
+    struct ExpenseWeight {
+        let participant: Participant
+        let weight: Double
+
+        init(expenseWeight: ExpenseWeightDTO) {
+            participant = .init(name: expenseWeight.participant.name)
+            weight = expenseWeight.weight
+        }
+    }
+
+    enum ExpenseType: Int {
+        case equallyWithAll
+        case equallyCustom
+        case byAmount
+
+        init(expenseType: ExpenseTypeDTO) {
+            switch expenseType {
+            case .equallyWithAll:
+                self = .equallyWithAll
+            case .equallyCustom:
+                self = .equallyCustom
+            case .byAmount:
+                self = .byAmount
+            }
+        }
     }
 
     struct Sheet: Identifiable {

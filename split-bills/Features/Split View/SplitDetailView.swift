@@ -10,7 +10,7 @@ import SwiftUI
 
 struct SplitDetailView: View {
 
-    @ObservedObject var viewMode: SplitDetailViewModel
+    @ObservedObject var viewModel: SplitDetailViewModel
 
     var body: some View {
         ZStack {
@@ -18,15 +18,16 @@ struct SplitDetailView: View {
                 .edgesIgnoringSafeArea(.bottom)
             contentView
         }
-        .sheet(item: $viewMode.activeSheet, onDismiss: {
-            // TODO: reload
+        .sheet(item: $viewModel.activeSheet, onDismiss: {
+            self.viewModel.send(event: .onReload)
         }) { sheet in
             self.containedSheet(sheet)
         }
+        .onAppear { self.viewModel.send(event: .onAppear) }
     }
 
     private var contentView: some View {
-        switch viewMode.state {
+        switch viewModel.state {
         case .idle:
             return Color.background.eraseToAnyView()
         case .loading:
@@ -40,7 +41,7 @@ struct SplitDetailView: View {
 
     private var splitEmptyView: some View {
         SplitEmptyView() {
-            self.viewMode.presentSheet(with: .newExpense)
+            self.viewModel.presentSheet(with: .newExpense)
         }
     }
 
@@ -48,7 +49,7 @@ struct SplitDetailView: View {
         ZStack(alignment: .bottomTrailing) {
             contentLists(for: item)
             PlusButton {
-                self.viewMode.presentSheet(with: .newExpense)
+                self.viewModel.presentSheet(with: .newExpense)
             }.offset(x: -24, y: -44)
         }
         .listStyle(GroupedListStyle())
@@ -86,7 +87,7 @@ struct SplitDetailView: View {
     private func list(of expenses: [SplitDetailViewModel.Expense]) -> some View {
         ForEach(expenses) { expense in
             Button(action: {
-                self.viewMode.send(event: .onSelectExpense(expense))
+                self.viewModel.send(event: .onSelectExpense(expense))
             }) {
                 HStack {
                     Text(expense.name)
@@ -120,7 +121,7 @@ struct SplitDetailView: View {
     // MARK: - Actions
 
     private func removeExpense(at offsets: IndexSet) {
-        viewMode.send(event: .onRemoveExpenses(offsets: offsets))
+        viewModel.send(event: .onRemoveExpenses(offsets: offsets))
     }
 }
 
@@ -164,7 +165,7 @@ private extension Expense {
 struct SplitView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            SplitDetailView(viewMode: SplitDetailViewModel(splitId: 0))
+            SplitDetailView(viewModel: SplitDetailViewModel(splitId: 0))
         }
     }
 }
