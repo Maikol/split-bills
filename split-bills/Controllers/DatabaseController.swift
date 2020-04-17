@@ -9,83 +9,6 @@
 import Foundation
 import Combine
 
-final class DatabaseController: ObservableObject {
-
-    @Published var splits: [Split]
-
-    // Legacy
-    static let shared = DatabaseController()
-
-    private let splitDatabase: SplitDatabase
-    private let expensesDatabase: ExpenseDatabase
-
-    init() {
-        splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
-        expensesDatabase = try! ExpenseDatabase(databasePath: URL.documentsDirectory.absoluteString)
-        splits = []
-    }
-
-    @discardableResult func createEvent(name: String, participants: [Participant]) -> Split? {
-        do {
-            let split = try self.splitDatabase.create(eventName: name, participants: participants)
-            self.splits.append(split)
-            return split
-        } catch {
-            print("failed to add split item")
-            return nil
-        }
-    }
-
-    func update(split: Split) {
-        do {
-            try splitDatabase.update(split: split)
-        } catch {
-            print("failed to update split")
-        }
-    }
-
-    @discardableResult func saveExpense(split: Split, expense: Expense) -> Expense? {
-        do {
-            return nil
-        } catch {
-            print("failed to create expense")
-            return nil
-        }
-    }
-
-    func update(expense: Expense, on split: Split) {
-        guard let index = split.expenses.firstIndex(where: { $0.id == expense.id }) else {
-            print("failed to update expense")
-            return
-        }
-
-        do {
-            try expensesDatabase.update(expense: expense)
-            split.expenses[index] = expense
-        } catch {
-            print("failed to update expense")
-        }
-    }
-
-    func remove(split: Split) {
-        do {
-            try self.splitDatabase.remove(split: split)
-            splits.removeAll { $0.id == split.id }
-        } catch {
-            print("failed to delete split item")
-        }
-    }
-
-    func remove(expense: Expense, on split: Split) {
-        do {
-            try expensesDatabase.remove(expense: expense)
-            split.expenses.removeAll { $0.id == expense.id }
-        } catch {
-            print("failed to remove expense")
-        }
-    }
-}
-
 enum DatabaseAPI {
 
     typealias SplitId = Int64
@@ -108,8 +31,8 @@ enum DatabaseAPI {
         return Deferred {
             Future<SplitDTO?, Never> { promise in
                 let splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
-                let splits = try! splitDatabase.split(withId: id)
-                promise(.success(splits))
+                let split = try! splitDatabase.split(withId: id)
+                promise(.success(split))
             }
         }.eraseToAnyPublisher()
     }
@@ -118,7 +41,7 @@ enum DatabaseAPI {
         return Deferred {
             Future<Void, Never> { promise in
                 let splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
-                _ = try! splitDatabase.create(eventName: name, participants: participants.map { .init(name: $0) })
+                try! splitDatabase.create(eventName: name, participants: participants)
                 promise(.success(()))
             }
         }.eraseToAnyPublisher()
@@ -128,7 +51,7 @@ enum DatabaseAPI {
         return Deferred {
             Future<Void, Never> { promise in
                 let splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
-                _ = try! splitDatabase.update(splitId: id, name: name, newParticipants: newParticipants.map { .init(name: $0) })
+                _ = try! splitDatabase.update(splitId: id, name: name, newParticipants: newParticipants)
                 promise(.success(()))
             }
         }.eraseToAnyPublisher()
@@ -138,7 +61,7 @@ enum DatabaseAPI {
         return Deferred {
             Future<Void, Never> { promise in
                 let splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
-                try! splitDatabase.remove(split: Split(id: id, eventName: name, participants: []))
+                try! splitDatabase.remove(splitId: id)
                 promise(.success(()))
             }
         }.eraseToAnyPublisher()
@@ -160,6 +83,16 @@ enum DatabaseAPI {
             }
         }.eraseToAnyPublisher()
     }
+
+    static func expense(expenseId: ExpenseId) -> AnyPublisher<ExpenseDTO?, Never> {
+        return Deferred {
+            Future<ExpenseDTO?, Never> { promise in
+                let expensesDatabase = try! ExpenseDatabase(databasePath: URL.documentsDirectory.path)
+                let expense = try! expensesDatabase.expense(withId: expenseId)
+                promise(.success(expense))
+            }
+        }.eraseToAnyPublisher()
+    }
 }
 
 // MARK: - DTOs
@@ -173,7 +106,7 @@ struct SplitDTO {
     static let empty = SplitDTO(id: 0, name: "", participants: [], expenses: [])
 }
 
-struct ParticipantDTO {
+struct ParticipantDTO: Equatable {
     let name: String
 }
 
@@ -184,6 +117,8 @@ struct ExpenseDTO {
     let amount: Double
     let participantsWeight: [ExpenseWeightDTO]
     let expenseType: ExpenseTypeDTO
+
+    static let empty = ExpenseDTO(id: 0, name: "", payer: .init(name: ""), amount: 0, participantsWeight: [], expenseType: .equallyWithAll)
 }
 
 struct ExpenseWeightDTO {
@@ -215,6 +150,10 @@ extension SplitDTO {
     static let example = SplitDTO(id: 0, name: "Dinner", participants: .example, expenses: [])
 }
 
+extension ExpenseDTO {
+    static let example = ExpenseDTO(id: 0, name: "Wine", payer: .bob, amount: 20, participantsWeight: .example, expenseType: .equallyWithAll)
+}
+
 extension ParticipantDTO {
     static let bob = ParticipantDTO(name: "Bob")
     static let alice = ParticipantDTO(name: "Alice")
@@ -232,6 +171,13 @@ extension Array where Element == ExpenseDTO {
         amount: 40.0,
         participantsWeight: [.init(participant: .alice, weight: 0.5), .init(participant: .bob, weight: 0.5)],
         expenseType: .equallyWithAll)
+    ]
+}
+
+extension Array where Element == ExpenseWeightDTO {
+    static let example: [ExpenseWeightDTO] = [
+        .init(participant: .bob, weight: 0.5),
+        .init(participant: .alice, weight: 0.5)
     ]
 }
 #endif

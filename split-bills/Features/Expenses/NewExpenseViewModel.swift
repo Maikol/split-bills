@@ -41,7 +41,7 @@ final class NewExpenseViewModel: ObservableObject {
         input.send(event)
     }
 
-    func binding<U>(for keyPath: KeyPath<Expense, U>, event: @escaping (U) -> Event) -> Binding<U> {
+    func binding<U>(for keyPath: KeyPath<ExpenseEditModel, U>, event: @escaping (U) -> Event) -> Binding<U> {
         return Binding(
             get: {
                 self.state.expense[keyPath: keyPath]
@@ -62,24 +62,15 @@ extension NewExpenseViewModel {
     enum State {
         case idle(SplitId)
         case loading(SplitId)
-        case loaded(Split, Expense)
-        case saving(Split, Expense)
+        case loaded(SplitId, ExpenseEditModel)
+        case saving(SplitId, ExpenseEditModel)
 
-        var expense: Expense {
+        var expense: ExpenseEditModel {
             switch self {
             case let .loaded(_, expense):
                 return expense
             default:
-                return .init(split: Split(split: .empty))
-            }
-        }
-
-        var isValid: Bool {
-            switch self {
-            case .idle, .loading, .saving:
-                return false
-            case let .loaded(_, expense):
-                return expense.isValid
+                return .init(participants: [])
             }
         }
     }
@@ -88,7 +79,7 @@ extension NewExpenseViewModel {
         typealias Index = Int
 
         case onAppear
-        case onLoaded(Split, Expense)
+        case onLoaded(SplitId, ExpenseEditModel)
         case onNameChange(String)
         case onPayerChange(Index)
         case onAmountChange(String)
@@ -100,68 +91,8 @@ extension NewExpenseViewModel {
         case expenseSaved
     }
 
-    struct Split {
-        let id: Int64
-        let name: String
-        let participants: [Participant]
-
-        init(split: SplitDTO) {
-            id = split.id
-            name = split.name
-            participants = split.participants.map { Participant(name: $0.name) }
-        }
-    }
-
     struct Participant {
         let name: String
-    }
-
-    struct Expense: Builder {
-        var payerIndex = 0
-        var name = ""
-        var amount = ""
-        var splitEqually = true
-        var expenseTypeIndex = 0
-        var participants: [Participant]
-        var expenseTypeSelections: [ExpenseType.Selection]
-        var expenseTypeAmounts: [ExpenseType.Amount]
-
-        init(split: Split) {
-            participants = split.participants
-            expenseTypeSelections = split.participants.map { .init(participant: $0) }
-            expenseTypeAmounts = split.participants.map { .init(participant: $0) }
-        }
-    }
-
-    enum ExpenseType: Int, CaseIterable {
-
-        struct Selection {
-            let participant: Participant
-            var isSelected = true
-        }
-
-        struct Amount {
-            let participant: Participant
-            var amount = ""
-        }
-
-        case equally
-        case amount
-
-        init(index: Int) {
-            guard let type = NewExpenseViewModel.ExpenseType(rawValue: index) else {
-                fatalError("Index out of bounds \(index)")
-            }
-
-            self = type
-        }
-
-        var localized: String {
-            switch self {
-            case .equally: return NSLocalizedString("expenses.new.split-differently.equally", comment: "")
-            case .amount: return NSLocalizedString("expenses.new.split-differently.amount", comment: "")
-            }
-        }
     }
 }
 
@@ -180,8 +111,8 @@ extension NewExpenseViewModel {
             }
         case .loading:
             switch event {
-            case let .onLoaded(split, expense):
-                return .loaded(split, expense)
+            case let .onLoaded(splitId, expense):
+                return .loaded(splitId, expense)
             default:
                 return state
             }
@@ -222,18 +153,18 @@ extension NewExpenseViewModel {
             guard case let .loading(itemId) = state else { return Empty().eraseToAnyPublisher() }
 
             return DatabaseAPI.split(withId: itemId)
-                .compactMap { $0.map(Split.init) }
-                .map { Event.onLoaded($0, .init(split: $0)) }
+                .compactMap { $0.map(SplitDisplayModel.init) }
+                .map { Event.onLoaded($0.id, .init(participants: $0.participants)) }
                 .eraseToAnyPublisher()
         }
     }
 
     static func whenSaving() -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
-            guard case let .saving(split, expense) = state, let amount = Double(expense.amount) else { return Empty().eraseToAnyPublisher() }
+            guard case let .saving(splitId, expense) = state, let amount = Double(expense.amount) else { return Empty().eraseToAnyPublisher() }
 
             let createExpense = DatabaseAPI.createExpense(
-                splitId: split.id,
+                splitId: splitId,
                 name: expense.name,
                 payerName: expense.payerName,
                 amount: amount,
@@ -247,76 +178,5 @@ extension NewExpenseViewModel {
 
     static func userInput(input: AnyPublisher<Event, Never>) -> Feedback<State, Event> {
         Feedback { _ in input }
-    }
-}
-
-// MARK: - Expense helpers
-
-private extension NewExpenseViewModel.Expense {
-
-    private var selectedExpenseType: NewExpenseViewModel.ExpenseType {
-        NewExpenseViewModel.ExpenseType(index: expenseTypeIndex)
-    }
-
-    var isValid: Bool {
-        guard !name.isEmpty,
-            let amount = Double(amount), amount > 0 else
-        {
-            return false
-        }
-
-        if splitEqually {
-            return true
-        }
-
-        switch selectedExpenseType {
-        case .equally:
-            return expenseTypeSelections.contains { $0.isSelected }
-        case .amount:
-            let doubleAmounts = expenseTypeAmounts.compactMap { Double($0.amount) }
-            let participantsAmount = doubleAmounts.reduce(0, +)
-            return fabs(1 - (amount/participantsAmount)) < 0.01
-        }
-    }
-
-    var payerName: String {
-        participants[payerIndex].name
-    }
-
-    typealias Weight = (name: String, weight: Double)
-
-    var weights: [Weight] {
-
-
-        if splitEqually {
-            return splitEqually(with: participants)
-        }
-
-        switch selectedExpenseType {
-        case .equally:
-            let participants = expenseTypeSelections
-                .filter { $0.isSelected }
-                .map { $0.participant }
-            return splitEqually(with: participants)
-        case .amount:
-            return splitByAmount
-        }
-    }
-
-    private func splitEqually(with participants: [NewExpenseViewModel.Participant]) -> [Weight] {
-        precondition(participants.count > 0, "We can calculate with no participants")
-        let weight = 1 / Double(participants.count)
-        return participants.map { (name: $0.name, weight: weight) }
-    }
-
-    private var splitByAmount: [Weight] {
-        guard let amount = Double(amount) else {
-            fatalError("Can't save an expense with a non double value")
-        }
-
-        precondition(amount > 0, "Expense needs to have a valid amoun")
-        precondition(expenseTypeAmounts.count > 0, "There needs to be at least one participant")
-
-        return expenseTypeAmounts.map { (name: $0.participant.name, weight: (Double($0.amount) ?? 0 / amount)) }
     }
 }

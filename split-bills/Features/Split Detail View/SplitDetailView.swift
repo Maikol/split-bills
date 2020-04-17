@@ -48,7 +48,7 @@ struct SplitDetailView: View {
         }
     }
 
-    private func content(for item: SplitDetailViewModel.SplitItem) -> some View {
+    private func content(for item: SplitDetailViewModel.Item) -> some View {
         ZStack(alignment: .bottomTrailing) {
             contentLists(for: item)
             PlusButton {
@@ -58,7 +58,7 @@ struct SplitDetailView: View {
         .listStyle(GroupedListStyle())
     }
 
-    private func contentLists(for item: SplitDetailViewModel.SplitItem) -> some View {
+    private func contentLists(for item: SplitDetailViewModel.Item) -> some View {
         List {
             Section(header: FormSectionHeader(key: "split.view.settle-header")) {
                 list(of: item.payments)
@@ -70,7 +70,7 @@ struct SplitDetailView: View {
         }
     }
 
-    private func list(of payments: [SplitDetailViewModel.Payment]) -> some View {
+    private func list(of payments: [PaymentDisplayModel]) -> some View {
         ForEach(payments) { payment in
             HStack {
                 Text(payment.payer.name)
@@ -86,10 +86,10 @@ struct SplitDetailView: View {
         }
     }
 
-    private func list(of expenses: [SplitDetailViewModel.Expense]) -> some View {
+    private func list(of expenses: [ExpenseDisplayModel]) -> some View {
         ForEach(expenses) { expense in
             Button(action: {
-                self.viewModel.send(event: .onSelectExpense(expense))
+                self.viewModel.send(event: .onSelectExpense(expense.id))
             }) {
                 HStack {
                     Text(expense.name)
@@ -120,43 +120,6 @@ struct SplitDetailView: View {
 
     private func removeExpense(at offsets: IndexSet) {
         viewModel.send(event: .onRemoveExpenses(offsets: offsets))
-    }
-}
-
-private extension Expense {
-
-    func viewModel(with split: Split) -> ExpenseViewModel {
-        guard let payerIndex = split.participants.firstIndex(of: payer) else {
-            fatalError("payer index not found")
-        }
-
-        let viewModel = ExpenseViewModel(participants: split.participants)
-        viewModel.id = id
-        viewModel.payerIndex = payerIndex
-        viewModel.description = description
-        viewModel.amount = String(amount)
-
-        switch splitType {
-        case .equallyWithAll:
-            viewModel.splitEqually = true
-        case .equallyCustom:
-            viewModel.splitEqually = false
-            viewModel.splitTypeIndex = 0
-            viewModel.selections = split.participants.map { participant in
-                ParticipantSelectionModel(participant: participant, isSelected: participantsWeight.contains { $0.participant == participant })
-            }
-        case .byAmount:
-            viewModel.splitEqually = false
-            viewModel.splitTypeIndex = 1
-            viewModel.amounts = split.participants.map { participant in
-                let storedAmount = participantsWeight.first { $0.participant == participant }.map { String($0.weight * amount) } ?? ""
-                return ParticipantEntryModel(participant: participant, amount: storedAmount)
-            }
-        case .byWeight:
-            fatalError("Shouldn't get here")
-        }
-
-        return viewModel
     }
 }
 

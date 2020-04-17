@@ -17,7 +17,7 @@ final class SplitDetailViewModel: ObservableObject {
     private var bag = Set<AnyCancellable>()
     private let input = PassthroughSubject<Event, Never>()
 
-    init(splitId: ItemId, title: String) {
+    init(splitId: SplitId, title: String) {
         state = .idle(splitId, title: title)
         Publishers.system(
             initial: state,
@@ -46,27 +46,28 @@ final class SplitDetailViewModel: ObservableObject {
 
 extension SplitDetailViewModel {
 
-    typealias ItemId = Int64
+    typealias SplitId = Int64
+    typealias ExpenseId = Int64
 
     enum State {
-        case idle(ItemId, title: String)
-        case loading(ItemId, title: String)
-        case loaded(SplitItem)
-        case reloading(SplitItem)
+        case idle(SplitId, title: String)
+        case loading(SplitId, title: String)
+        case loaded(Item)
+        case reloading(Item)
 
-        var splitId: ItemId {
+        var splitId: SplitId {
             switch self {
             case let .idle(splitId, _), let .loading(splitId, _):
                 return splitId
-            case let .loaded(splitItem), let .reloading(splitItem):
-                return splitItem.id
+            case let .loaded(item), let .reloading(item):
+                return item.split.id
             }
         }
 
         var title: String {
             switch self {
             case let .loaded(item), let .reloading(item):
-                return item.name
+                return item.split.name
             case let .idle(_, title), let .loading(_, title):
                 return title
             }
@@ -76,86 +77,21 @@ extension SplitDetailViewModel {
     enum Event {
         case onAppear
         case onReload
-        case onLoaded(SplitItem)
-        case onRemoveExpense(Expense)
+        case onLoaded(Item)
+        case onRemoveExpense(ExpenseId)
         case onRemoveExpenses(offsets: IndexSet)
-        case onSelectExpense(Expense)
+        case onSelectExpense(ExpenseId)
     }
 
-    struct SplitItem {
-        let id: ItemId
-        let name: String
-        let participants: [Participant]
-        let expenses: [Expense]
-
-        init(split: SplitDTO) {
-            id = split.id
-            name = split.name
-            participants = split.participants.map { Participant(name: $0.name) }
-            expenses = split.expenses.map { .init(expense: $0) }
-        }
-    }
-
-    struct Participant: Equatable, Hashable {
-        let name: String
-    }
-
-    struct Expense: Identifiable {
-        let id: Int64
-        let name: String
-        let payer: Participant
-        let amount: Double
-        let participantsWeight: [ExpenseWeight]
-        let expenseType: ExpenseType
-
-        init(expense: ExpenseDTO) {
-            id = expense.id
-            name = expense.name
-            payer = .init(name: expense.payer.name)
-            amount = expense.amount
-            participantsWeight = expense.participantsWeight.map { .init(expenseWeight: $0) }
-            expenseType = .init(expenseType: expense.expenseType)
-        }
-    }
-
-    struct Payment: Identifiable {
-        let id = UUID()
-        let payer: Participant
-        let receiver: Participant
-        let amount: Double
-    }
-
-    struct ExpenseWeight {
-        let participant: Participant
-        let weight: Double
-
-        init(expenseWeight: ExpenseWeightDTO) {
-            participant = .init(name: expenseWeight.participant.name)
-            weight = expenseWeight.weight
-        }
-    }
-
-    enum ExpenseType: Int {
-        case equallyWithAll
-        case equallyCustom
-        case byAmount
-
-        init(expenseType: ExpenseTypeDTO) {
-            switch expenseType {
-            case .equallyWithAll:
-                self = .equallyWithAll
-            case .equallyCustom:
-                self = .equallyCustom
-            case .byAmount:
-                self = .byAmount
-            }
-        }
+    struct Item {
+        let split: SplitDisplayModel
+        let expenses: [ExpenseDisplayModel]
     }
 
     struct Sheet: Identifiable {
         enum Style {
             case newExpense
-            case expense(Expense)
+            case expense(ExpenseId)
         }
 
         let id = UUID()
@@ -205,7 +141,8 @@ extension SplitDetailViewModel {
             guard case let .loading(itemId, _) = state else { return Empty().eraseToAnyPublisher() }
 
             return DatabaseAPI.split(withId: itemId)
-                .compactMap { $0.map(SplitItem.init) }
+                .compactMap { ($0, $0?.expenses) as? (SplitDTO, [ExpenseDTO]) }
+                .map { Item(split: .init(split: $0.0), expenses: $0.1.map { .init(expense: $0) }) }
                 .map(Event.onLoaded)
                 .eraseToAnyPublisher()
         }
@@ -215,8 +152,9 @@ extension SplitDetailViewModel {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case let .reloading(item) = state else { return Empty().eraseToAnyPublisher() }
 
-            return DatabaseAPI.split(withId: item.id)
-                .compactMap { $0.map(SplitItem.init) }
+            return DatabaseAPI.split(withId: item.split.id)
+                .compactMap { ($0, $0?.expenses) as? (SplitDTO, [ExpenseDTO]) }
+                .map { Item(split: .init(split: $0.0), expenses: $0.1.map { .init(expense: $0) }) }
                 .map(Event.onLoaded)
                 .eraseToAnyPublisher()
         }
@@ -229,14 +167,14 @@ extension SplitDetailViewModel {
 
 // MARK: - Settle
 
-extension SplitDetailViewModel.SplitItem {
+extension SplitDetailViewModel.Item {
 
-    var payments: [SplitDetailViewModel.Payment] {
+    var payments: [PaymentDisplayModel] {
         let paymentsValues = Dictionary(grouping: expenses) { $0.payer }
             .mapValues { $0.reduce(0) { return $0 + $1.amount } }
 
-        var owingValues = [SplitDetailViewModel.Participant: Double]()
-        participants.forEach { participant in
+        var owingValues = [ParticipantDisplayModel: Double]()
+        split.participants.forEach { participant in
             let totalOwing = expenses.reduce(0.0) { result, expense in
                 guard let weight = expense.participantsWeight.first(where: { $0.participant == participant }) else {
                     return result
@@ -252,7 +190,7 @@ extension SplitDetailViewModel.SplitItem {
         return settle(mergedValues).filter { $0.amount > 0.01 }
     }
 
-    private func settle(_ values: [(key: SplitDetailViewModel.Participant, value: Double)]) -> [SplitDetailViewModel.Payment] {
+    private func settle(_ values: [(key: ParticipantDisplayModel, value: Double)]) -> [PaymentDisplayModel] {
         guard values.count > 1 else {
             return []
         }
@@ -265,8 +203,8 @@ extension SplitDetailViewModel.SplitItem {
         var newValues = values.filter { $0.key != first.key && $0.key != last.key  }
 
         let payment = (sum < 0 ?
-            SplitDetailViewModel.Payment(payer: last.key, receiver: first.key, amount: abs(first.value)) :
-            SplitDetailViewModel.Payment(payer: last.key, receiver: first.key, amount: abs(last.value))
+            PaymentDisplayModel(payer: last.key, receiver: first.key, amount: abs(first.value)) :
+            PaymentDisplayModel(payer: last.key, receiver: first.key, amount: abs(last.value))
         )
 
         (sum < 0 ? newValues.append((last.key, sum)) : newValues.insert((first.key, sum), at: 0))

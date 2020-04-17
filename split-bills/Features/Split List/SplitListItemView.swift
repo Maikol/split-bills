@@ -10,12 +10,12 @@ import SwiftUI
 
 struct SplitListItemView: View {
 
-    var item: SplitListViewModel.ListItem
+    var split: SplitDisplayModel
     var editAction: () -> Void
     var deleteAction: () -> Void
 
     var body: some View {
-        Text(item.name)
+        Text(split.name)
             .apply(font: .body, color: .dark)
             .contextMenu {
                 Button(action: {
@@ -37,6 +37,6 @@ struct SplitListItemView: View {
 
 struct SplitRow_Previews: PreviewProvider {
     static var previews: some View {
-        SplitListItemView(item: .example, editAction: {}) {}
+        SplitListItemView(split: .example, editAction: {}) {}
     }
 }

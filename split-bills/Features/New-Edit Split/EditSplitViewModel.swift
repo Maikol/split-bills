@@ -17,7 +17,7 @@ final class EditSplitViewModel: ObservableObject {
     private var bag = Set<AnyCancellable>()
     private let input = PassthroughSubject<Event, Never>()
 
-    init(splitId: ItemId) {
+    init(splitId: SplitId) {
         state = .idle(splitId)
         Publishers.system(
             initial: state,
@@ -41,10 +41,10 @@ final class EditSplitViewModel: ObservableObject {
         input.send(event)
     }
 
-    func binding<U>(for keyPath: KeyPath<Item, U>, event: @escaping (U) -> Event) -> Binding<U> {
+    func binding<U>(for keyPath: KeyPath<SplitEditModel, U>, event: @escaping (U) -> Event) -> Binding<U> {
         return Binding(
             get: {
-                self.state.item[keyPath: keyPath]
+                self.state.split[keyPath: keyPath]
             },
             set: {
                 self.send(event: event($0))
@@ -57,20 +57,20 @@ final class EditSplitViewModel: ObservableObject {
 
 extension EditSplitViewModel {
 
-    typealias ItemId = Int64
+    typealias SplitId = Int64
 
     enum State {
-        case idle(ItemId)
-        case loading(ItemId)
-        case loaded(Item)
-        case saving(Item)
+        case idle(SplitId)
+        case loading(SplitId)
+        case loaded(SplitId, SplitEditModel)
+        case saving(SplitId, SplitEditModel)
 
-        var item: Item {
+        var split: SplitEditModel {
             switch self {
-            case let .loaded(item):
-                return item
+            case let .loaded(_, split):
+                return split
             default:
-                return .init(split: .empty)
+                return .init()
             }
         }
     }
@@ -79,7 +79,7 @@ extension EditSplitViewModel {
         typealias Index = Int
 
         case onAppear
-        case onLoaded(Item)
+        case onLoaded(SplitEditModel)
         case onNameChange(String)
         case onExistingParticipantNameChange(String, Index)
         case onNewParticipantNameChange(String, Index)
@@ -87,38 +87,6 @@ extension EditSplitViewModel {
         case onRemoveParticipant(Index)
         case onSaveSplit
         case splitSaved
-    }
-
-    struct Item: Equatable, Builder {
-        let id: ItemId
-        var name: String
-        var existingParticipants: [Participant]
-        var newParticipants = [Participant]()
-
-        init(split: SplitDTO) {
-            id = split.id
-            name = split.name
-            existingParticipants = split.participants.enumerated().map { Participant(index: $0.offset, name: $0.element.name) }
-        }
-
-        var isValid: Bool {
-            guard !name.isEmpty,
-                let firstParticipant = existingParticipants.first, !firstParticipant.name.isEmpty, !firstParticipant.removed,
-                let secondParticipant = existingParticipants[safe: 1], !secondParticipant.name.isEmpty, !secondParticipant.removed
-            else {
-                    return false
-            }
-
-            return true
-        }
-    }
-
-    struct Participant: Identifiable, Equatable, Hashable {
-        let id = UUID()
-        let index: Int
-        var name = ""
-        // Deleting items from the array was crashing Binding
-        var removed = false
     }
 }
 
@@ -128,45 +96,43 @@ extension EditSplitViewModel {
 
     static func reduce(_ state: State, _ event: Event) -> State {
         switch state {
-        case let .idle(id):
+        case let .idle(splitId):
             switch event {
             case .onAppear:
-                return .loading(id)
+                return .loading(splitId)
             default:
                 return state
             }
-        case .loading:
+        case let .loading(splitId):
             switch event {
             case let .onLoaded(item):
-                return .loaded(item)
+                return .loaded(splitId, item)
             default:
                 return state
             }
-        case let .loaded(item):
+        case let .loaded(splitId, split):
             switch event {
             case let .onNameChange(newName):
-                return .loaded(item.set(\.name, to: newName))
+                return .loaded(splitId, split.set(\.name, to: newName))
             case let .onExistingParticipantNameChange(newName, index):
-                return .loaded(item.set(\.existingParticipants[index].name, to: newName))
+                return .loaded(splitId, split.set(\.existingParticipants[index].name, to: newName))
             case let .onNewParticipantNameChange(newName, index):
-                return .loaded(item.set(\.newParticipants[index].name, to: newName))
+                return .loaded(splitId, split.set(\.newParticipants[index].name, to: newName))
             case .onAddParticipant:
-                var copy = item
-                copy.newParticipants.append(.init(index: item.newParticipants.count))
-                return .loaded(copy)
+                var copy = split
+                copy.newParticipants.append(.init(index: split.newParticipants.count))
+                return .loaded(splitId, copy)
             case let .onRemoveParticipant(index):
-                var copy = item
-                copy.newParticipants[index].removed = true
-                return .loaded(copy)
+                return .loaded(splitId, split.set(\.newParticipants[index].removed, to: true))
             case .onSaveSplit:
-                return .saving(item)
+                return .saving(splitId, split)
             default:
                 return state
             }
-        case let .saving(item):
+        case let .saving(splitId, _):
             switch event {
             case .splitSaved:
-                return .idle(item.id)
+                return .idle(splitId)
             default:
                 return state
             }
@@ -178,7 +144,7 @@ extension EditSplitViewModel {
             guard case let .loading(itemId) = state else { return Empty().eraseToAnyPublisher() }
 
             return DatabaseAPI.split(withId: itemId)
-                .compactMap { $0.map(Item.init) }
+                .compactMap { $0.map(SplitEditModel.init) }
                 .map(Event.onLoaded)
                 .eraseToAnyPublisher()
         }
@@ -186,10 +152,10 @@ extension EditSplitViewModel {
 
     static func whenSaving() -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
-            guard case let .saving(item) = state else { return Empty().eraseToAnyPublisher() }
+            guard case let .saving(splitId, split) = state else { return Empty().eraseToAnyPublisher() }
 
-            let newParticipantsFiltered = item.newParticipants.filter { !($0.removed || $0.name.isEmpty) }.map { $0.name }
-            return DatabaseAPI.updateSplit(id: item.id, name: item.name, newParticipants: newParticipantsFiltered)
+            let newParticipantsFiltered = split.newParticipants.filter { !($0.removed || $0.name.isEmpty) }.map { $0.name }
+            return DatabaseAPI.updateSplit(id: splitId, name: split.name, newParticipants: newParticipantsFiltered)
                 .map { _ in Event.splitSaved }
                 .eraseToAnyPublisher()
         }

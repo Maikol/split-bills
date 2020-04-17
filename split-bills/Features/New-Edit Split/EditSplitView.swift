@@ -40,17 +40,17 @@ struct EditSplitView: View {
             return Color.background.eraseToAnyView()
         case .loading:
             return Color.background.eraseToAnyView()
-        case let .loaded(item):
-            return form(for: item).eraseToAnyView()
+        case let .loaded(_, split):
+            return form(for: split).eraseToAnyView()
         case .saving:
             return Color.background.eraseToAnyView()
         }
     }
 
-    private func form(for item: EditSplitViewModel.Item) -> some View {
+    private func form(for split: SplitEditModel) -> some View {
         Form {
             eventInfoView
-            participantsList(for: item)
+            participantsList(for: split)
 
             Section {
                 Button(action: saveSplit) {
@@ -59,7 +59,7 @@ struct EditSplitView: View {
                         .accentColor(.link)
                         .alignment(.center)
                 }
-            }.disabled(!item.isValid)
+            }.disabled(!split.isValid)
         }
     }
 
@@ -69,13 +69,13 @@ struct EditSplitView: View {
         }
     }
 
-    private func participantsList(for item: EditSplitViewModel.Item) -> some View {
+    private func participantsList(for split: SplitEditModel) -> some View {
         Section(header: FormSectionHeader(key: "new-split-controller.participants")) {
-            ForEach(0 ..< item.existingParticipants.count, id: \.self) { index in
+            ForEach(0 ..< split.existingParticipants.count, id: \.self) { index in
                 self.requiredParticipantTextField(withIndex: index)
             }
-            ForEach(0 ..< item.activeNewParticipants.count, id: \.self) { index in
-                self.dynamicParticipantView(withIndex: index + item.existingParticipants.count, participant: item.activeNewParticipants[index])
+            ForEach(0 ..< split.activeNewParticipants.count, id: \.self) { index in
+                self.dynamicParticipantView(withIndex: index + split.existingParticipants.count, participant: split.activeNewParticipants[index])
             }
             Button(action: {
                 self.viewModel.send(event: .onAddParticipant)
@@ -98,7 +98,7 @@ struct EditSplitView: View {
         })
     }
 
-    private func dynamicParticipantView(withIndex index: Int, participant: EditSplitViewModel.Participant) -> some View {
+    private func dynamicParticipantView(withIndex index: Int, participant: ParticipantEditModel) -> some View {
         SplitParticipantRow(
             label: "Participant \(index + 1)",
             name: self.viewModel.binding(for: \.newParticipants[participant.index].name) { value in
@@ -112,13 +112,6 @@ struct EditSplitView: View {
     func saveSplit() {
         viewModel.send(event: .onSaveSplit)
         self.presentationMode.wrappedValue.dismiss()
-    }
-}
-
-private extension EditSplitViewModel.Item {
-
-    var activeNewParticipants: [EditSplitViewModel.Participant] {
-        newParticipants.filter { !$0.removed }
     }
 }
 

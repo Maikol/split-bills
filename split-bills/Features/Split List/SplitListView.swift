@@ -62,11 +62,11 @@ struct SplitListView: View {
         }
     }
 
-    private func splitContentView(for items: [SplitListViewModel.ListItem]) -> some View {
+    private func splitContentView(for splits: [SplitDisplayModel]) -> some View {
         ZStack(alignment: .bottomTrailing) {
             List {
                 Section(header: FormSectionHeader(key: "root-controller.groups")) {
-                    self.list(of: items).eraseToAnyView()
+                    self.list(of: splits).eraseToAnyView()
                 }
             }.listStyle(GroupedListStyle())
 
@@ -76,15 +76,15 @@ struct SplitListView: View {
         }
     }
 
-    private func list(of items: [SplitListViewModel.ListItem]) -> some View {
-        ForEach(items) { item in
-            NavigationLink(destination: SplitDetailView(viewModel: SplitDetailViewModel(splitId: item.id, title: item.name))) {
+    private func list(of splits: [SplitDisplayModel]) -> some View {
+        ForEach(splits) { split in
+            NavigationLink(destination: SplitDetailView(viewModel: SplitDetailViewModel(splitId: split.id, title: split.name))) {
                 SplitListItemView(
-                    item: item,
+                    split: split,
                     editAction: {
-                        self.viewModel.presentSheet(with: .edit(item))
+                        self.viewModel.presentSheet(with: .edit(split))
                 }) {
-                    self.viewModel.send(event: .onRemoveSplit(item))
+                    self.viewModel.send(event: .onRemoveSplit(split))
                 }
             }
         }.onDelete(perform: removeSplit)
@@ -105,9 +105,7 @@ struct SplitListView: View {
 }
 
 struct SplitListView_Previews: PreviewProvider {
-    static let dataSource = DatabaseController()
-
     static var previews: some View {
-        SplitListView(viewModel: .init()).environmentObject(dataSource)
+        SplitListView(viewModel: .init())
     }
 }

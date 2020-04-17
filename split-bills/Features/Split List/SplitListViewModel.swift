@@ -53,23 +53,23 @@ extension SplitListViewModel {
     enum State {
         case idle
         case loading
-        case loaded([ListItem])
+        case loaded([SplitDisplayModel])
     }
 
     enum Event: Equatable {
         case onAppear
-        case onSplitsLoaded([ListItem])
-        case onSplitsReloaded([ListItem])
-        case onRemoveSplit(ListItem)
+        case onSplitsLoaded([SplitDisplayModel])
+        case onSplitsReloaded([SplitDisplayModel])
+        case onRemoveSplit(SplitDisplayModel)
         case onRemoveSplits(offsets: IndexSet)
         case onReload
 
-        fileprivate func splitsToRemove(from listItems: [ListItem]) -> [ListItem] {
+        fileprivate func splitsToRemove(from splits: [SplitDisplayModel]) -> [SplitDisplayModel] {
             switch self {
-            case let .onRemoveSplit(item) where listItems.contains(item):
-                return [item]
+            case let .onRemoveSplit(split) where splits.contains(split):
+                return [split]
             case let .onRemoveSplits(offsets):
-                return offsets.map { listItems[$0] }
+                return offsets.map { splits[$0] }
             default:
                 return []
             }
@@ -79,21 +79,11 @@ extension SplitListViewModel {
     struct Sheet: Identifiable {
         enum Style {
             case new
-            case edit(ListItem)
+            case edit(SplitDisplayModel)
         }
 
         let id = UUID()
         let style: Style
-    }
-
-    struct ListItem: Identifiable, Equatable {
-        let id: Int64
-        let name: String
-
-        init(split: SplitDTO) {
-            id = split.id
-            name = split.name
-        }
     }
 }
 
@@ -132,7 +122,7 @@ extension SplitListViewModel {
             guard case .loading = state else { return Empty().eraseToAnyPublisher() }
 
             return DatabaseAPI.splits()
-                .map { $0.map(ListItem.init) }
+                .map { $0.map(SplitDisplayModel.init) }
                 .map(Event.onSplitsLoaded)
                 .eraseToAnyPublisher()
         }
@@ -146,8 +136,9 @@ extension SplitListViewModel {
                 .filter { !$0.isEmpty }
                 .map { $0.map { DatabaseAPI.removeSplit(id: $0.id, name: $0.name) } }
                 .flatMap { Publishers.MergeMany($0) }
+                // TODO: Should be a different state for reloading
                 .flatMap { _ in DatabaseAPI.splits() }
-                .map { $0.map(ListItem.init) }
+                .map { $0.map(SplitDisplayModel.init) }
                 .map(Event.onSplitsReloaded)
                 .eraseToAnyPublisher()
         }
@@ -159,7 +150,7 @@ extension SplitListViewModel {
 
             return input.filter { $0 == .onReload }
                 .flatMap { _ in DatabaseAPI.splits() }
-                .map { $0.map(ListItem.init) }
+                .map { $0.map(SplitDisplayModel.init) }
                 .map(Event.onSplitsReloaded)
                 .eraseToAnyPublisher()
         }
@@ -169,9 +160,3 @@ extension SplitListViewModel {
         Feedback { _ in input }
     }
 }
-
-#if DEBUG
-extension SplitListViewModel.ListItem {
-    static let example = SplitListViewModel.ListItem(split: .example)
-}
-#endif
