@@ -89,7 +89,7 @@ struct SplitDetailView: View {
     private func list(of expenses: [ExpenseDisplayModel]) -> some View {
         ForEach(expenses) { expense in
             Button(action: {
-                self.viewModel.send(event: .onSelectExpense(expense.id))
+                self.viewModel.presentSheet(with: .expense(expense.id))
             }) {
                 HStack {
                     Text(expense.name)
@@ -106,13 +106,8 @@ struct SplitDetailView: View {
         switch sheet.style {
         case .newExpense:
             return NewExpenseView(viewModel: NewExpenseViewModel(splitId: viewModel.state.splitId)).eraseToAnyView()
-        case let .expense(expense):
-            return EmptyView().eraseToAnyView()
-//            return ExpenseView(
-//                isPresented: self.$showingModal,
-//                split: self.split,
-//                viewModel: expense.viewModel(with: self.split)
-//            ).environmentObject(self.controller).eraseToAnyView()
+        case let .expense(expenseId):
+            return EditExpenseView(viewModel: EditExpenseViewModel(splitId: viewModel.state.splitId, expenseId: expenseId)).eraseToAnyView()
         }
     }
 

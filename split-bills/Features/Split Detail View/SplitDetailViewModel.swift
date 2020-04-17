@@ -80,7 +80,6 @@ extension SplitDetailViewModel {
         case onLoaded(Item)
         case onRemoveExpense(ExpenseId)
         case onRemoveExpenses(offsets: IndexSet)
-        case onSelectExpense(ExpenseId)
     }
 
     struct Item {

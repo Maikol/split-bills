@@ -41,7 +41,7 @@ final class EditExpenseViewModel: ObservableObject {
         input.send(event)
     }
 
-    func binding<U>(for keyPath: KeyPath<Expense, U>, event: @escaping (U) -> Event) -> Binding<U> {
+    func binding<U>(for keyPath: KeyPath<ExpenseEditModel, U>, event: @escaping (U) -> Event) -> Binding<U> {
         return Binding(
             get: {
                 self.state.expense[keyPath: keyPath]
@@ -63,24 +63,15 @@ extension EditExpenseViewModel {
     enum State {
         case idle(splitId: SplitId, expenseId: ExpenseId)
         case loading(splitId: SplitId, expenseId: ExpenseId)
-        case loaded(Split, Expense)
-        case saving(Split, Expense)
+        case loaded(SplitId, ExpenseId, ExpenseEditModel)
+        case saving(ExpenseId, ExpenseEditModel)
 
-        var expense: Expense {
+        var expense: ExpenseEditModel {
             switch self {
-            case let .loaded(_, expense):
+            case let .loaded(_, _, expense):
                 return expense
             default:
-                return .init(split: .empty, expense: .empty)
-            }
-        }
-
-        var isValid: Bool {
-            switch self {
-            case .idle, .loading, .saving:
-                return false
-            case let .loaded(_, expense):
-                return false
+                return .init(participants: [])
             }
         }
     }
@@ -89,7 +80,7 @@ extension EditExpenseViewModel {
         typealias Index = Int
 
         case onAppear
-        case onLoaded(Split, Expense)
+        case onLoaded(SplitId, ExpenseId, ExpenseEditModel)
         case onNameChange(String)
         case onPayerChange(Index)
         case onAmountChange(String)
@@ -100,83 +91,6 @@ extension EditExpenseViewModel {
         case onSaveExpense
         case onRemoveExpense
         case expenseDismissed
-    }
-
-    struct Split {
-        let id: Int64
-        let name: String
-        let participants: [Participant]
-
-        init(split: SplitDTO) {
-            id = split.id
-            name = split.name
-            participants = split.participants.map { Participant(name: $0.name) }
-        }
-    }
-
-    struct Participant {
-        let name: String
-    }
-
-    struct Expense: Builder {
-        let id: Int64
-        var payerIndex = 0
-        var name = ""
-        var amount = ""
-        var splitEqually = true
-        var expenseTypeIndex = 0
-        var participants: [Participant]
-        var expenseTypeSelections: [ExpenseType.Selection]
-        var expenseTypeAmounts: [ExpenseType.Amount]
-
-        init(split: SplitDTO, expense: ExpenseDTO) {
-            id = expense.id
-            participants = split.participants.map { Participant(name: $0.name) }
-            // TODO: recheck
-            payerIndex = split.participants.firstIndex { $0.name == expense.payer.name }!
-            name = expense.name
-            amount = String(format:"%.2f", expense.amount)
-            splitEqually = (expense.expenseType == .equallyWithAll)
-            expenseTypeIndex = (expense.expenseType == .byAmount ? 1 : 0)
-            expenseTypeSelections = split.participants.map { participant in
-                .init(participant: .init(name: participant.name), isSelected: expense.participantsWeight.contains { $0.participant == participant })
-            }
-            expenseTypeAmounts = split.participants.map { participant in
-                let storedAmount = expense.participantsWeight.first { $0.participant == participant }.map { String($0.weight * expense.amount) } ?? ""
-                return .init(participant: .init(name: participant.name), amount: storedAmount)
-            }
-        }
-    }
-
-    enum ExpenseType: Int, CaseIterable {
-
-        struct Selection {
-            let participant: Participant
-            var isSelected = true
-        }
-
-        struct Amount {
-            let participant: Participant
-            var amount = ""
-        }
-
-        case equally
-        case amount
-
-        init(index: Int) {
-            guard let type = EditExpenseViewModel.ExpenseType(rawValue: index) else {
-                fatalError("Index out of bounds \(index)")
-            }
-
-            self = type
-        }
-
-        var localized: String {
-            switch self {
-            case .equally: return NSLocalizedString("expenses.new.split-differently.equally", comment: "")
-            case .amount: return NSLocalizedString("expenses.new.split-differently.amount", comment: "")
-            }
-        }
     }
 }
 
@@ -195,35 +109,35 @@ extension EditExpenseViewModel {
             }
         case .loading:
             switch event {
-            case let .onLoaded(split, expense):
-                return .loaded(split, expense)
+            case let .onLoaded(splitId, expenseId, expense):
+                return .loaded(splitId, expenseId, expense)
             default:
                 return state
             }
-        case let .loaded(split, expense):
+        case let .loaded(splitId, expenseId, expense):
             switch event {
             case let .onNameChange(newName):
-                return .loaded(split, expense.set(\.name, to: newName))
+                return .loaded(splitId, expenseId, expense.set(\.name, to: newName))
             case let .onPayerChange(newIndex):
-                return .loaded(split, expense.set(\.payerIndex, to: newIndex))
+                return .loaded(splitId, expenseId, expense.set(\.payerIndex, to: newIndex))
             case let .onAmountChange(newAmount):
-                return .loaded(split, expense.set(\.amount, to: newAmount))
+                return .loaded(splitId, expenseId, expense.set(\.amount, to: newAmount))
             case let .onSplitEquallyChange(isSelected):
-                return .loaded(split, expense.set(\.splitEqually, to: isSelected))
+                return .loaded(splitId, expenseId, expense.set(\.splitEqually, to: isSelected))
             case let .onExpenseTypeChange(newIndex):
-                return  .loaded(split, expense.set(\.expenseTypeIndex, to: newIndex))
+                return  .loaded(splitId, expenseId, expense.set(\.expenseTypeIndex, to: newIndex))
             case let .onExpenseTypeSelectionChange(participantIndex, isSelected):
                 return .loaded(
-                    split,
+                    splitId, expenseId,
                     expense.set(\.expenseTypeSelections[participantIndex].isSelected, to: isSelected)
                 )
             case let .onExpenseTypeAmountChange(participantIndex, newAmount):
                 return .loaded(
-                    split,
+                    splitId, expenseId,
                     expense.set(\.expenseTypeAmounts[participantIndex].amount, to: newAmount)
                 )
             case .onSaveExpense:
-                return .saving(split, expense)
+                return .saving(expenseId, expense)
             default:
                 return state
             }
@@ -236,9 +150,15 @@ extension EditExpenseViewModel {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case let .loading(splitId, expenseId) = state else { return Empty().eraseToAnyPublisher() }
 
-            return Publishers.Zip(DatabaseAPI.split(withId: splitId), DatabaseAPI.expense(expenseId: expenseId))
-                .compactMap { $0 as? (SplitDTO, ExpenseDTO) }
-                .map { (Split(split: $0.0), Expense(split: $0.0, expense: $0.1)) }
+            let splitPublisher = DatabaseAPI.split(withId: splitId)
+                .compactMap { $0 }
+                .map(SplitDisplayModel.init)
+
+            let expensePublisher = DatabaseAPI.expense(expenseId: expenseId)
+                .compactMap { $0 }
+
+            return Publishers.Zip(splitPublisher, expensePublisher)
+                .map { ($0.0.id, $0.1.id, ExpenseEditModel(expense: $0.1, participants: $0.0.participants)) }
                 .map(Event.onLoaded)
                 .eraseToAnyPublisher()
         }

@@ -44,7 +44,7 @@ struct EditExpenseView: View {
                         .apply(font: .body, color: .white)
                 }
             )
-        }
+        }.onAppear { self.viewModel.send(event: .onAppear) }
     }
 
     private var contentView: some View {
@@ -53,14 +53,14 @@ struct EditExpenseView: View {
             return Color.background.eraseToAnyView()
         case .loading:
             return Color.background.eraseToAnyView()
-        case let .loaded(_, expense):
+        case let .loaded(_, _, expense):
             return form(for: expense).eraseToAnyView()
         case .saving:
             return Color.background.eraseToAnyView()
         }
     }
 
-    private func form(for expense: EditExpenseViewModel.Expense) -> some View {
+    private func form(for expense: ExpenseEditModel) -> some View {
         Form {
             expenseInfoView(with: expense)
             participantsContentView(with: expense)
@@ -78,11 +78,11 @@ struct EditExpenseView: View {
                         .font(.headline)
                         .alignment(.center)
                 }.foregroundColor(.error)
-            }.disabled(!viewModel.state.isValid)
+            }.disabled(!expense.isValid)
         }
     }
 
-    private func expenseInfoView(with expense: EditExpenseViewModel.Expense) -> some View {
+    private func expenseInfoView(with expense: ExpenseEditModel) -> some View {
         Section(header: FormSectionHeader(key: "expenses.new.info-header")) {
             TextField(
                 "expenses.new.info-placeholder",
@@ -107,7 +107,7 @@ struct EditExpenseView: View {
         }
     }
 
-    private func participantsContentView(with expense: EditExpenseViewModel.Expense) -> some View {
+    private func participantsContentView(with expense: ExpenseEditModel) -> some View {
         Group {
             Section(header: FormSectionHeader(key: "expenses.new.split-header")) {
                 Toggle(isOn: viewModel.binding(for: \.splitEqually) { boolValue in EditExpenseViewModel.Event.onSplitEquallyChange(boolValue) }) {
@@ -118,8 +118,8 @@ struct EditExpenseView: View {
             if !expense.splitEqually {
                 Section(header: FormSectionHeader(key: "expenses.new.split-differently")) {
                     Picker(selection: viewModel.binding(for: \.expenseTypeIndex) { index in EditExpenseViewModel.Event.onExpenseTypeChange(index) }, label: Text("")) {
-                        ForEach(0 ..< EditExpenseViewModel.ExpenseType.allCases.count) {
-                            Text(EditExpenseViewModel.ExpenseType.allCases[$0].localized).tag($0)
+                        ForEach(0 ..< ExpenseTypeEditModel.allCases.count) {
+                            Text(ExpenseTypeEditModel.allCases[$0].localized).tag($0)
                         }
                     }.pickerStyle(SegmentedPickerStyle())
                 }
@@ -129,8 +129,8 @@ struct EditExpenseView: View {
         }
     }
 
-    private func splitTypeView(for expense: EditExpenseViewModel.Expense) -> some View {
-        guard let splitType = EditExpenseViewModel.ExpenseType(rawValue: expense.expenseTypeIndex) else {
+    private func splitTypeView(for expense: ExpenseEditModel) -> some View {
+        guard let splitType = ExpenseTypeEditModel(rawValue: expense.expenseTypeIndex) else {
             fatalError("This shouldn't happen")
         }
 
@@ -147,7 +147,7 @@ struct EditExpenseView: View {
     }
 
     private func participantSelectionView(
-        with expenseTypeSelections: [EditExpenseViewModel.ExpenseType.Selection]
+        with expenseTypeSelections: [ExpenseTypeEditModel.Selection]
     ) -> some View {
         List {
             ForEach(0 ..< expenseTypeSelections.count, id: \.self) { index in
@@ -162,7 +162,7 @@ struct EditExpenseView: View {
     }
 
     private func participantsAmountsView(
-        with expenseTypeAmounts: [EditExpenseViewModel.ExpenseType.Amount]
+        with expenseTypeAmounts: [ExpenseTypeEditModel.Amount]
     ) -> some View {
         List {
             ForEach(0 ..< expenseTypeAmounts.count, id: \.self) { index in

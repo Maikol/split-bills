@@ -25,6 +25,22 @@ struct ExpenseEditModel: Builder {
         expenseTypeAmounts = participants.map { .init(participant: $0) }
     }
 
+    init(expense: ExpenseDTO, participants: [ParticipantDisplayModel]) {
+        self.participants = participants
+        payerIndex = participants.firstIndex(of: .init(name: expense.payer.name)) ?? 0
+        name = expense.name
+        amount = String(format:"%.2f", expense.amount)
+        splitEqually = (expense.expenseType == .equallyWithAll)
+        expenseTypeIndex = (expense.expenseType == .byAmount ? 1 : 0)
+        expenseTypeSelections = participants.map { participant in
+            .init(participant: .init(name: participant.name), isSelected: expense.participantsWeight.contains { $0.participant.name == participant.name })
+        }
+        expenseTypeAmounts = participants.map { participant in
+            let storedAmount = expense.participantsWeight.first { $0.participant.name == participant.name }.map { String($0.weight * expense.amount) } ?? ""
+            return .init(participant: .init(name: participant.name), amount: storedAmount)
+        }
+    }
+
     private var selectedExpenseType: ExpenseTypeEditModel {
         ExpenseTypeEditModel(index: expenseTypeIndex)
     }
