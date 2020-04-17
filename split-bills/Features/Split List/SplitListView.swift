@@ -58,23 +58,27 @@ struct SplitListView: View {
                 self.viewModel.presentSheet(with: .new)
             }.eraseToAnyView()
         case let .loaded(items):
-            return ZStack(alignment: .bottomTrailing) {
-                List {
-                    Section(header: FormSectionHeader(key: "root-controller.groups")) {
-                        self.list(of: items).eraseToAnyView()
-                    }
-                }.listStyle(GroupedListStyle())
+            return splitContentView(for: items).eraseToAnyView()
+        }
+    }
 
-                PlusButton {
-                    self.viewModel.presentSheet(with: .new)
-                }.offset(x: -24, y: -44)
-            }.eraseToAnyView()
+    private func splitContentView(for items: [SplitListViewModel.ListItem]) -> some View {
+        ZStack(alignment: .bottomTrailing) {
+            List {
+                Section(header: FormSectionHeader(key: "root-controller.groups")) {
+                    self.list(of: items).eraseToAnyView()
+                }
+            }.listStyle(GroupedListStyle())
+
+            PlusButton {
+                self.viewModel.presentSheet(with: .new)
+            }.offset(x: -24, y: -44)
         }
     }
 
     private func list(of items: [SplitListViewModel.ListItem]) -> some View {
         ForEach(items) { item in
-            NavigationLink(destination: SplitDetailView(viewModel: SplitDetailViewModel(splitId: item.id))) {
+            NavigationLink(destination: SplitDetailView(viewModel: SplitDetailViewModel(splitId: item.id, title: item.name))) {
                 SplitListItemView(
                     item: item,
                     editAction: {

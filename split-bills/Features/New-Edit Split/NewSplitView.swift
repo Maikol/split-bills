@@ -18,11 +18,10 @@ struct NewSplitView: View {
         NavigationView {
             ZStack {
                 Color.background
-                    .edgesIgnoringSafeArea(.bottom)
                 KeyboardHost {
                     content
                 }
-            }
+            }.edgesIgnoringSafeArea(.bottom)
             .navigationBarTitle(Text("new-split-controller.title"), displayMode: .inline)
             .navigationBarItems(trailing:
                 Button(action: {

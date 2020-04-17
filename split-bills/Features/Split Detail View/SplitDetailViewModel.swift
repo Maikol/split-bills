@@ -17,14 +17,15 @@ final class SplitDetailViewModel: ObservableObject {
     private var bag = Set<AnyCancellable>()
     private let input = PassthroughSubject<Event, Never>()
 
-    init(splitId: ItemId) {
-        state = .idle(splitId)
+    init(splitId: ItemId, title: String) {
+        state = .idle(splitId, title: title)
         Publishers.system(
             initial: state,
             reduce: Self.reduce,
             scheduler: RunLoop.main,
             feedbacks: [
                 Self.whenLoading(),
+                Self.whenReloading(),
                 Self.userInput(input: input.eraseToAnyPublisher())
             ]
         )
@@ -48,9 +49,28 @@ extension SplitDetailViewModel {
     typealias ItemId = Int64
 
     enum State {
-        case idle(ItemId)
-        case loading(ItemId)
+        case idle(ItemId, title: String)
+        case loading(ItemId, title: String)
         case loaded(SplitItem)
+        case reloading(SplitItem)
+
+        var splitId: ItemId {
+            switch self {
+            case let .idle(splitId, _), let .loading(splitId, _):
+                return splitId
+            case let .loaded(splitItem), let .reloading(splitItem):
+                return splitItem.id
+            }
+        }
+
+        var title: String {
+            switch self {
+            case let .loaded(item), let .reloading(item):
+                return item.name
+            case let .idle(_, title), let .loading(_, title):
+                return title
+            }
+        }
     }
 
     enum Event {
@@ -67,7 +87,6 @@ extension SplitDetailViewModel {
         let name: String
         let participants: [Participant]
         let expenses: [Expense]
-        let payments = [Payment]()
 
         init(split: SplitDTO) {
             id = split.id
@@ -151,10 +170,10 @@ extension SplitDetailViewModel {
 
     static func reduce(_ state: State, _ event: Event) -> State {
         switch state {
-        case let .idle(itemId):
+        case let .idle(itemId, title):
             switch event {
             case .onAppear:
-                return .loading(itemId)
+                return .loading(itemId, title: title)
             default:
                 return state
             }
@@ -165,14 +184,26 @@ extension SplitDetailViewModel {
             default:
                 return state
             }
-        case .loaded:
-            return state
+        case let .loaded(item):
+            switch event {
+            case .onReload:
+                return .reloading(item)
+            default:
+                return state
+            }
+        case .reloading:
+            switch event {
+            case let .onLoaded(item):
+                return .loaded(item)
+            default:
+                return state
+            }
         }
     }
 
     static func whenLoading() -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
-            guard case let .loading(itemId) = state else { return Empty().eraseToAnyPublisher() }
+            guard case let .loading(itemId, _) = state else { return Empty().eraseToAnyPublisher() }
 
             return DatabaseAPI.split(withId: itemId)
                 .compactMap { $0.map(SplitItem.init) }
@@ -181,7 +212,66 @@ extension SplitDetailViewModel {
         }
     }
 
+    static func whenReloading() -> Feedback<State, Event> {
+        Feedback { (state: State) -> AnyPublisher<Event, Never> in
+            guard case let .reloading(item) = state else { return Empty().eraseToAnyPublisher() }
+
+            return DatabaseAPI.split(withId: item.id)
+                .compactMap { $0.map(SplitItem.init) }
+                .map(Event.onLoaded)
+                .eraseToAnyPublisher()
+        }
+    }
+
     static func userInput(input: AnyPublisher<Event, Never>) -> Feedback<State, Event> {
         Feedback { _ in input }
+    }
+}
+
+// MARK: - Settle
+
+extension SplitDetailViewModel.SplitItem {
+
+    var payments: [SplitDetailViewModel.Payment] {
+        let paymentsValues = Dictionary(grouping: expenses) { $0.payer }
+            .mapValues { $0.reduce(0) { return $0 + $1.amount } }
+
+        var owingValues = [SplitDetailViewModel.Participant: Double]()
+        participants.forEach { participant in
+            let totalOwing = expenses.reduce(0.0) { result, expense in
+                guard let weight = expense.participantsWeight.first(where: { $0.participant == participant }) else {
+                    return result
+                }
+
+                return result + weight.weight * expense.amount
+            }
+
+            owingValues[participant] = totalOwing * (-1)
+        }
+
+        let mergedValues = paymentsValues.merging(owingValues, uniquingKeysWith: +).sorted { $0.value > $1.value }
+        return settle(mergedValues).filter { $0.amount > 0.01 }
+    }
+
+    private func settle(_ values: [(key: SplitDetailViewModel.Participant, value: Double)]) -> [SplitDetailViewModel.Payment] {
+        guard values.count > 1 else {
+            return []
+        }
+
+        guard let first = values.first, let last = values.last else {
+            fatalError("something went wrong")
+        }
+
+        let sum = first.value + last.value
+        var newValues = values.filter { $0.key != first.key && $0.key != last.key  }
+
+        let payment = (sum < 0 ?
+            SplitDetailViewModel.Payment(payer: last.key, receiver: first.key, amount: abs(first.value)) :
+            SplitDetailViewModel.Payment(payer: last.key, receiver: first.key, amount: abs(last.value))
+        )
+
+        (sum < 0 ? newValues.append((last.key, sum)) : newValues.insert((first.key, sum), at: 0))
+
+        return [payment] + settle(newValues)
     }
 }

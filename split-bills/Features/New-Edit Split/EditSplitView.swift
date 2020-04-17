@@ -16,11 +16,12 @@ struct EditSplitView: View {
 
     var body: some View {
         NavigationView {
-            KeyboardHost {
-                contentView
-            }
-            .background(Color.background)
-            .edgesIgnoringSafeArea(.bottom)
+            ZStack {
+                Color.background
+                KeyboardHost {
+                    contentView
+                }
+            }.edgesIgnoringSafeArea(.bottom)
             .navigationBarTitle(Text("new-split-controller.title"), displayMode: .inline)
             .navigationBarItems(trailing:
                 Button(action: {
@@ -42,7 +43,7 @@ struct EditSplitView: View {
         case let .loaded(item):
             return form(for: item).eraseToAnyView()
         case .saving:
-            return Color.clear.eraseToAnyView()
+            return Color.background.eraseToAnyView()
         }
     }
 

@@ -51,18 +51,8 @@ struct SplitDatabase {
         try db.run(row.delete())
     }
 
-    @available(*, deprecated, renamed: "latestSplits()")
-    func getAll() throws -> [Split] {
-        return try db.prepare(table).compactMap { try split(with: $0) }
-    }
-
     func latestSplits() throws -> [SplitDTO] {
         try db.prepare(table).map { try split(with: $0) }
-    }
-
-    func get(withId id: Int64) throws -> Split? {
-        let query = table.filter(self.id == id)
-        return try db.prepare(query).compactMap { try split(with: $0) }.first
     }
 
     func split(withId id: Int64) throws -> SplitDTO? {
@@ -90,15 +80,9 @@ struct SplitDatabase {
         try newParticipants.forEach { try participantsDatabase.add(participant: Participant(name: $0.name), splitId: splitId) }
     }
 
-    private func split(with row: SQLite.Row) throws -> Split {
-        let participants: [Participant] = try participantsDatabase.participants(for: row[id])
-        let expenses: [Expense] = try expensesDatabase.getAll(splitName: row[eventName])
-        return Split(id: row[id], eventName: row[eventName], participants: participants, expenses: expenses)
-    }
-
     private func split(with row: SQLite.Row) throws -> SplitDTO {
         let participants: [ParticipantDTO] = try participantsDatabase.participants(for: row[id])
-        let expenses: [ExpenseDTO] = try expensesDatabase.getAll(splitName: row[eventName])
+        let expenses: [ExpenseDTO] = try expensesDatabase.getAll(splitId: row[id])
         return SplitDTO(id: row[id], name: row[eventName], participants: participants, expenses: expenses)
     }
 }
@@ -179,8 +163,9 @@ struct ExpenseDatabase {
     private let db: Connection
     private let table = Table("expense")
 
+    private let splitId = Expression<Int64>("split_id")
+
     private let id = Expression<Int64>("id")
-    private let splitName = Expression<String>("split_name")
     private let payerName = Expression<String>("payer_name")
     private let description = Expression<String>("description")
     private let amount = Expression<Double>("amount")
@@ -197,7 +182,7 @@ struct ExpenseDatabase {
     private func initializeDatabaseSchema() throws {
         _ = try db.run(table.create(ifNotExists: true) { t in
             t.column(id, primaryKey: true)
-            t.column(splitName)
+            t.column(splitId)
             t.column(payerName)
             t.column(description)
             t.column(amount)
@@ -205,19 +190,18 @@ struct ExpenseDatabase {
         })
     }
 
-    func add(expense: Expense, splitName: String) throws -> Expense {
-        let insert = table.insert(self.splitName <- splitName, payerName <- expense.payer.name, description <- expense.description, amount <- expense.amount, splitType <- expense.splitType.rawValue)
+    func create(
+        splitId: Int64,
+        name: String,
+        payerName: String,
+        amount: Double,
+        weights: [ExpenseWeightDTO],
+        expenseTypeIndex: Int
+    ) throws {
+        let insert = table.insert(self.splitId <- splitId, self.payerName <- payerName, self.description <- name, self.amount <- amount, self.splitType <- expenseTypeIndex)
         let rowId = try db.run(insert)
 
-        try expense.participantsWeight.forEach { try weightsTable.add(weight: $0, expenseId: rowId) }
-
-        return Expense(
-            id: rowId,
-            payer: expense.payer,
-            description: expense.description,
-            amount: expense.amount,
-            participantsWeight: expense.participantsWeight,
-            splitType: expense.splitType)
+        try weights.forEach { try weightsTable.create(expenseId: rowId, weight: $0) }
     }
 
     func update(expense: Expense) throws {
@@ -236,16 +220,12 @@ struct ExpenseDatabase {
         try db.run(row.delete())
     }
 
-    func getAll(splitName: String) throws -> [Expense] {
-        let query = table.filter(self.splitName == splitName)
+    func getAll(splitId: Int64) throws -> [ExpenseDTO] {
+        let query = table.filter(self.splitId == splitId)
         return try db.prepare(query).compactMap { try expense(with: $0) }
     }
 
-    func getAll(splitName: String) throws -> [ExpenseDTO] {
-        let query = table.filter(self.splitName == splitName)
-        return try db.prepare(query).compactMap { try expense(with: $0) }
-    }
-
+    @available(*, deprecated, message: "use ExpenseDTO")
     private func expense(with row: SQLite.Row) throws -> Expense? {
         let weights: [ExpenseWeight] = try weightsTable.get(expenseId: row[id])
         let payer: Participant? = try participantDatabase.participant(with: row[payerName])
@@ -294,7 +274,13 @@ struct ExpsenseWeightDatabase {
         })
     }
 
+    @available(*, deprecated, renamed: "create(expenseId:weight:)")
     func add(weight: ExpenseWeight, expenseId: Int64) throws {
+        let insert = table.insert(self.expenseId <- expenseId, participantName <- weight.participant.name, self.weight <- weight.weight)
+        _ = try db.run(insert)
+    }
+
+    func create(expenseId: Int64, weight: ExpenseWeightDTO) throws {
         let insert = table.insert(self.expenseId <- expenseId, participantName <- weight.participant.name, self.weight <- weight.weight)
         _ = try db.run(insert)
     }
@@ -304,6 +290,7 @@ struct ExpsenseWeightDatabase {
         try db.run(rows.delete())
     }
 
+    @available(*, deprecated, message: "Use ExpenseWeightDTO")
     func get(expenseId: Int64) throws -> [ExpenseWeight] {
         let query = table.filter(self.expenseId == expenseId)
         return try db.prepare(query).compactMap { try weight(with: $0) }

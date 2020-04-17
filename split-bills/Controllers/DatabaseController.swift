@@ -22,7 +22,7 @@ final class DatabaseController: ObservableObject {
     init() {
         splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
         expensesDatabase = try! ExpenseDatabase(databasePath: URL.documentsDirectory.absoluteString)
-        splits = try! splitDatabase.getAll()
+        splits = []
     }
 
     @discardableResult func createEvent(name: String, participants: [Participant]) -> Split? {
@@ -46,9 +46,7 @@ final class DatabaseController: ObservableObject {
 
     @discardableResult func saveExpense(split: Split, expense: Expense) -> Expense? {
         do {
-            let result = try expensesDatabase.add(expense: expense, splitName: split.eventName)
-            split.expenses.append(result)
-            return result
+            return nil
         } catch {
             print("failed to create expense")
             return nil
@@ -90,6 +88,12 @@ final class DatabaseController: ObservableObject {
 
 enum DatabaseAPI {
 
+    typealias SplitId = Int64
+    typealias ExpenseId = Int64
+    typealias ExpenseTypeIndex = Int
+
+    typealias ParticipantExpenseWeight = (name: String, weight: Double)
+
     static func splits() -> AnyPublisher<[SplitDTO], Never> {
         return Deferred {
             Future<[SplitDTO], Never> { promise in
@@ -100,7 +104,7 @@ enum DatabaseAPI {
         }.eraseToAnyPublisher()
     }
 
-    static func split(withId id: Int64) -> AnyPublisher<SplitDTO?, Never> {
+    static func split(withId id: SplitId) -> AnyPublisher<SplitDTO?, Never> {
         return Deferred {
             Future<SplitDTO?, Never> { promise in
                 let splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
@@ -120,7 +124,7 @@ enum DatabaseAPI {
         }.eraseToAnyPublisher()
     }
 
-    static func updateSplit(id: Int64, name: String, newParticipants: [String]) -> AnyPublisher<Void, Never> {
+    static func updateSplit(id: SplitId, name: String, newParticipants: [String]) -> AnyPublisher<Void, Never> {
         return Deferred {
             Future<Void, Never> { promise in
                 let splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
@@ -130,12 +134,29 @@ enum DatabaseAPI {
         }.eraseToAnyPublisher()
     }
 
-    static func removeSplit(id: Int64, name: String) -> AnyPublisher<Void, Never> {
+    static func removeSplit(id: SplitId, name: String) -> AnyPublisher<Void, Never> {
         return Deferred {
             Future<Void, Never> { promise in
                 let splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
                 try! splitDatabase.remove(split: Split(id: id, eventName: name, participants: []))
                 promise(.success(()))
+            }
+        }.eraseToAnyPublisher()
+    }
+
+    static func createExpense(
+        splitId: SplitId,
+        name: String,
+        payerName: String,
+        amount: Double,
+        weights: [ParticipantExpenseWeight],
+        expenseTypeIndex: ExpenseTypeIndex
+    ) -> AnyPublisher<Void, Never> {
+        return Deferred {
+            Future<Void, Never> { promise in
+                let expensesDatabase = try! ExpenseDatabase(databasePath: URL.documentsDirectory.path)
+                let weightsDTO = weights.map { ExpenseWeightDTO(participant: .init(name: $0.name), weight: $0.weight) }
+                try! expensesDatabase.create(splitId: splitId, name: name, payerName: payerName, amount: amount, weights: weightsDTO, expenseTypeIndex: expenseTypeIndex)
             }
         }.eraseToAnyPublisher()
     }

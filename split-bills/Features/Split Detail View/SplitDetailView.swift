@@ -23,6 +23,7 @@ struct SplitDetailView: View {
         }) { sheet in
             self.containedSheet(sheet)
         }
+        .navigationBarTitle(Text(viewModel.state.title), displayMode: .inline)
         .onAppear { self.viewModel.send(event: .onAppear) }
     }
 
@@ -35,6 +36,8 @@ struct SplitDetailView: View {
         case let .loaded(item) where item.expenses.isEmpty:
             return splitEmptyView.eraseToAnyView()
         case let .loaded(item):
+            return content(for: item).eraseToAnyView()
+        case let .reloading(item):
             return content(for: item).eraseToAnyView()
         }
     }
@@ -53,7 +56,6 @@ struct SplitDetailView: View {
             }.offset(x: -24, y: -44)
         }
         .listStyle(GroupedListStyle())
-        .navigationBarTitle(Text(item.name), displayMode: .inline)
     }
 
     private func contentLists(for item: SplitDetailViewModel.SplitItem) -> some View {
@@ -103,13 +105,9 @@ struct SplitDetailView: View {
     private func containedSheet(_ sheet: SplitDetailViewModel.Sheet) -> some View {
         switch sheet.style {
         case .newExpense:
-            return EmptyView()
-//            return NewExpenseView(
-//                split: self.split,
-//                isPresented: self.$showingModal
-//            ).environmentObject(self.controller).eraseToAnyView()
+            return NewExpenseView(viewModel: NewExpenseViewModel(splitId: viewModel.state.splitId)).eraseToAnyView()
         case let .expense(expense):
-            return EmptyView()
+            return EmptyView().eraseToAnyView()
 //            return ExpenseView(
 //                isPresented: self.$showingModal,
 //                split: self.split,
@@ -165,7 +163,7 @@ private extension Expense {
 struct SplitView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            SplitDetailView(viewModel: SplitDetailViewModel(splitId: 0))
+            SplitDetailView(viewModel: SplitDetailViewModel(splitId: 0, title: "Dinner"))
         }
     }
 }
