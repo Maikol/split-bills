@@ -96,8 +96,7 @@ extension SplitDetailViewModel {
         }
     }
 
-    struct Participant: Identifiable, Equatable, Hashable {
-        let id = UUID()
+    struct Participant: Equatable, Hashable {
         let name: String
     }
 
