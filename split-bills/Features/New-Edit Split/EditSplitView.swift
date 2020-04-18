@@ -74,8 +74,8 @@ struct EditSplitView: View {
             ForEach(0 ..< split.existingParticipants.count, id: \.self) { index in
                 self.requiredParticipantTextField(withIndex: index)
             }
-            ForEach(0 ..< split.activeNewParticipants.count, id: \.self) { index in
-                self.dynamicParticipantView(withIndex: index + split.existingParticipants.count, participant: split.activeNewParticipants[index])
+            ForEach(split.activeNewParticipants) { participant in
+                self.dynamicParticipantView(participant: participant)
             }
             Button(action: {
                 self.viewModel.send(event: .onAddParticipant)
@@ -98,9 +98,9 @@ struct EditSplitView: View {
         })
     }
 
-    private func dynamicParticipantView(withIndex index: Int, participant: ParticipantEditModel) -> some View {
+    private func dynamicParticipantView(participant: ParticipantEditModel) -> some View {
         SplitParticipantRow(
-            label: "Participant \(index + 1)",
+            label: NSLocalizedString("new-split-controller.participant-placeholder.new-participant", comment: ""),
             name: self.viewModel.binding(for: \.newParticipants[participant.index].name) { value in
                 EditSplitViewModel.Event.onNewParticipantNameChange(value, participant.index)
             })

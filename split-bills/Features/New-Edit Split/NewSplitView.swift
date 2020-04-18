@@ -53,7 +53,7 @@ struct NewSplitView: View {
     private var eventParticipantsView: some View {
         Section(header: FormSectionHeader(key: "new-split-controller.participants")) {
             requiredParticipantTextField(withIndex: 0, labelKey: "new-split-controller.participant-placeholder.you")
-            requiredParticipantTextField(withIndex: 1, labelKey: "new-split-controller.participant-placeholder.participant-1")
+            requiredParticipantTextField(withIndex: 1, labelKey: "new-split-controller.participant-placeholder.other")
             dynamicListOfParticipants
             addParticipantButton
         }
@@ -73,28 +73,22 @@ struct NewSplitView: View {
     private func requiredParticipantTextField(withIndex index: Int, labelKey: LocalizedStringKey) -> some View {
         TextField(
             labelKey,
-            text: viewModel.binding(for: \.requiredParticipants[index].name) { value in
+            text: viewModel.binding(for: \.existingParticipants[index].name) { value in
                 NewSplitViewModel.Event.onRequiredParticipantNameChange(value, index)
             }
         )
     }
 
     private var dynamicListOfParticipants: some View {
-        ForEach(0 ..< viewModel.state.activeAddedParticipants.count, id: \.self) { index in
-            self.addedParticipantView(
-                withIndex: index + self.viewModel.state.requiredParticipants.count + 1,
-                participant: self.viewModel.state.activeAddedParticipants[index])
-        }
-    }
-
-    private func addedParticipantView(withIndex index: Int, participant: NewSplitViewModel.State.Participant) -> some View {
-        SplitParticipantRow(
-            label: "Participant \(index)",
-            name: self.viewModel.binding(for: \.addedParticipants[participant.index].name) { value in
-               NewSplitViewModel.Event.onAddedParticipantNameChange(value, participant.index)
-           }
-        ) {
-            self.viewModel.send(event: .removeParticipant(participant.index))
+        ForEach(viewModel.state.activeNewParticipants) { participant in
+            SplitParticipantRow(
+                label: NSLocalizedString("new-split-controller.participant-placeholder.new-participant", comment: ""),
+                name: self.viewModel.binding(for: \.newParticipants[participant.index].name) { value in
+                    NewSplitViewModel.Event.onAddedParticipantNameChange(value, participant.index)
+                }
+            ) {
+                self.viewModel.send(event: .removeParticipant(participant.index))
+            }
         }
     }
 
@@ -114,13 +108,6 @@ struct NewSplitView: View {
     func createSplit() {
         viewModel.send(event: .createSplit)
         presentationMode.wrappedValue.dismiss()
-    }
-}
-
-extension NewSplitViewModel.State {
-
-    var activeAddedParticipants: [NewSplitViewModel.State.Participant] {
-        addedParticipants.filter { !$0.removed }
     }
 }
 

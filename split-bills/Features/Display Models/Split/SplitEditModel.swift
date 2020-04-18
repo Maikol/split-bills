@@ -38,4 +38,12 @@ struct SplitEditModel: Equatable, Builder {
             existingParticipants = split.participants.enumerated().map { ParticipantEditModel(index: $0.offset, name: $0.element.name) }
         }
     }
+
+    func index(forNewParticipant participant: ParticipantEditModel) -> ParticipantEditModel.Index? {
+        guard let index = activeNewParticipants.firstIndex(of: participant) else {
+            return nil
+        }
+
+        return index + existingParticipants.count
+    }
 }

@@ -31,7 +31,7 @@ struct FirstResponderTextField: UIViewRepresentable {
 
     func makeUIView(context: UIViewRepresentableContext<FirstResponderTextField>) -> UITextField {
         let textField = UITextField(frame: .zero)
-        textField.placeholder = label
+        textField.placeholder = NSLocalizedString(label, comment: "")
         textField.delegate = context.coordinator
         return textField
     }

@@ -12,7 +12,9 @@ import SwiftUI
 
 final class NewSplitViewModel: ObservableObject {
 
-    @Published private(set) var state = State()
+    typealias State = SplitEditModel
+    @Published private(set) var state: State = State()
+        .set(\.existingParticipants, to: [.init(index: 0, name: ""), .init(index: 1, name: "")])
 
     private var bag = Set<AnyCancellable>()
     private let input = PassthroughSubject<Event, Never>()
@@ -55,33 +57,6 @@ final class NewSplitViewModel: ObservableObject {
 
 extension NewSplitViewModel {
 
-    struct State: Equatable {
-
-        struct Participant: Identifiable, Equatable, Hashable {
-            let id = UUID()
-            let index: Int
-            var name = ""
-            // Deleting items from the array was crashing Binding
-            var removed = false
-        }
-
-        var name = ""
-        // We require at least two participants for a split
-        var requiredParticipants: [Participant] = [.init(index: 0), .init(index: 1)]
-        var addedParticipants = [Participant]()
-
-        var isValid: Bool {
-            guard !name.isEmpty,
-                let firstParticipant = requiredParticipants.first, !firstParticipant.name.isEmpty, !firstParticipant.removed,
-                let secondParticipant = requiredParticipants[safe: 1], !secondParticipant.name.isEmpty, !secondParticipant.removed
-            else {
-                    return false
-            }
-
-            return true
-        }
-    }
-
     enum Event: Equatable {
         typealias Index = Int
 
@@ -102,31 +77,28 @@ extension NewSplitViewModel {
     func reduce(_ state: State, _ event: Event) -> State {
         switch event {
         case let .onNameChange(string):
-            self.state.name = string
-            return self.state
+            return state.set(\.name, to: string)
         case let .onRequiredParticipantNameChange(string, index):
-            self.state.requiredParticipants[index].name = string
-            return self.state
+            return state.set(\.existingParticipants[index].name, to: string)
         case let .onAddedParticipantNameChange(string, index):
-            self.state.addedParticipants[index].name = string
-            return self.state
+            return state.set(\.newParticipants[index].name, to: string)
         case .createSplit:
             return state
         case .didCreateSplit:
             return state
         case .addParticipant:
-            self.state.addedParticipants.append(.init(index: self.state.addedParticipants.count))
-            return self.state
+            var copy = self.state
+            copy.newParticipants.append(.init(index: state.newParticipants.count))
+            return copy
         case let .removeParticipant(index):
-            self.state.addedParticipants[index].removed = true
-            return self.state
+            return state.set(\.newParticipants[index].removed, to: true)
         }
     }
 
     static func whenCreatingSplit(input: AnyPublisher<Event, Never>, datasource: DataRequesting) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
-            let requiredParticipants = state.requiredParticipants.map { $0.name }
-            let participants = state.addedParticipants.filter { !$0.name.isEmpty && !$0.removed }.map { $0.name }
+            let requiredParticipants = state.existingParticipants.map { $0.name }
+            let participants = state.existingParticipants.filter { !$0.name.isEmpty && !$0.removed }.map { $0.name }
             let createSplitPublisher = datasource.createSplit(name: state.name, participants: requiredParticipants + participants)
 
             return input.filter { $0 == .createSplit }

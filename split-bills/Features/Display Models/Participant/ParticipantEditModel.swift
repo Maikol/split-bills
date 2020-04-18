@@ -10,8 +10,10 @@ import Foundation
 
 struct ParticipantEditModel: Identifiable, Equatable, Hashable {
 
+    typealias Index = Int
+
     let id = UUID()
-    let index: Int
+    let index: Index
     var name = ""
     var removed = false
 }

@@ -19,7 +19,8 @@
 "new-split-controller.add-participant" = "Add participant";
 "new-split-controller.participant-number.format" = "Participant %d";
 "new-split-controller.participant-placeholder.you" = "You";
-"new-split-controller.participant-placeholder.participant-1" = "Participant 1";
+"new-split-controller.participant-placeholder.other" = "Other";
+"new-split-controller.participant-placeholder.new-participant" = "New Participant";
 "new-split-controller.save" = "Save";
 "new-split-controller.delete" = "Delete";
 
