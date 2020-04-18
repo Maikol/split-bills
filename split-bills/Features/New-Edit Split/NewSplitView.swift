@@ -52,8 +52,8 @@ struct NewSplitView: View {
 
     private var eventParticipantsView: some View {
         Section(header: FormSectionHeader(key: "new-split-controller.participants")) {
-            requiredParticipantTextField(withIndex: 0)
-            requiredParticipantTextField(withIndex: 1)
+            requiredParticipantTextField(withIndex: 0, labelKey: "new-split-controller.participant-placeholder.you")
+            requiredParticipantTextField(withIndex: 1, labelKey: "new-split-controller.participant-placeholder.participant-1")
             dynamicListOfParticipants
             addParticipantButton
         }
@@ -70,9 +70,9 @@ struct NewSplitView: View {
         }.disabled(!viewModel.state.isValid)
     }
 
-    private func requiredParticipantTextField(withIndex index: Int) -> some View {
+    private func requiredParticipantTextField(withIndex index: Int, labelKey: LocalizedStringKey) -> some View {
         TextField(
-            "new-split-controller.participant-placeholder.participant-1",
+            labelKey,
             text: viewModel.binding(for: \.requiredParticipants[index].name) { value in
                 NewSplitViewModel.Event.onRequiredParticipantNameChange(value, index)
             }

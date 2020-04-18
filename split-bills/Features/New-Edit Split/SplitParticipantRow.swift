@@ -20,7 +20,7 @@ struct SplitParticipantRow: View {
                 Image(systemName: "minus.circle.fill")
                     .accentColor(.red)
             }
-            TextField(label, text: $name)
+            FirstResponderTextField(label: label, text: $name, isFirstResponder: true)
         }
     }
 }
