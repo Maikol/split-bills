@@ -112,13 +112,12 @@ struct DatabaseAPI: DataRequesting {
     }
 }
 
-private extension URL {
+extension URL {
 
     static var documentsDirectory: URL {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         guard let documentsURL = paths.first else {
-            print("Missing a documents directory")
-            fatalError()
+            fatalError("Missing a documents directory")
         }
 
         return documentsURL
