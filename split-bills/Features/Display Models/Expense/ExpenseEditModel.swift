@@ -87,6 +87,16 @@ struct ExpenseEditModel: Builder {
         }
     }
 
+    var expenseTypeDTOIndex: Int {
+        if splitEqually {
+            return 0
+        }
+
+        /// This should be improved, right now we have two types here
+        /// but in the db we have splitEqually bool as another type
+        return expenseTypeIndex + 1
+    }
+
     private func splitEqually(with participants: [ParticipantDisplayModel]) -> [Weight] {
         precondition(participants.count > 0, "We can calculate with no participants")
         let weight = 1 / Double(participants.count)

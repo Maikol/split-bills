@@ -17,15 +17,15 @@ final class SplitListViewModel: ObservableObject {
     private var bag = Set<AnyCancellable>()
     private let input = PassthroughSubject<Event, Never>()
 
-    init() {
+    init(datasource: DataRequesting.Type = DatabaseAPI.self) {
         Publishers.system(
             initial: state,
             reduce: Self.reduce,
             scheduler: RunLoop.main,
             feedbacks: [
-                Self.whenLoading(),
-                Self.whenRemovingSplit(input: input.eraseToAnyPublisher()),
-                Self.whenReloading(input: input.eraseToAnyPublisher()),
+                Self.whenLoading(datasource: datasource),
+                Self.whenRemovingSplit(input: input.eraseToAnyPublisher(), datasource: datasource),
+                Self.whenReloading(input: input.eraseToAnyPublisher(), datasource: datasource),
                 Self.userInput(input: input.eraseToAnyPublisher())
             ]
         )
@@ -117,39 +117,39 @@ extension SplitListViewModel {
         }
     }
 
-    static func whenLoading() -> Feedback<State, Event> {
+    static func whenLoading(datasource: DataRequesting.Type) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case .loading = state else { return Empty().eraseToAnyPublisher() }
 
-            return DatabaseAPI.splits()
+            return datasource.splits()
                 .map { $0.map(SplitDisplayModel.init) }
                 .map(Event.onSplitsLoaded)
                 .eraseToAnyPublisher()
         }
     }
 
-    static func whenRemovingSplit(input: AnyPublisher<Event, Never>) -> Feedback<State, Event> {
+    static func whenRemovingSplit(input: AnyPublisher<Event, Never>, datasource: DataRequesting.Type) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case let .loaded(items) = state else { return Empty().eraseToAnyPublisher() }
 
             return input.map { $0.splitsToRemove(from: items) }
                 .filter { !$0.isEmpty }
-                .map { $0.map { DatabaseAPI.removeSplit(id: $0.id, name: $0.name) } }
+                .map { $0.map { datasource.removeSplit(id: $0.id) } }
                 .flatMap { Publishers.MergeMany($0) }
                 // TODO: Should be a different state for reloading
-                .flatMap { _ in DatabaseAPI.splits() }
+                .flatMap { _ in datasource.splits() }
                 .map { $0.map(SplitDisplayModel.init) }
                 .map(Event.onSplitsReloaded)
                 .eraseToAnyPublisher()
         }
     }
 
-    static func whenReloading(input: AnyPublisher<Event, Never>) -> Feedback<State, Event> {
+    static func whenReloading(input: AnyPublisher<Event, Never>, datasource: DataRequesting.Type) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case .loaded = state else { return Empty().eraseToAnyPublisher() }
 
             return input.filter { $0 == .onReload }
-                .flatMap { _ in DatabaseAPI.splits() }
+                .flatMap { _ in datasource.splits() }
                 .map { $0.map(SplitDisplayModel.init) }
                 .map(Event.onSplitsReloaded)
                 .eraseToAnyPublisher()

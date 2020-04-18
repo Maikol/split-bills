@@ -48,7 +48,7 @@ struct SplitDetailView: View {
         }
     }
 
-    private func content(for item: SplitDetailViewModel.Item) -> some View {
+    private func content(for item: SplitDetailViewModel.ListItem) -> some View {
         ZStack(alignment: .bottomTrailing) {
             contentLists(for: item)
             PlusButton {
@@ -58,7 +58,7 @@ struct SplitDetailView: View {
         .listStyle(GroupedListStyle())
     }
 
-    private func contentLists(for item: SplitDetailViewModel.Item) -> some View {
+    private func contentLists(for item: SplitDetailViewModel.ListItem) -> some View {
         List {
             Section(header: FormSectionHeader(key: "split.view.settle-header")) {
                 list(of: item.payments)

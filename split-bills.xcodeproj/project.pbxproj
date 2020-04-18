@@ -44,7 +44,8 @@
 		DF5CB4E52118483C00F39DC0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DF5CB4E42118483C00F39DC0 /* Assets.xcassets */; };
 		DF5CB4E82118483C00F39DC0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DF5CB4E62118483C00F39DC0 /* LaunchScreen.storyboard */; };
 		DF5CB5052118728F00F39DC0 /* database.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB5042118728F00F39DC0 /* database.swift */; };
-		DF5CB50721187A9400F39DC0 /* DatabaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB50621187A9400F39DC0 /* DatabaseController.swift */; };
+		DF5CB50721187A9400F39DC0 /* DatabaseAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB50621187A9400F39DC0 /* DatabaseAPI.swift */; };
+		DF78FA43244ABE9600C90842 /* DataRequesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF78FA42244ABE9600C90842 /* DataRequesting.swift */; };
 		DF8DB77424448994002FADE0 /* NewSplitViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8DB77324448994002FADE0 /* NewSplitViewModel.swift */; };
 		DF9ADEF52448667900F10906 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = DF9ADEF42448667900F10906 /* SQLite */; };
 		DFA39B0A243C9E5B00DEBDC6 /* ParticipantTextEntryRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA39B09243C9E5B00DEBDC6 /* ParticipantTextEntryRow.swift */; };
@@ -109,7 +110,8 @@
 		DF5CB4E72118483C00F39DC0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DF5CB4E92118483C00F39DC0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DF5CB5042118728F00F39DC0 /* database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = database.swift; sourceTree = "<group>"; };
-		DF5CB50621187A9400F39DC0 /* DatabaseController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseController.swift; sourceTree = "<group>"; };
+		DF5CB50621187A9400F39DC0 /* DatabaseAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseAPI.swift; sourceTree = "<group>"; };
+		DF78FA42244ABE9600C90842 /* DataRequesting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataRequesting.swift; sourceTree = "<group>"; };
 		DF890F9C211C772F00305528 /* Playground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Playground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		DF8DB77324448994002FADE0 /* NewSplitViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSplitViewModel.swift; sourceTree = "<group>"; };
 		DFA39B09243C9E5B00DEBDC6 /* ParticipantTextEntryRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantTextEntryRow.swift; sourceTree = "<group>"; };
@@ -239,12 +241,13 @@
 			path = "Split Detail View";
 			sourceTree = "<group>";
 		};
-		DF4C6DBF2437677B00954DC7 /* Controllers */ = {
+		DF4C6DBF2437677B00954DC7 /* Datasource */ = {
 			isa = PBXGroup;
 			children = (
-				DF5CB50621187A9400F39DC0 /* DatabaseController.swift */,
+				DF78FA42244ABE9600C90842 /* DataRequesting.swift */,
+				DF5CB50621187A9400F39DC0 /* DatabaseAPI.swift */,
 			);
-			path = Controllers;
+			path = Datasource;
 			sourceTree = "<group>";
 		};
 		DF5CB4D12118483A00F39DC0 = {
@@ -269,14 +272,14 @@
 			isa = PBXGroup;
 			children = (
 				DF72A4FC244188540034742B /* App */,
-				DF4C6DBF2437677B00954DC7 /* Controllers */,
-				DFB90DAE21218D430084C5E5 /* Style */,
-				DF890F98211C541000305528 /* Utils */,
 				DF5CB5032118728300F39DC0 /* Database */,
+				DF4C6DBF2437677B00954DC7 /* Datasource */,
 				DF1A03DA2438574600AD4E64 /* Features */,
 				50A3AA4E24442C2C0062106F /* Feedback */,
 				DF5CB50A2119917E00F39DC0 /* Resources */,
+				DFB90DAE21218D430084C5E5 /* Style */,
 				DF72A4FD2441B95A0034742B /* Supporting FIles */,
+				DF890F98211C541000305528 /* Utils */,
 			);
 			path = "split-bills";
 			sourceTree = "<group>";
@@ -494,9 +497,10 @@
 				DFC166AD244A55D200A7E519 /* FirstResponderTextField.swift in Sources */,
 				DF4895EC2439C86700D10DBD /* CollectionExtensions.swift in Sources */,
 				50E4DB442449E452006F3DC0 /* SplitEditModel.swift in Sources */,
+				DF78FA43244ABE9600C90842 /* DataRequesting.swift in Sources */,
 				508FC565243F1F6D008DA135 /* PlusButton.swift in Sources */,
 				503275F82446543200DDEAF1 /* EditSplitViewModel.swift in Sources */,
-				DF5CB50721187A9400F39DC0 /* DatabaseController.swift in Sources */,
+				DF5CB50721187A9400F39DC0 /* DatabaseAPI.swift in Sources */,
 				DF1A03DC2438575700AD4E64 /* SplitDetailView.swift in Sources */,
 				DF1A03D92438054F00AD4E64 /* SplitListView.swift in Sources */,
 				DF4895EA2439676100D10DBD /* FormSectionHeader.swift in Sources */,
@@ -698,10 +702,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8H6FZRWWZG;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "split-bills/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -721,10 +722,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8H6FZRWWZG;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "split-bills/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (

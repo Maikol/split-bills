@@ -17,15 +17,15 @@ final class NewExpenseViewModel: ObservableObject {
     private var bag = Set<AnyCancellable>()
     private let input = PassthroughSubject<Event, Never>()
 
-    init(splitId: SplitId) {
+    init(splitId: SplitId, datasource: DataRequesting.Type = DatabaseAPI.self) {
         state = .idle(splitId)
         Publishers.system(
             initial: state,
             reduce: Self.reduce,
             scheduler: RunLoop.main,
             feedbacks: [
-                Self.whenLoading(),
-                Self.whenSaving(),
+                Self.whenLoading(datasource: datasource),
+                Self.whenSaving(datasource: datasource),
                 Self.userInput(input: input.eraseToAnyPublisher())
             ]
         )
@@ -143,35 +143,40 @@ extension NewExpenseViewModel {
             default:
                 return state
             }
-        case .saving:
-            return state
+        case let .saving(splitId, _):
+            switch event {
+            case .expenseSaved:
+                return .idle(splitId)
+            default:
+                return state
+            }
         }
     }
 
-    static func whenLoading() -> Feedback<State, Event> {
+    static func whenLoading(datasource: DataRequesting.Type) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case let .loading(itemId) = state else { return Empty().eraseToAnyPublisher() }
 
-            return DatabaseAPI.split(withId: itemId)
+            return datasource.split(withId: itemId)
                 .compactMap { $0.map(SplitDisplayModel.init) }
                 .map { Event.onLoaded($0.id, .init(participants: $0.participants)) }
                 .eraseToAnyPublisher()
         }
     }
 
-    static func whenSaving() -> Feedback<State, Event> {
+    static func whenSaving(datasource: DataRequesting.Type) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case let .saving(splitId, expense) = state, let amount = Double(expense.amount) else { return Empty().eraseToAnyPublisher() }
 
-            let createExpense = DatabaseAPI.createExpense(
-                splitId: splitId,
+            let expenseData: DataRequesting.ExpenseData = (
                 name: expense.name,
                 payerName: expense.payerName,
                 amount: amount,
                 weights: expense.weights,
-                expenseTypeIndex: 0)
-            return createExpense
-                .map { Event.onSaveExpense }
+                expenseTypeIndex: expense.expenseTypeDTOIndex
+            )
+            return datasource.createExpense(splitId: splitId, expenseData: expenseData)
+                .map { Event.expenseSaved }
                 .eraseToAnyPublisher()
         }
     }

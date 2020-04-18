@@ -17,15 +17,16 @@ final class EditExpenseViewModel: ObservableObject {
     private var bag = Set<AnyCancellable>()
     private let input = PassthroughSubject<Event, Never>()
 
-    init(splitId: SplitId, expenseId: ExpenseId) {
+    init(splitId: SplitId, expenseId: ExpenseId, datasource: DataRequesting.Type = DatabaseAPI.self) {
         state = .idle(splitId: splitId, expenseId: expenseId)
         Publishers.system(
             initial: state,
             reduce: Self.reduce,
             scheduler: RunLoop.main,
             feedbacks: [
-                Self.whenLoading(),
-                Self.whenSaving(),
+                Self.whenLoading(datasource: datasource),
+                Self.whenSaving(datasource: datasource),
+                Self.whenRemoving(input: input.eraseToAnyPublisher(), datasource: datasource),
                 Self.userInput(input: input.eraseToAnyPublisher())
             ]
         )
@@ -64,7 +65,7 @@ extension EditExpenseViewModel {
         case idle(splitId: SplitId, expenseId: ExpenseId)
         case loading(splitId: SplitId, expenseId: ExpenseId)
         case loaded(SplitId, ExpenseId, ExpenseEditModel)
-        case saving(ExpenseId, ExpenseEditModel)
+        case saving(SplitId, ExpenseId, ExpenseEditModel)
 
         var expense: ExpenseEditModel {
             switch self {
@@ -91,6 +92,13 @@ extension EditExpenseViewModel {
         case onSaveExpense
         case onRemoveExpense
         case expenseDismissed
+
+        var isRemoving: Bool {
+            switch self {
+            case .onRemoveExpense: return true
+            default: return false
+            }
+        }
     }
 }
 
@@ -137,24 +145,29 @@ extension EditExpenseViewModel {
                     expense.set(\.expenseTypeAmounts[participantIndex].amount, to: newAmount)
                 )
             case .onSaveExpense:
-                return .saving(expenseId, expense)
+                return .saving(splitId, expenseId, expense)
             default:
                 return state
             }
-        case .saving:
-            return state
+        case let .saving(splitId, expenseId, _):
+            switch event {
+            case .expenseDismissed:
+                return .idle(splitId: splitId, expenseId: expenseId)
+            default:
+                return state
+            }
         }
     }
 
-    static func whenLoading() -> Feedback<State, Event> {
+    static func whenLoading(datasource: DataRequesting.Type) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case let .loading(splitId, expenseId) = state else { return Empty().eraseToAnyPublisher() }
 
-            let splitPublisher = DatabaseAPI.split(withId: splitId)
+            let splitPublisher = datasource.split(withId: splitId)
                 .compactMap { $0 }
                 .map(SplitDisplayModel.init)
 
-            let expensePublisher = DatabaseAPI.expense(expenseId: expenseId)
+            let expensePublisher = datasource.expense(expenseId: expenseId)
                 .compactMap { $0 }
 
             return Publishers.Zip(splitPublisher, expensePublisher)
@@ -164,17 +177,31 @@ extension EditExpenseViewModel {
         }
     }
 
-    static func whenSaving() -> Feedback<State, Event> {
+    static func whenSaving(datasource: DataRequesting.Type) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
-            guard case let .saving(expenseId, expense) = state, let amount = Double(expense.amount) else { return Empty().eraseToAnyPublisher() }
+            guard case let .saving(_, expenseId, expense) = state, let amount = Double(expense.amount) else { return Empty().eraseToAnyPublisher() }
 
-            return DatabaseAPI.updateExpense(
-                withId: expenseId,
+            let expenseData: DataRequesting.ExpenseData = (
                 name: expense.name,
                 payerName: expense.payerName,
                 amount: amount,
                 weights: expense.weights,
-                expenseTypeIndex: <#T##DatabaseAPI.ExpenseTypeIndex#>)
+                expenseTypeIndex: expense.expenseTypeDTOIndex
+            )
+            return datasource.updateExpense(withId: expenseId, expenseData: expenseData)
+                .map { Event.expenseDismissed }
+                .eraseToAnyPublisher()
+        }
+    }
+
+    static func whenRemoving(input: AnyPublisher<Event, Never>, datasource: DataRequesting.Type) -> Feedback<State, Event> {
+        Feedback { (state: State) -> AnyPublisher<Event, Never> in
+            guard case let .loaded(_, expenseId, _) = state else { return Empty().eraseToAnyPublisher() }
+
+            return input.filter { $0.isRemoving }
+            .flatMap { _ in datasource.removeExpense(withId: expenseId) }
+            .map { _ in Event.expenseDismissed }
+            .eraseToAnyPublisher()
         }
     }
 

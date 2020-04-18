@@ -17,15 +17,16 @@ final class SplitDetailViewModel: ObservableObject {
     private var bag = Set<AnyCancellable>()
     private let input = PassthroughSubject<Event, Never>()
 
-    init(splitId: SplitId, title: String) {
+    init(splitId: SplitId, title: String, datasource: DataRequesting.Type = DatabaseAPI.self) {
         state = .idle(splitId, title: title)
         Publishers.system(
             initial: state,
             reduce: Self.reduce,
             scheduler: RunLoop.main,
             feedbacks: [
-                Self.whenLoading(),
-                Self.whenReloading(),
+                Self.whenLoading(datasource: datasource),
+                Self.whenReloading(datasource: datasource),
+                Self.whenRemoving(input: input.eraseToAnyPublisher(), datasource: datasource),
                 Self.userInput(input: input.eraseToAnyPublisher())
             ]
         )
@@ -52,8 +53,8 @@ extension SplitDetailViewModel {
     enum State {
         case idle(SplitId, title: String)
         case loading(SplitId, title: String)
-        case loaded(Item)
-        case reloading(Item)
+        case loaded(ListItem)
+        case reloading(ListItem)
 
         var splitId: SplitId {
             switch self {
@@ -77,12 +78,23 @@ extension SplitDetailViewModel {
     enum Event {
         case onAppear
         case onReload
-        case onLoaded(Item)
+        case onLoaded(ListItem)
         case onRemoveExpense(ExpenseId)
         case onRemoveExpenses(offsets: IndexSet)
+
+        fileprivate func expensesToRemove(from ids: [ExpenseId]) -> [ExpenseId] {
+            switch self {
+            case let .onRemoveExpense(expenseId) where ids.contains(expenseId):
+                return [expenseId]
+            case let .onRemoveExpenses(offsets):
+                return offsets.map { ids[$0] }
+            default:
+                return []
+            }
+        }
     }
 
-    struct Item {
+    struct ListItem {
         let split: SplitDisplayModel
         let expenses: [ExpenseDisplayModel]
     }
@@ -135,27 +147,40 @@ extension SplitDetailViewModel {
         }
     }
 
-    static func whenLoading() -> Feedback<State, Event> {
+    static func whenLoading(datasource: DataRequesting.Type) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case let .loading(itemId, _) = state else { return Empty().eraseToAnyPublisher() }
 
-            return DatabaseAPI.split(withId: itemId)
+            return datasource.split(withId: itemId)
                 .compactMap { ($0, $0?.expenses) as? (SplitDTO, [ExpenseDTO]) }
-                .map { Item(split: .init(split: $0.0), expenses: $0.1.map { .init(expense: $0) }) }
+                .map { ListItem(split: .init(split: $0.0), expenses: $0.1.map { .init(expense: $0) }) }
                 .map(Event.onLoaded)
                 .eraseToAnyPublisher()
         }
     }
 
-    static func whenReloading() -> Feedback<State, Event> {
+    static func whenReloading(datasource: DataRequesting.Type) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case let .reloading(item) = state else { return Empty().eraseToAnyPublisher() }
 
-            return DatabaseAPI.split(withId: item.split.id)
+            return datasource.split(withId: item.split.id)
                 .compactMap { ($0, $0?.expenses) as? (SplitDTO, [ExpenseDTO]) }
-                .map { Item(split: .init(split: $0.0), expenses: $0.1.map { .init(expense: $0) }) }
+                .map { ListItem(split: .init(split: $0.0), expenses: $0.1.map { .init(expense: $0) }) }
                 .map(Event.onLoaded)
                 .eraseToAnyPublisher()
+        }
+    }
+
+    static func whenRemoving(input: AnyPublisher<Event, Never>, datasource: DataRequesting.Type) -> Feedback<State, Event> {
+        Feedback { (state: State) -> AnyPublisher<Event, Never> in
+            guard case let .loaded(listItem) = state else { return Empty().eraseToAnyPublisher() }
+
+            return input.map { $0.expensesToRemove(from: listItem.expenses.map { $0.id }) }
+            .filter { !$0.isEmpty }
+            .map { $0.map { datasource.removeExpense(withId: $0) } }
+            .flatMap { Publishers.MergeMany($0) }
+            .map { _ in Event.onReload }
+            .eraseToAnyPublisher()
         }
     }
 
@@ -166,7 +191,7 @@ extension SplitDetailViewModel {
 
 // MARK: - Settle
 
-extension SplitDetailViewModel.Item {
+extension SplitDetailViewModel.ListItem {
 
     var payments: [PaymentDisplayModel] {
         let paymentsValues = Dictionary(grouping: expenses) { $0.payer }

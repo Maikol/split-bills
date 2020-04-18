@@ -1,5 +1,5 @@
 //
-//  DatabaseController.swift
+//  DatabaseAPI.swift
 //  split-bills
 //
 //  Created by Carlos Miguel de Elias on 6/8/18.
@@ -9,13 +9,7 @@
 import Foundation
 import Combine
 
-enum DatabaseAPI {
-
-    typealias SplitId = Int64
-    typealias ExpenseId = Int64
-    typealias ExpenseTypeIndex = Int
-
-    typealias ParticipantExpenseWeight = (name: String, weight: Double)
+enum DatabaseAPI: DataRequesting {
 
     static func splits() -> AnyPublisher<[SplitDTO], Never> {
         return Deferred {
@@ -57,7 +51,7 @@ enum DatabaseAPI {
         }.eraseToAnyPublisher()
     }
 
-    static func removeSplit(id: SplitId, name: String) -> AnyPublisher<Void, Never> {
+    static func removeSplit(id: SplitId) -> AnyPublisher<Void, Never> {
         return Deferred {
             Future<Void, Never> { promise in
                 let splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
@@ -77,37 +71,45 @@ enum DatabaseAPI {
         }.eraseToAnyPublisher()
     }
 
-    static func createExpense(
-        splitId: SplitId,
-        name: String,
-        payerName: String,
-        amount: Double,
-        weights: [ParticipantExpenseWeight],
-        expenseTypeIndex: ExpenseTypeIndex
-    ) -> AnyPublisher<Void, Never> {
+    static func createExpense(splitId: SplitId, expenseData: ExpenseData) -> AnyPublisher<Void, Never> {
         return Deferred {
             Future<Void, Never> { promise in
                 let expensesDatabase = try! ExpenseDatabase(databasePath: URL.documentsDirectory.path)
-                let weightsDTO = weights.map { ExpenseWeightDTO(participant: .init(name: $0.name), weight: $0.weight) }
-                try! expensesDatabase.create(splitId: splitId, name: name, payerName: payerName, amount: amount, weights: weightsDTO, expenseTypeIndex: expenseTypeIndex)
+                let weightsDTO = expenseData.weights.map { ExpenseWeightDTO(participant: .init(name: $0.name), weight: $0.weight) }
+                try! expensesDatabase.create(
+                    splitId: splitId,
+                    name: expenseData.name,
+                    payerName: expenseData.payerName,
+                    amount: expenseData.amount,
+                    weights: weightsDTO,
+                    expenseTypeIndex: expenseData.expenseTypeIndex)
                 promise(.success(()))
             }
         }.eraseToAnyPublisher()
     }
 
-    static func updateExpense(
-        withId id: ExpenseId,
-        name: String,
-        payerName: String,
-        amount: Double,
-        weights: [ParticipantExpenseWeight],
-        expenseTypeIndex: ExpenseTypeIndex
-    ) -> AnyPublisher<Void, Never> {
+    static func updateExpense(withId id: ExpenseId, expenseData: ExpenseData) -> AnyPublisher<Void, Never> {
         return Deferred {
             Future<Void, Never> { promise in
                 let expensesDatabse = try! ExpenseDatabase(databasePath: URL.documentsDirectory.path)
-                let weightsDTO = weights.map { ExpenseWeightDTO(participant: .init(name: $0.name), weight: $0.weight) }
-                try! expensesDatabse.update(expenseId: id, name: name, payerName: payerName, amount: amount, weights: weightsDTO, expenseTypeIndex: expenseTypeIndex)
+                let weightsDTO = expenseData.weights.map { ExpenseWeightDTO(participant: .init(name: $0.name), weight: $0.weight) }
+                try! expensesDatabse.update(
+                    expenseId: id,
+                    name: expenseData.name,
+                    payerName: expenseData.payerName,
+                    amount: expenseData.amount,
+                    weights: weightsDTO,
+                    expenseTypeIndex: expenseData.expenseTypeIndex)
+                promise(.success(()))
+            }
+        }.eraseToAnyPublisher()
+    }
+
+    static func removeExpense(withId id: ExpenseId) -> AnyPublisher<Void, Never> {
+        return Deferred {
+            Future<Void, Never> { promise in
+                let expensesDatabse = try! ExpenseDatabase(databasePath: URL.documentsDirectory.path)
+                try! expensesDatabse.remove(expenseId: id)
                 promise(.success(()))
             }
         }.eraseToAnyPublisher()

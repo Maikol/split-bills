@@ -17,13 +17,13 @@ final class NewSplitViewModel: ObservableObject {
     private var bag = Set<AnyCancellable>()
     private let input = PassthroughSubject<Event, Never>()
 
-    init() {
+    init(datasource: DataRequesting.Type = DatabaseAPI.self) {
         Publishers.system(
             initial: state,
             reduce: self.reduce,
             scheduler: RunLoop.main,
             feedbacks: [
-                Self.whenCreatingSplit(input: input.eraseToAnyPublisher()),
+                Self.whenCreatingSplit(input: input.eraseToAnyPublisher(), datasource: datasource),
                 Self.userInput(input: input.eraseToAnyPublisher())
             ]
         )
@@ -123,14 +123,14 @@ extension NewSplitViewModel {
         }
     }
 
-    static func whenCreatingSplit(input: AnyPublisher<Event, Never>) -> Feedback<State, Event> {
+    static func whenCreatingSplit(input: AnyPublisher<Event, Never>, datasource: DataRequesting.Type) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
+            let requiredParticipants = state.requiredParticipants.map { $0.name }
+            let participants = state.addedParticipants.filter { !$0.name.isEmpty && !$0.removed }.map { $0.name }
+            let createSplitPublisher = datasource.createSplit(name: state.name, participants: requiredParticipants + participants)
+
             return input.filter { $0 == .createSplit }
-                .flatMap { _ -> AnyPublisher<Void, Never> in
-                    let requiredParticipants = state.requiredParticipants.map { $0.name }
-                    let participants = state.addedParticipants.filter { !$0.name.isEmpty && !$0.removed }.map { $0.name }
-                    return DatabaseAPI.createSplit(name: state.name, participants: requiredParticipants + participants)
-                }
+                .flatMap { _ in createSplitPublisher }
                 .map { Event.didCreateSplit }
                 .eraseToAnyPublisher()
         }

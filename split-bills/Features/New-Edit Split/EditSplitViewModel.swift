@@ -17,15 +17,15 @@ final class EditSplitViewModel: ObservableObject {
     private var bag = Set<AnyCancellable>()
     private let input = PassthroughSubject<Event, Never>()
 
-    init(splitId: SplitId) {
+    init(splitId: SplitId, datasource: DataRequesting.Type = DatabaseAPI.self) {
         state = .idle(splitId)
         Publishers.system(
             initial: state,
             reduce: Self.reduce,
             scheduler: RunLoop.main,
             feedbacks: [
-                Self.whenLoading(),
-                Self.whenSaving(),
+                Self.whenLoading(datasource: datasource),
+                Self.whenSaving(datasource: datasource),
                 Self.userInput(input: input.eraseToAnyPublisher())
             ]
         )
@@ -139,23 +139,23 @@ extension EditSplitViewModel {
         }
     }
 
-    static func whenLoading() -> Feedback<State, Event> {
+    static func whenLoading(datasource: DataRequesting.Type) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case let .loading(itemId) = state else { return Empty().eraseToAnyPublisher() }
 
-            return DatabaseAPI.split(withId: itemId)
+            return datasource.split(withId: itemId)
                 .compactMap { $0.map(SplitEditModel.init) }
                 .map(Event.onLoaded)
                 .eraseToAnyPublisher()
         }
     }
 
-    static func whenSaving() -> Feedback<State, Event> {
+    static func whenSaving(datasource: DataRequesting.Type) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case let .saving(splitId, split) = state else { return Empty().eraseToAnyPublisher() }
 
             let newParticipantsFiltered = split.newParticipants.filter { !($0.removed || $0.name.isEmpty) }.map { $0.name }
-            return DatabaseAPI.updateSplit(id: splitId, name: split.name, newParticipants: newParticipantsFiltered)
+            return datasource.updateSplit(id: splitId, name: split.name, newParticipants: newParticipantsFiltered)
                 .map { _ in Event.splitSaved }
                 .eraseToAnyPublisher()
         }
