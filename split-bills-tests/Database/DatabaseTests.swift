@@ -35,23 +35,28 @@ class DatabaseTests: XCTestCase {
     }
 
     func testCreateSplit() {
-        let split = try! splitDatabase.create(eventName: "Test 1", participants: [participant1])
-        assert(split.eventName == "Test 1")
-        assert(split.participants == [participant1])
+        try! splitDatabase.create(eventName: "Test 1", participants: ["name 1"])
+        let split = try! splitDatabase.getAll()[0]
+        assert(split.name == "Test 1")
+        assert(split.participants == [.init(name: "name 1")])
 
-        assert(try! splitDatabase.getAll() == [split])
-        assert(try! participantsDatabase.participants(for: split.id) == [participant1])
+        assert(try! participantsDatabase.participants(for: split.id) == [.init(name: "name 1")])
     }
 
     func testCreateAndDeleteSplit() {
-        let split = try! splitDatabase.create(eventName: "Test 2", participants: [participant1, participant2])
+        try! splitDatabase.create(eventName: "Test 2", participants: ["name 1", "name 2"])
+        let split = try! splitDatabase.getAll()[0]
+        assert(try! participantsDatabase.participants(for: split.id) == [.init(name: "name 1"), .init(name: "name 2")])
 
-        assert(try! splitDatabase.getAll() == [split])
-        assert(try! participantsDatabase.participants(for: split.id) == [participant1, participant2])
-
-        try! splitDatabase.remove(split: split)
+        try! splitDatabase.remove(splitId: split.id)
 
         assert(try! splitDatabase.getAll() == [])
         assert(try! participantsDatabase.participants(for: split.id) == [])
+    }
+}
+
+extension SplitDTO: Equatable {
+    public static func == (lhs: SplitDTO, rhs: SplitDTO) -> Bool {
+        return lhs.id == rhs.id
     }
 }

@@ -36,7 +36,7 @@ struct SplitDatabase {
         })
     }
 
-    func latestSplits() throws -> [SplitDTO] {
+    func getAll() throws -> [SplitDTO] {
         try db.prepare(table).map { try split(with: $0) }
     }
 

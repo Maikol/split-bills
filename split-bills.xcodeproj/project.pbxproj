@@ -46,11 +46,13 @@
 		DF5CB5052118728F00F39DC0 /* database.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB5042118728F00F39DC0 /* database.swift */; };
 		DF5CB50721187A9400F39DC0 /* DatabaseAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB50621187A9400F39DC0 /* DatabaseAPI.swift */; };
 		DF78FA43244ABE9600C90842 /* DataRequesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF78FA42244ABE9600C90842 /* DataRequesting.swift */; };
+		DF78FA45244ACAE100C90842 /* DataMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF78FA44244ACAE100C90842 /* DataMock.swift */; };
+		DF78FA47244AD80B00C90842 /* NewExpenseViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF78FA46244AD80B00C90842 /* NewExpenseViewModelTests.swift */; };
 		DF8DB77424448994002FADE0 /* NewSplitViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8DB77324448994002FADE0 /* NewSplitViewModel.swift */; };
 		DF9ADEF52448667900F10906 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = DF9ADEF42448667900F10906 /* SQLite */; };
 		DFA39B0A243C9E5B00DEBDC6 /* ParticipantTextEntryRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA39B09243C9E5B00DEBDC6 /* ParticipantTextEntryRow.swift */; };
 		DFB90DA4211E7A0F0084C5E5 /* split_bills_tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB90DA3211E7A0F0084C5E5 /* split_bills_tests.swift */; };
-		DFB90DAC211E7A570084C5E5 /* ExpenseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB90DAB211E7A570084C5E5 /* ExpenseTests.swift */; };
+		DFB90DAC211E7A570084C5E5 /* SplitDetailViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB90DAB211E7A570084C5E5 /* SplitDetailViewModelTests.swift */; };
 		DFB90DB021218D5D0084C5E5 /* StyleExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB90DAF21218D5D0084C5E5 /* StyleExtensions.swift */; };
 		DFC166AB2448677900A7E519 /* SplitDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC166AA2448677900A7E519 /* SplitDetailViewModel.swift */; };
 		DFC166AD244A55D200A7E519 /* FirstResponderTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC166AC244A55D200A7E519 /* FirstResponderTextField.swift */; };
@@ -112,13 +114,15 @@
 		DF5CB5042118728F00F39DC0 /* database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = database.swift; sourceTree = "<group>"; };
 		DF5CB50621187A9400F39DC0 /* DatabaseAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseAPI.swift; sourceTree = "<group>"; };
 		DF78FA42244ABE9600C90842 /* DataRequesting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataRequesting.swift; sourceTree = "<group>"; };
+		DF78FA44244ACAE100C90842 /* DataMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataMock.swift; sourceTree = "<group>"; };
+		DF78FA46244AD80B00C90842 /* NewExpenseViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewExpenseViewModelTests.swift; sourceTree = "<group>"; };
 		DF890F9C211C772F00305528 /* Playground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Playground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		DF8DB77324448994002FADE0 /* NewSplitViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSplitViewModel.swift; sourceTree = "<group>"; };
 		DFA39B09243C9E5B00DEBDC6 /* ParticipantTextEntryRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantTextEntryRow.swift; sourceTree = "<group>"; };
 		DFB90DA1211E7A0F0084C5E5 /* split-bills-tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "split-bills-tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFB90DA3211E7A0F0084C5E5 /* split_bills_tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = split_bills_tests.swift; sourceTree = "<group>"; };
 		DFB90DA5211E7A0F0084C5E5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DFB90DAB211E7A570084C5E5 /* ExpenseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseTests.swift; sourceTree = "<group>"; };
+		DFB90DAB211E7A570084C5E5 /* SplitDetailViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitDetailViewModelTests.swift; sourceTree = "<group>"; };
 		DFB90DAF21218D5D0084C5E5 /* StyleExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleExtensions.swift; sourceTree = "<group>"; };
 		DFC166AA2448677900A7E519 /* SplitDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitDetailViewModel.swift; sourceTree = "<group>"; };
 		DFC166AC244A55D200A7E519 /* FirstResponderTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstResponderTextField.swift; sourceTree = "<group>"; };
@@ -319,6 +323,31 @@
 			path = "Supporting FIles";
 			sourceTree = "<group>";
 		};
+		DF78FA48244AD95D00C90842 /* View Models */ = {
+			isa = PBXGroup;
+			children = (
+				DFB90DAB211E7A570084C5E5 /* SplitDetailViewModelTests.swift */,
+				DF78FA46244AD80B00C90842 /* NewExpenseViewModelTests.swift */,
+			);
+			path = "View Models";
+			sourceTree = "<group>";
+		};
+		DF78FA49244AD97200C90842 /* Database */ = {
+			isa = PBXGroup;
+			children = (
+				DFD8C57322211C6B0095B3A3 /* DatabaseTests.swift */,
+			);
+			path = Database;
+			sourceTree = "<group>";
+		};
+		DF78FA4A244AD98800C90842 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				DFB90DA3211E7A0F0084C5E5 /* split_bills_tests.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
 		DF88DEEF24446CC400151756 /* New-Edit Split */ = {
 			isa = PBXGroup;
 			children = (
@@ -346,11 +375,11 @@
 		DFB90DA2211E7A0F0084C5E5 /* split-bills-tests */ = {
 			isa = PBXGroup;
 			children = (
-				DFD8C57522211CAE0095B3A3 /* Resources */,
-				DFB90DA3211E7A0F0084C5E5 /* split_bills_tests.swift */,
 				DFB90DA5211E7A0F0084C5E5 /* Info.plist */,
-				DFB90DAB211E7A570084C5E5 /* ExpenseTests.swift */,
-				DFD8C57322211C6B0095B3A3 /* DatabaseTests.swift */,
+				DF78FA4A244AD98800C90842 /* App */,
+				DF78FA49244AD97200C90842 /* Database */,
+				DFD8C57522211CAE0095B3A3 /* Resources */,
+				DF78FA48244AD95D00C90842 /* View Models */,
 			);
 			path = "split-bills-tests";
 			sourceTree = "<group>";
@@ -380,6 +409,7 @@
 			isa = PBXGroup;
 			children = (
 				DFD8C57622211CC70095B3A3 /* Mocks.swift */,
+				DF78FA44244ACAE100C90842 /* DataMock.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -543,8 +573,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF78FA47244AD80B00C90842 /* NewExpenseViewModelTests.swift in Sources */,
+				DF78FA45244ACAE100C90842 /* DataMock.swift in Sources */,
 				DFD8C57422211C6B0095B3A3 /* DatabaseTests.swift in Sources */,
-				DFB90DAC211E7A570084C5E5 /* ExpenseTests.swift in Sources */,
+				DFB90DAC211E7A570084C5E5 /* SplitDetailViewModelTests.swift in Sources */,
 				DFB90DA4211E7A0F0084C5E5 /* split_bills_tests.swift in Sources */,
 				DFD8C57722211CC70095B3A3 /* Mocks.swift in Sources */,
 			);

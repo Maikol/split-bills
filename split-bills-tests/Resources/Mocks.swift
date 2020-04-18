@@ -9,7 +9,26 @@
 import Foundation
 @testable import split_bills
 
-let participant1 = Participant(name: "User 1", email: nil)
-let participant2 = Participant(name: "User 2", email: nil)
-let participant3 = Participant(name: "User 3", email: nil)
-let participant4 = Participant(name: "User 4", email: nil)
+enum DTOMocks {
+    static let splits = [
+        SplitDTO(id: 1, name: "Test 1", participants: participants, expenses: [expense1])
+    ]
+    
+    static let participant1 = ParticipantDTO(name: "User 1")
+    static let participant2 = ParticipantDTO(name: "User 2")
+    static let participant3 = ParticipantDTO(name: "User 3")
+    static let participant4 = ParticipantDTO(name: "User 4")
+
+    static let participants = [participant1, participant2, participant3, participant4]
+
+    static let expense1 = ExpenseDTO(id: 1, name: "Expense 1 test", payer: participant1, amount: 100.0, participantsWeight: participants.map { ExpenseWeightDTO(participant: $0, weight: 0.25) }, expenseType: .equallyWithAll)
+}
+
+enum DisplayModelMocks {
+    static let participant1 = ParticipantDisplayModel(name: "User 1")
+    static let participant2 = ParticipantDisplayModel(name: "User 2")
+    static let participant3 = ParticipantDisplayModel(name: "User 3")
+    static let participant4 = ParticipantDisplayModel(name: "User 4")
+
+    static let participants = [participant1, participant2, participant3, participant4]
+}

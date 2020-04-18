@@ -9,16 +9,16 @@
 import XCTest
 @testable import split_bills
 
-class ExpenseTests: XCTestCase {
+class SplitDetailViewModelTests: XCTestCase {
 
-    var participants: [Participant]!
-    var split: Split!
+    var participants: [ParticipantDTO]!
+    var split: SplitDisplayModel!
 
     override func setUp() {
         super.setUp()
 
-        participants = [participant1, participant2, participant3, participant4]
-        split = Split(id: 1, eventName: "Test 1", participants: participants)
+        participants = Mocks.participants
+        split = Mocks.split1
     }
 
     func testEquallySplited() {

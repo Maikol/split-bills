@@ -15,7 +15,7 @@ enum DatabaseAPI: DataRequesting {
         return Deferred {
             Future<[SplitDTO], Never> { promise in
                 let splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
-                let splits = try! splitDatabase.latestSplits()
+                let splits = try! splitDatabase.getAll()
                 promise(.success(splits))
             }
         }.eraseToAnyPublisher()
