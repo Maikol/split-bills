@@ -17,7 +17,7 @@ final class EditSplitViewModel: ObservableObject {
     private var bag = Set<AnyCancellable>()
     private let input = PassthroughSubject<Event, Never>()
 
-    init(splitId: SplitId, datasource: DataRequesting.Type = DatabaseAPI.self) {
+    init(splitId: SplitId, datasource: DataRequesting = DatabaseAPI.shared) {
         state = .idle(splitId)
         Publishers.system(
             initial: state,
@@ -139,7 +139,7 @@ extension EditSplitViewModel {
         }
     }
 
-    static func whenLoading(datasource: DataRequesting.Type) -> Feedback<State, Event> {
+    static func whenLoading(datasource: DataRequesting) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case let .loading(itemId) = state else { return Empty().eraseToAnyPublisher() }
 
@@ -150,7 +150,7 @@ extension EditSplitViewModel {
         }
     }
 
-    static func whenSaving(datasource: DataRequesting.Type) -> Feedback<State, Event> {
+    static func whenSaving(datasource: DataRequesting) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case let .saving(splitId, split) = state else { return Empty().eraseToAnyPublisher() }
 

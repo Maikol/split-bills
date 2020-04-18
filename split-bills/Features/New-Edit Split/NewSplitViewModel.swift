@@ -17,7 +17,7 @@ final class NewSplitViewModel: ObservableObject {
     private var bag = Set<AnyCancellable>()
     private let input = PassthroughSubject<Event, Never>()
 
-    init(datasource: DataRequesting.Type = DatabaseAPI.self) {
+    init(datasource: DataRequesting = DatabaseAPI.shared) {
         Publishers.system(
             initial: state,
             reduce: self.reduce,
@@ -123,7 +123,7 @@ extension NewSplitViewModel {
         }
     }
 
-    static func whenCreatingSplit(input: AnyPublisher<Event, Never>, datasource: DataRequesting.Type) -> Feedback<State, Event> {
+    static func whenCreatingSplit(input: AnyPublisher<Event, Never>, datasource: DataRequesting) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             let requiredParticipants = state.requiredParticipants.map { $0.name }
             let participants = state.addedParticipants.filter { !$0.name.isEmpty && !$0.removed }.map { $0.name }

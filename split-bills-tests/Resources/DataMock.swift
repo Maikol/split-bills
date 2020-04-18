@@ -10,13 +10,13 @@ import Foundation
 import Combine
 @testable import split_bills
 
-enum DataMock: DataRequesting {
+class DataMock: DataRequesting {
 
-    static func splits() -> AnyPublisher<[SplitDTO], Never> {
+    func splits() -> AnyPublisher<[SplitDTO], Never> {
         Empty().eraseToAnyPublisher()
     }
 
-    static func split(withId id: SplitId) -> AnyPublisher<SplitDTO?, Never> {
+    func split(withId id: SplitId) -> AnyPublisher<SplitDTO?, Never> {
         return Deferred {
             Future<SplitDTO?, Never> { promise in
                 promise(.success(DTOMocks.splits[Int(truncatingIfNeeded: id)]))
@@ -24,31 +24,31 @@ enum DataMock: DataRequesting {
         }.eraseToAnyPublisher()
     }
 
-    static func createSplit(name: String, participants: [String]) -> AnyPublisher<Void, Never> {
+    func createSplit(name: String, participants: [String]) -> AnyPublisher<Void, Never> {
         Empty().eraseToAnyPublisher()
     }
 
-    static func updateSplit(id: SplitId, name: String, newParticipants: [String]) -> AnyPublisher<Void, Never> {
+    func updateSplit(id: SplitId, name: String, newParticipants: [String]) -> AnyPublisher<Void, Never> {
         Empty().eraseToAnyPublisher()
     }
 
-    static func removeSplit(id: SplitId) -> AnyPublisher<Void, Never> {
+    func removeSplit(id: SplitId) -> AnyPublisher<Void, Never> {
         Empty().eraseToAnyPublisher()
     }
 
-    static func expense(expenseId: ExpenseId) -> AnyPublisher<ExpenseDTO?, Never> {
+    func expense(expenseId: ExpenseId) -> AnyPublisher<ExpenseDTO?, Never> {
         Empty().eraseToAnyPublisher()
     }
 
-    static func createExpense(splitId: SplitId, expenseData: ExpenseData) -> AnyPublisher<Void, Never> {
+    func createExpense(splitId: SplitId, expenseData: ExpenseData) -> AnyPublisher<Void, Never> {
         Empty().eraseToAnyPublisher()
     }
 
-    static func updateExpense(withId id: ExpenseId, expenseData: ExpenseData) -> AnyPublisher<Void, Never> {
+    func updateExpense(withId id: ExpenseId, expenseData: ExpenseData) -> AnyPublisher<Void, Never> {
         Empty().eraseToAnyPublisher()
     }
 
-    static func removeExpense(withId id: ExpenseId) -> AnyPublisher<Void, Never> {
+    func removeExpense(withId id: ExpenseId) -> AnyPublisher<Void, Never> {
         Empty().eraseToAnyPublisher()
     }
 }

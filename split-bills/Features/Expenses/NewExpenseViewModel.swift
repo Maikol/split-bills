@@ -17,7 +17,7 @@ final class NewExpenseViewModel: ObservableObject {
     private var bag = Set<AnyCancellable>()
     private let input = PassthroughSubject<Event, Never>()
 
-    init(splitId: SplitId, datasource: DataRequesting.Type = DatabaseAPI.self) {
+    init(splitId: SplitId, datasource: DataRequesting = DatabaseAPI.shared) {
         state = .idle(splitId)
         Publishers.system(
             initial: state,
@@ -123,7 +123,11 @@ extension NewExpenseViewModel {
             case let .onPayerChange(newIndex):
                 return .loaded(split, expense.set(\.payerIndex, to: newIndex))
             case let .onAmountChange(newAmount):
-                return .loaded(split, expense.set(\.amount, to: newAmount))
+                precondition(expense.participants.count > 0, "Participants should be greater than 0")
+                let value = Double(newAmount) ?? 0
+                let amount = String(format:"%.2f", value / Double(expense.participants.count))
+                let expenseTypeAmounts = expense.expenseTypeAmounts.map { $0.set(\.amount, to: amount) }
+                return .loaded(split, expense.set(\.amount, to: newAmount).set(\.expenseTypeAmounts, to: expenseTypeAmounts))
             case let .onSplitEquallyChange(isSelected):
                 return .loaded(split, expense.set(\.splitEqually, to: isSelected))
             case let .onExpenseTypeChange(newIndex):
@@ -153,7 +157,7 @@ extension NewExpenseViewModel {
         }
     }
 
-    static func whenLoading(datasource: DataRequesting.Type) -> Feedback<State, Event> {
+    static func whenLoading(datasource: DataRequesting) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case let .loading(itemId) = state else { return Empty().eraseToAnyPublisher() }
 
@@ -164,7 +168,7 @@ extension NewExpenseViewModel {
         }
     }
 
-    static func whenSaving(datasource: DataRequesting.Type) -> Feedback<State, Event> {
+    static func whenSaving(datasource: DataRequesting) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case let .saving(splitId, expense) = state, let amount = Double(expense.amount) else { return Empty().eraseToAnyPublisher() }
 

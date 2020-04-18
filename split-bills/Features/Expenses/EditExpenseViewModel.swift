@@ -17,7 +17,7 @@ final class EditExpenseViewModel: ObservableObject {
     private var bag = Set<AnyCancellable>()
     private let input = PassthroughSubject<Event, Never>()
 
-    init(splitId: SplitId, expenseId: ExpenseId, datasource: DataRequesting.Type = DatabaseAPI.self) {
+    init(splitId: SplitId, expenseId: ExpenseId, datasource: DataRequesting = DatabaseAPI.shared) {
         state = .idle(splitId: splitId, expenseId: expenseId)
         Publishers.system(
             initial: state,
@@ -159,7 +159,7 @@ extension EditExpenseViewModel {
         }
     }
 
-    static func whenLoading(datasource: DataRequesting.Type) -> Feedback<State, Event> {
+    static func whenLoading(datasource: DataRequesting) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case let .loading(splitId, expenseId) = state else { return Empty().eraseToAnyPublisher() }
 
@@ -177,7 +177,7 @@ extension EditExpenseViewModel {
         }
     }
 
-    static func whenSaving(datasource: DataRequesting.Type) -> Feedback<State, Event> {
+    static func whenSaving(datasource: DataRequesting) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case let .saving(_, expenseId, expense) = state, let amount = Double(expense.amount) else { return Empty().eraseToAnyPublisher() }
 
@@ -194,7 +194,7 @@ extension EditExpenseViewModel {
         }
     }
 
-    static func whenRemoving(input: AnyPublisher<Event, Never>, datasource: DataRequesting.Type) -> Feedback<State, Event> {
+    static func whenRemoving(input: AnyPublisher<Event, Never>, datasource: DataRequesting) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case let .loaded(_, expenseId, _) = state else { return Empty().eraseToAnyPublisher() }
 

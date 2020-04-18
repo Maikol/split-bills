@@ -11,7 +11,7 @@ import Foundation
 
 enum DTOMocks {
     static let splits = [
-        SplitDTO(id: 1, name: "Test 1", participants: participants, expenses: [expense1])
+        SplitDTO(id: 1, name: "Test 1", participants: participants, expenses: [expense1, expense2])
     ]
     
     static let participant1 = ParticipantDTO(name: "User 1")
@@ -22,6 +22,7 @@ enum DTOMocks {
     static let participants = [participant1, participant2, participant3, participant4]
 
     static let expense1 = ExpenseDTO(id: 1, name: "Expense 1 test", payer: participant1, amount: 100.0, participantsWeight: participants.map { ExpenseWeightDTO(participant: $0, weight: 0.25) }, expenseType: .equallyWithAll)
+    static let expense2 = ExpenseDTO(id: 2, name: "Expense 2 test", payer: participant2, amount: 50.0, participantsWeight: participants.map { ExpenseWeightDTO(participant: $0, weight: 0.25) }, expenseType: .equallyWithAll)
 }
 
 enum DisplayModelMocks {
@@ -31,4 +32,9 @@ enum DisplayModelMocks {
     static let participant4 = ParticipantDisplayModel(name: "User 4")
 
     static let participants = [participant1, participant2, participant3, participant4]
+
+    static let expense1 = ExpenseDisplayModel(expense: DTOMocks.expense1)
+    static let expense2 = ExpenseDisplayModel(expense: DTOMocks.expense2)
+
+    static let expenses = [expense1, expense2]
 }

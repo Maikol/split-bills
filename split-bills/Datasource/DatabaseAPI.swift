@@ -9,74 +9,72 @@
 import Foundation
 import Combine
 
-enum DatabaseAPI: DataRequesting {
+struct DatabaseAPI: DataRequesting {
 
-    static func splits() -> AnyPublisher<[SplitDTO], Never> {
+    static let shared = DatabaseAPI()
+
+    private let splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
+    private let expensesDatabase = try! ExpenseDatabase(databasePath: URL.documentsDirectory.path)
+
+    func splits() -> AnyPublisher<[SplitDTO], Never> {
         return Deferred {
             Future<[SplitDTO], Never> { promise in
-                let splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
-                let splits = try! splitDatabase.getAll()
+                let splits = try! self.splitDatabase.getAll()
                 promise(.success(splits))
             }
         }.eraseToAnyPublisher()
     }
 
-    static func split(withId id: SplitId) -> AnyPublisher<SplitDTO?, Never> {
+    func split(withId id: SplitId) -> AnyPublisher<SplitDTO?, Never> {
         return Deferred {
             Future<SplitDTO?, Never> { promise in
-                let splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
-                let split = try! splitDatabase.split(withId: id)
+                let split = try! self.splitDatabase.split(withId: id)
                 promise(.success(split))
             }
         }.eraseToAnyPublisher()
     }
 
-    static func createSplit(name: String, participants: [String]) -> AnyPublisher<Void, Never> {
+    func createSplit(name: String, participants: [String]) -> AnyPublisher<Void, Never> {
         return Deferred {
             Future<Void, Never> { promise in
-                let splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
-                try! splitDatabase.create(eventName: name, participants: participants)
+                try! self.splitDatabase.create(eventName: name, participants: participants)
                 promise(.success(()))
             }
         }.eraseToAnyPublisher()
     }
 
-    static func updateSplit(id: SplitId, name: String, newParticipants: [String]) -> AnyPublisher<Void, Never> {
+    func updateSplit(id: SplitId, name: String, newParticipants: [String]) -> AnyPublisher<Void, Never> {
         return Deferred {
             Future<Void, Never> { promise in
-                let splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
-                _ = try! splitDatabase.update(splitId: id, name: name, newParticipants: newParticipants)
+                _ = try! self.splitDatabase.update(splitId: id, name: name, newParticipants: newParticipants)
                 promise(.success(()))
             }
         }.eraseToAnyPublisher()
     }
 
-    static func removeSplit(id: SplitId) -> AnyPublisher<Void, Never> {
+    func removeSplit(id: SplitId) -> AnyPublisher<Void, Never> {
         return Deferred {
             Future<Void, Never> { promise in
-                let splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
-                try! splitDatabase.remove(splitId: id)
+                try! self.splitDatabase.remove(splitId: id)
                 promise(.success(()))
             }
         }.eraseToAnyPublisher()
     }
 
-    static func expense(expenseId: ExpenseId) -> AnyPublisher<ExpenseDTO?, Never> {
+    func expense(expenseId: ExpenseId) -> AnyPublisher<ExpenseDTO?, Never> {
         return Deferred {
             Future<ExpenseDTO?, Never> { promise in
-                let expensesDatabase = try! ExpenseDatabase(databasePath: URL.documentsDirectory.path)
-                let expense = try! expensesDatabase.expense(withId: expenseId)
+                let expense = try! self.expensesDatabase.expense(withId: expenseId)
                 promise(.success(expense))
             }
         }.eraseToAnyPublisher()
     }
 
-    static func createExpense(splitId: SplitId, expenseData: ExpenseData) -> AnyPublisher<Void, Never> {
+    func createExpense(splitId: SplitId, expenseData: ExpenseData) -> AnyPublisher<Void, Never> {
         return Deferred {
             Future<Void, Never> { promise in
-                let expensesDatabase = try! ExpenseDatabase(databasePath: URL.documentsDirectory.path)
                 let weightsDTO = expenseData.weights.map { ExpenseWeightDTO(participant: .init(name: $0.name), weight: $0.weight) }
-                try! expensesDatabase.create(
+                try! self.expensesDatabase.create(
                     splitId: splitId,
                     name: expenseData.name,
                     payerName: expenseData.payerName,
@@ -88,12 +86,11 @@ enum DatabaseAPI: DataRequesting {
         }.eraseToAnyPublisher()
     }
 
-    static func updateExpense(withId id: ExpenseId, expenseData: ExpenseData) -> AnyPublisher<Void, Never> {
+    func updateExpense(withId id: ExpenseId, expenseData: ExpenseData) -> AnyPublisher<Void, Never> {
         return Deferred {
             Future<Void, Never> { promise in
-                let expensesDatabse = try! ExpenseDatabase(databasePath: URL.documentsDirectory.path)
                 let weightsDTO = expenseData.weights.map { ExpenseWeightDTO(participant: .init(name: $0.name), weight: $0.weight) }
-                try! expensesDatabse.update(
+                try! self.expensesDatabase.update(
                     expenseId: id,
                     name: expenseData.name,
                     payerName: expenseData.payerName,
@@ -105,11 +102,10 @@ enum DatabaseAPI: DataRequesting {
         }.eraseToAnyPublisher()
     }
 
-    static func removeExpense(withId id: ExpenseId) -> AnyPublisher<Void, Never> {
+    func removeExpense(withId id: ExpenseId) -> AnyPublisher<Void, Never> {
         return Deferred {
             Future<Void, Never> { promise in
-                let expensesDatabse = try! ExpenseDatabase(databasePath: URL.documentsDirectory.path)
-                try! expensesDatabse.remove(expenseId: id)
+                try! self.expensesDatabase.remove(expenseId: id)
                 promise(.success(()))
             }
         }.eraseToAnyPublisher()

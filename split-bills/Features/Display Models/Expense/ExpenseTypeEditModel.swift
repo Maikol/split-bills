@@ -15,7 +15,7 @@ enum ExpenseTypeEditModel: Int, CaseIterable {
         var isSelected = true
     }
 
-    struct Amount {
+    struct Amount: Builder {
         let participant: ParticipantDisplayModel
         var amount = ""
     }

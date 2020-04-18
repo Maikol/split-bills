@@ -17,7 +17,7 @@ final class SplitDetailViewModel: ObservableObject {
     private var bag = Set<AnyCancellable>()
     private let input = PassthroughSubject<Event, Never>()
 
-    init(splitId: SplitId, title: String, datasource: DataRequesting.Type = DatabaseAPI.self) {
+    init(splitId: SplitId, title: String, datasource: DataRequesting = DatabaseAPI.shared) {
         state = .idle(splitId, title: title)
         Publishers.system(
             initial: state,
@@ -147,7 +147,7 @@ extension SplitDetailViewModel {
         }
     }
 
-    static func whenLoading(datasource: DataRequesting.Type) -> Feedback<State, Event> {
+    static func whenLoading(datasource: DataRequesting) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case let .loading(itemId, _) = state else { return Empty().eraseToAnyPublisher() }
 
@@ -159,7 +159,7 @@ extension SplitDetailViewModel {
         }
     }
 
-    static func whenReloading(datasource: DataRequesting.Type) -> Feedback<State, Event> {
+    static func whenReloading(datasource: DataRequesting) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case let .reloading(item) = state else { return Empty().eraseToAnyPublisher() }
 
@@ -171,7 +171,7 @@ extension SplitDetailViewModel {
         }
     }
 
-    static func whenRemoving(input: AnyPublisher<Event, Never>, datasource: DataRequesting.Type) -> Feedback<State, Event> {
+    static func whenRemoving(input: AnyPublisher<Event, Never>, datasource: DataRequesting) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case let .loaded(listItem) = state else { return Empty().eraseToAnyPublisher() }
 

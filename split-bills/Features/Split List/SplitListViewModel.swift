@@ -17,7 +17,7 @@ final class SplitListViewModel: ObservableObject {
     private var bag = Set<AnyCancellable>()
     private let input = PassthroughSubject<Event, Never>()
 
-    init(datasource: DataRequesting.Type = DatabaseAPI.self) {
+    init(datasource: DataRequesting = DatabaseAPI.shared) {
         Publishers.system(
             initial: state,
             reduce: Self.reduce,
@@ -117,7 +117,7 @@ extension SplitListViewModel {
         }
     }
 
-    static func whenLoading(datasource: DataRequesting.Type) -> Feedback<State, Event> {
+    static func whenLoading(datasource: DataRequesting) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case .loading = state else { return Empty().eraseToAnyPublisher() }
 
@@ -128,7 +128,7 @@ extension SplitListViewModel {
         }
     }
 
-    static func whenRemovingSplit(input: AnyPublisher<Event, Never>, datasource: DataRequesting.Type) -> Feedback<State, Event> {
+    static func whenRemovingSplit(input: AnyPublisher<Event, Never>, datasource: DataRequesting) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case let .loaded(items) = state else { return Empty().eraseToAnyPublisher() }
 
@@ -144,7 +144,7 @@ extension SplitListViewModel {
         }
     }
 
-    static func whenReloading(input: AnyPublisher<Event, Never>, datasource: DataRequesting.Type) -> Feedback<State, Event> {
+    static func whenReloading(input: AnyPublisher<Event, Never>, datasource: DataRequesting) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case .loaded = state else { return Empty().eraseToAnyPublisher() }
 

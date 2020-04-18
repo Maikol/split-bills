@@ -108,9 +108,9 @@ struct ExpenseEditModel: Builder {
             fatalError("Can't save an expense with a non double value")
         }
 
-        precondition(amount > 0, "Expense needs to have a valid amoun")
+        precondition(amount > 0, "Expense needs to have a valid amount")
         precondition(expenseTypeAmounts.count > 0, "There needs to be at least one participant")
 
-        return expenseTypeAmounts.map { (name: $0.participant.name, weight: (Double($0.amount) ?? 0 / amount)) }
+        return expenseTypeAmounts.map { (name: $0.participant.name, weight: ((Double($0.amount) ?? 0) / amount)) }
     }
 }
