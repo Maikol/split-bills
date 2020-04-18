@@ -10,7 +10,7 @@ import SwiftUI
 
 struct ParticipantSelectRow: View {
 
-    var name: String
+    let name: String
     @Binding var isSelected: Bool
 
     var body: some View {

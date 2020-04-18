@@ -36,40 +36,40 @@ struct SplitDatabase {
         })
     }
 
-    func create(eventName: String, participants: [Participant]) throws -> Split {
+    func getAll() throws -> [SplitDTO] {
+        try db.prepare(table).map { try split(with: $0) }
+    }
+
+    func create(eventName: String, participants: [String]) throws {
         let insert = table.insert(self.eventName <- eventName)
         let rowId = try db.run(insert)
 
         try participants.forEach { try participantsDatabase.add(participant: $0, splitId: rowId) }
-
-        return Split(id: rowId, eventName: eventName, participants: participants)
     }
 
-    func remove(split: Split) throws {
-        let row = table.filter(eventName == split.eventName)
-        try participantsDatabase.remove(splitId: split.id)
+    func remove(splitId: Int64) throws {
+        let row = table.filter(id == splitId)
+        try participantsDatabase.remove(splitId: splitId)
         try db.run(row.delete())
     }
 
-    func getAll() throws -> [Split] {
-        return try db.prepare(table).compactMap { try split(with: $0) }
+    func split(withId id: Int64) throws -> SplitDTO? {
+        let query = table.filter(self.id == id)
+        return try db.prepare(query).compactMap { try split(with: $0) }.first
     }
 
-    func update(split: Split) throws {
-        let row = table.filter(id == split.id)
-        let update = row.update(eventName <- split.eventName)
+    func update(splitId: Int64, name: String, newParticipants: [String]) throws {
+        let row = table.filter(id == splitId)
+        let update = row.update(eventName <- name)
 
         try db.run(update)
-        let oldParticipants = try participantsDatabase.participants(for: split.id)
-        let newParticipants = split.participants.difference(from: oldParticipants)
-
-        try newParticipants.forEach { try participantsDatabase.add(participant: $0, splitId: split.id) }
+        try newParticipants.forEach { try participantsDatabase.add(participant: $0, splitId: splitId) }
     }
 
-    private func split(with row: SQLite.Row) throws -> Split? {
-        let participants = try participantsDatabase.participants(for: row[id])
-        let expenses = try expensesDatabase.getAll(splitName: row[eventName])
-        return Split(id: row[id], eventName: row[eventName], participants: participants, expenses: expenses)
+    private func split(with row: SQLite.Row) throws -> SplitDTO {
+        let participants: [ParticipantDTO] = try participantsDatabase.participants(for: row[id])
+        let expenses: [ExpenseDTO] = try expensesDatabase.getAll(splitId: row[id])
+        return SplitDTO(id: row[id], name: row[eventName], participants: participants, expenses: expenses)
     }
 }
 
@@ -83,7 +83,6 @@ struct ParticipantDatabase {
     private let id = Expression<Int64>("id")
     private let splitId = Expression<Int64>("split_id")
     private let name = Expression<String>("name")
-    private let email = Expression<String?>("email")
 
     init(databasePath: String) throws {
         db = try Connection("\(databasePath)/\(ParticipantDatabase.databaseName).sqlite3")
@@ -95,12 +94,11 @@ struct ParticipantDatabase {
             t.column(id, primaryKey: true)
             t.column(splitId)
             t.column(name)
-            t.column(email)
         })
     }
 
-    func add(participant: Participant, splitId: Int64) throws {
-        let insert = table.insert(self.splitId <- splitId, name <- participant.name, email <- participant.email)
+    func add(participant: String, splitId: Int64) throws {
+        let insert = table.insert(self.splitId <- splitId, name <- participant)
         _ = try db.run(insert)
     }
 
@@ -109,18 +107,18 @@ struct ParticipantDatabase {
         try db.run(participants.delete())
     }
 
-    func participants(for rowId: Int64) throws -> [Participant] {
+    func participants(for rowId: Int64) throws -> [ParticipantDTO] {
         let query = table.filter(splitId == rowId)
         return try db.prepare(query).compactMap { participant(with: $0) }
     }
 
-    func participant(with name: String) throws -> Participant? {
+    func participant(with name: String) throws -> ParticipantDTO? {
         let query = table.filter(self.name == name)
         return try db.prepare(query).compactMap { participant(with: $0) }.first
     }
 
-    private func participant(with row: SQLite.Row) -> Participant? {
-        return Participant(name: row[name], email: row[email])
+    private func participant(with row: SQLite.Row) -> ParticipantDTO? {
+        return ParticipantDTO(name: row[name])
     }
 }
 
@@ -132,12 +130,13 @@ struct ExpenseDatabase {
     private let db: Connection
     private let table = Table("expense")
 
+    private let splitId = Expression<Int64>("split_id")
+
     private let id = Expression<Int64>("id")
-    private let splitName = Expression<String>("split_name")
     private let payerName = Expression<String>("payer_name")
     private let description = Expression<String>("description")
     private let amount = Expression<Double>("amount")
-    private let splitType = Expression<Int>("splitType")
+    private let expenseType = Expression<Int>("expenseType")
 
     init(databasePath: String) throws {
         weightsTable = try ExpsenseWeightDatabase(databasePath: databasePath)
@@ -150,55 +149,72 @@ struct ExpenseDatabase {
     private func initializeDatabaseSchema() throws {
         _ = try db.run(table.create(ifNotExists: true) { t in
             t.column(id, primaryKey: true)
-            t.column(splitName)
+            t.column(splitId)
             t.column(payerName)
             t.column(description)
             t.column(amount)
-            t.column(splitType)
+            t.column(expenseType)
         })
     }
 
-    func add(expense: Expense, splitName: String) throws -> Expense {
-        let insert = table.insert(self.splitName <- splitName, payerName <- expense.payer.name, description <- expense.description, amount <- expense.amount, splitType <- expense.splitType.rawValue)
+    func create(
+        splitId: Int64,
+        name: String,
+        payerName: String,
+        amount: Double,
+        weights: [ExpenseWeightDTO],
+        expenseTypeIndex: Int
+    ) throws {
+        let insert = table.insert(self.splitId <- splitId, self.payerName <- payerName, self.description <- name, self.amount <- amount, self.expenseType <- expenseTypeIndex)
         let rowId = try db.run(insert)
 
-        try expense.participantsWeight.forEach { try weightsTable.add(weight: $0, expenseId: rowId) }
-
-        return Expense(
-            id: rowId,
-            payer: expense.payer,
-            description: expense.description,
-            amount: expense.amount,
-            participantsWeight: expense.participantsWeight,
-            splitType: expense.splitType)
+        try weights.forEach { try weightsTable.create(expenseId: rowId, participant: $0.participant.name, weight: $0.weight) }
     }
 
-    func update(expense: Expense) throws {
-        let row = table.filter(id == expense.id)
-        let update = row.update(description <- expense.description, payerName <- expense.payer.name, amount <- expense.amount, splitType <- expense.splitType.rawValue)
+    func update(
+        expenseId: Int64,
+        name: String,
+        payerName: String,
+        amount: Double,
+        weights: [ExpenseWeightDTO],
+        expenseTypeIndex: Int
+    ) throws {
+        let row = table.filter(id == expenseId)
+        let update = row.update(description <- name, self.payerName <- payerName, self.amount <- amount, expenseType <- expenseTypeIndex)
 
         try db.run(update)
-        try weightsTable.delete(for: expense.id)
-        try expense.participantsWeight.forEach { try weightsTable.add(weight: $0, expenseId: expense.id) }
+        try weightsTable.delete(for: expenseId)
+        try weights.forEach { try weightsTable.create(expenseId: expenseId, participant: $0.participant.name, weight: $0.weight) }
     }
 
-    func remove(expense: Expense) throws {
-        let row = table.filter(id == expense.id)
+    func expense(withId id: Int64) throws -> ExpenseDTO? {
+        let query = table.filter(self.id == id)
+        return try db.prepare(query).compactMap { try expense(with: $0) }.first
+    }
 
-        try weightsTable.delete(for: expense.id)
+    func remove(expenseId: Int64) throws {
+        let row = table.filter(id == expenseId)
+
+        try weightsTable.delete(for: expenseId)
         try db.run(row.delete())
     }
 
-    func getAll(splitName: String) throws -> [Expense] {
-        let query = table.filter(self.splitName == splitName)
+    func getAll(splitId: Int64) throws -> [ExpenseDTO] {
+        let query = table.filter(self.splitId == splitId)
         return try db.prepare(query).compactMap { try expense(with: $0) }
     }
 
-    private func expense(with row: SQLite.Row) throws -> Expense? {
-        let weights = try weightsTable.get(expenseId: row[id])
-        let payer = try participantDatabase.participant(with: row[payerName])
+    private func expense(with row: SQLite.Row) throws -> ExpenseDTO? {
+        let weights: [ExpenseWeightDTO] = try weightsTable.get(expenseId: row[id])
+        let payer: ParticipantDTO? = try participantDatabase.participant(with: row[payerName])
 
-        return payer.flatMap { Expense(id: row[id], payer: $0, description: row[description], amount: row[amount], participantsWeight: weights, splitType: Expense.SplitType(rawValue: row[splitType])!) }
+        return payer.flatMap { ExpenseDTO(
+            id: row[id],
+            name: row[description],
+            payer: $0,
+            amount: row[amount],
+            participantsWeight: weights,
+            expenseType: ExpenseTypeDTO(rawValue: row[expenseType])!) }
     }
 }
 
@@ -229,8 +245,8 @@ struct ExpsenseWeightDatabase {
         })
     }
 
-    func add(weight: ExpenseWeight, expenseId: Int64) throws {
-        let insert = table.insert(self.expenseId <- expenseId, participantName <- weight.participant.name, self.weight <- weight.weight)
+    func create(expenseId: Int64, participant: String, weight: Double) throws {
+        let insert = table.insert(self.expenseId <- expenseId, participantName <- participant, self.weight <- weight)
         _ = try db.run(insert)
     }
 
@@ -239,13 +255,13 @@ struct ExpsenseWeightDatabase {
         try db.run(rows.delete())
     }
 
-    func get(expenseId: Int64) throws -> [ExpenseWeight] {
+    func get(expenseId: Int64) throws -> [ExpenseWeightDTO] {
         let query = table.filter(self.expenseId == expenseId)
         return try db.prepare(query).compactMap { try weight(with: $0) }
     }
 
-    func weight(with row: SQLite.Row) throws -> ExpenseWeight? {
-        let participant = try participantDatabase.participant(with: row[participantName])
-        return participant.flatMap { ExpenseWeight(participant: $0, weight: row[weight])}
+    private func weight(with row: SQLite.Row) throws -> ExpenseWeightDTO? {
+        let participant: ParticipantDTO? = try participantDatabase.participant(with: row[participantName])
+        return participant.flatMap { ExpenseWeightDTO(participant: $0, weight: row[weight])}
     }
 }

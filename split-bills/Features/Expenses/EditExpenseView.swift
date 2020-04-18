@@ -1,18 +1,20 @@
 //
-//  NewExpenseView.swift
+//  EditExpenseView.swift
 //  split-bills
 //
-//  Created by Carlos Miguel de Elias on 6/4/20.
+//  Created by Carlos DeElias on 9/4/20.
 //  Copyright © 2020 Carlos Miguel de Elias. All rights reserved.
 //
 
 import SwiftUI
 
-struct NewExpenseView: View {
+struct EditExpenseView: View {
 
     @Environment(\.presentationMode) var presentationMode
 
-    @ObservedObject var viewModel: NewExpenseViewModel
+    @ObservedObject var viewModel: EditExpenseViewModel
+
+    @State private var showingDeleteAlert = false
 
     var body: some View {
         NavigationView {
@@ -22,8 +24,18 @@ struct NewExpenseView: View {
                     contentView
                 }
             }
+            .alert(isPresented: $showingDeleteAlert) {
+                Alert(
+                    title: Text("expenses.new.delete-confirmation"),
+                    primaryButton: .cancel(),
+                    secondaryButton: .destructive(Text("expenses.new.delete"), action: {
+                        self.deleteExpense()
+                    })
+                )
+            }
+            .background(Color.background)
             .edgesIgnoringSafeArea(.bottom)
-            .navigationBarTitle(Text("expenses.new.title"), displayMode: .inline)
+            .navigationBarTitle(Text("TODO"), displayMode: .inline)
             .navigationBarItems(trailing:
                 Button(action: {
                     self.presentationMode.wrappedValue.dismiss()
@@ -41,7 +53,7 @@ struct NewExpenseView: View {
             return Color.background.eraseToAnyView()
         case .loading:
             return Color.background.eraseToAnyView()
-        case let .loaded(_, expense):
+        case let .loaded(_, _, expense):
             return form(for: expense).eraseToAnyView()
         case .saving:
             return Color.background.eraseToAnyView()
@@ -54,11 +66,18 @@ struct NewExpenseView: View {
             participantsContentView(with: expense)
 
             Section {
-                Button(action: createExpense) {
+                Button(action: saveExpense) {
                     Text("new-split-controller.save")
                         .apply(font: .body, color: .link)
                         .alignment(.center)
                 }
+                Button(action: {
+                    self.showingDeleteAlert.toggle()
+                }) {
+                    Text("expenses.new.delete")
+                        .font(.headline)
+                        .alignment(.center)
+                }.foregroundColor(.error)
             }.disabled(!expense.isValid)
         }
     }
@@ -67,11 +86,11 @@ struct NewExpenseView: View {
         Section(header: FormSectionHeader(key: "expenses.new.info-header")) {
             TextField(
                 "expenses.new.info-placeholder",
-                text: viewModel.binding(for: \.name) { string in NewExpenseViewModel.Event.onNameChange(string) }
+                text: viewModel.binding(for: \.name) { string in EditExpenseViewModel.Event.onNameChange(string) }
             )
 
             Picker(
-                selection: viewModel.binding(for: \.payerIndex) { index in NewExpenseViewModel.Event.onPayerChange(index) },
+                selection: viewModel.binding(for: \.payerIndex) { index in EditExpenseViewModel.Event.onPayerChange(index) },
                 label: Text("expenses.new.payer-header").apply(font: .body, color: .dark, weight: .bold))
             {
                 ForEach(0 ..< expense.participants.count, id: \.self) {
@@ -81,7 +100,7 @@ struct NewExpenseView: View {
 
             HStack {
                 Text("expenses.new.amount-header")
-                TextField("0", text: viewModel.binding(for: \.amount) { string in NewExpenseViewModel.Event.onAmountChange(string) })
+                TextField("0", text: viewModel.binding(for: \.amount) { string in EditExpenseViewModel.Event.onAmountChange(string) })
                     .multilineTextAlignment(.trailing)
                     .keyboardType(.decimalPad)
             }
@@ -91,14 +110,14 @@ struct NewExpenseView: View {
     private func participantsContentView(with expense: ExpenseEditModel) -> some View {
         Group {
             Section(header: FormSectionHeader(key: "expenses.new.split-header")) {
-                Toggle(isOn: viewModel.binding(for: \.splitEqually) { boolValue in NewExpenseViewModel.Event.onSplitEquallyChange(boolValue) }) {
+                Toggle(isOn: viewModel.binding(for: \.splitEqually) { boolValue in EditExpenseViewModel.Event.onSplitEquallyChange(boolValue) }) {
                     Text("expenses.new.split-equally-header")
                 }
             }
 
             if !expense.splitEqually {
                 Section(header: FormSectionHeader(key: "expenses.new.split-differently")) {
-                    Picker(selection: viewModel.binding(for: \.expenseTypeIndex) { index in NewExpenseViewModel.Event.onExpenseTypeChange(index) }, label: Text("")) {
+                    Picker(selection: viewModel.binding(for: \.expenseTypeIndex) { index in EditExpenseViewModel.Event.onExpenseTypeChange(index) }, label: Text("")) {
                         ForEach(0 ..< ExpenseTypeEditModel.allCases.count) {
                             Text(ExpenseTypeEditModel.allCases[$0].localized).tag($0)
                         }
@@ -135,7 +154,7 @@ struct NewExpenseView: View {
                 ParticipantSelectRow(
                     name: expenseTypeSelections[index].participant.name,
                     isSelected: self.viewModel.binding(for: \.expenseTypeSelections[index].isSelected) { boolValue in
-                        NewExpenseViewModel.Event.onExpenseTypeSelectionChange(index, isSelected: boolValue)
+                        EditExpenseViewModel.Event.onExpenseTypeSelectionChange(index, isSelected: boolValue)
                     }
                 )
             }
@@ -150,21 +169,26 @@ struct NewExpenseView: View {
                 ParticipantTextEntryRow(
                     name: expenseTypeAmounts[index].participant.name,
                     amount: self.viewModel.binding(for: \.expenseTypeAmounts[index].amount) { string in
-                        NewExpenseViewModel.Event.onExpenseTypeAmountChange(index, amount: string)
+                        EditExpenseViewModel.Event.onExpenseTypeAmountChange(index, amount: string)
                     }
                 )
             }
         }
     }
 
-    func createExpense() {
+    func saveExpense() {
         viewModel.send(event: .onSaveExpense)
-        presentationMode.wrappedValue.dismiss()
+        self.presentationMode.wrappedValue.dismiss()
+    }
+
+    func deleteExpense() {
+        viewModel.send(event: .onRemoveExpense)
+        self.presentationMode.wrappedValue.dismiss()
     }
 }
 
-struct NewExpenseView_Previews: PreviewProvider {
+struct ExpenseView_Previews: PreviewProvider {
     static var previews: some View {
-        NewExpenseView(viewModel: NewExpenseViewModel(splitId: 0))
+        EditExpenseView(viewModel: EditExpenseViewModel(splitId: 0, expenseId: 0))
     }
 }
