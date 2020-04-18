@@ -13,15 +13,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/cache@v1
-      id: carthage-cache
-      with:
-        path: Carthage
-        key: ${{ runner.os }}-carthage-${{ hashFiles('**/Cartfile.resolved') }}
-    - name: Carthage bootstrap
-      if: steps.carthage-cache.outputs.cache-hit != 'true'
-      run: |
-        carthage bootstrap --no-use-binaries --platform ios
     - name: Build and Test
       run: |
         xcodebuild test -project split-bills.xcodeproj -scheme split-bills -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 8,OS=13.3"
