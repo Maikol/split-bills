@@ -71,10 +71,7 @@ struct ExpenseEditModel: Builder {
     }
 
     typealias Weight = (name: String, weight: Double)
-
     var weights: [Weight] {
-
-
         if splitEqually {
             return splitEqually(with: participants)
         }

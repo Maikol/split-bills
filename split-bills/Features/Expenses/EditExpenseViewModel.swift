@@ -166,9 +166,15 @@ extension EditExpenseViewModel {
 
     static func whenSaving() -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
-            guard case let .saving(split, expense) = state, let amount = Double(expense.amount) else { return Empty().eraseToAnyPublisher() }
+            guard case let .saving(expenseId, expense) = state, let amount = Double(expense.amount) else { return Empty().eraseToAnyPublisher() }
 
-            return Empty().eraseToAnyPublisher()
+            return DatabaseAPI.updateExpense(
+                withId: expenseId,
+                name: expense.name,
+                payerName: expense.payerName,
+                amount: amount,
+                weights: expense.weights,
+                expenseTypeIndex: <#T##DatabaseAPI.ExpenseTypeIndex#>)
         }
     }
 

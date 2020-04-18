@@ -136,7 +136,7 @@ struct ExpenseDatabase {
     private let payerName = Expression<String>("payer_name")
     private let description = Expression<String>("description")
     private let amount = Expression<Double>("amount")
-    private let splitType = Expression<Int>("splitType")
+    private let expenseType = Expression<Int>("expenseType")
 
     init(databasePath: String) throws {
         weightsTable = try ExpsenseWeightDatabase(databasePath: databasePath)
@@ -153,7 +153,7 @@ struct ExpenseDatabase {
             t.column(payerName)
             t.column(description)
             t.column(amount)
-            t.column(splitType)
+            t.column(expenseType)
         })
     }
 
@@ -165,19 +165,26 @@ struct ExpenseDatabase {
         weights: [ExpenseWeightDTO],
         expenseTypeIndex: Int
     ) throws {
-        let insert = table.insert(self.splitId <- splitId, self.payerName <- payerName, self.description <- name, self.amount <- amount, self.splitType <- expenseTypeIndex)
+        let insert = table.insert(self.splitId <- splitId, self.payerName <- payerName, self.description <- name, self.amount <- amount, self.expenseType <- expenseTypeIndex)
         let rowId = try db.run(insert)
 
         try weights.forEach { try weightsTable.create(expenseId: rowId, participant: $0.participant.name, weight: $0.weight) }
     }
 
-    func update(expense: ExpenseDTO) throws {
-        let row = table.filter(id == expense.id)
-        let update = row.update(description <- expense.name, payerName <- expense.payer.name, amount <- expense.amount, splitType <- expense.expenseType.rawValue)
+    func update(
+        expenseId: Int64,
+        name: String,
+        payerName: String,
+        amount: Double,
+        weights: [ExpenseWeightDTO],
+        expenseTypeIndex: Int
+    ) throws {
+        let row = table.filter(id == expenseId)
+        let update = row.update(description <- name, self.payerName <- payerName, self.amount <- amount, expenseType <- expenseTypeIndex)
 
         try db.run(update)
-        try weightsTable.delete(for: expense.id)
-        try expense.participantsWeight.forEach { try weightsTable.create(expenseId: expense.id, participant: $0.participant.name, weight: $0.weight) }
+        try weightsTable.delete(for: expenseId)
+        try weights.forEach { try weightsTable.create(expenseId: expenseId, participant: $0.participant.name, weight: $0.weight) }
     }
 
     func expense(withId id: Int64) throws -> ExpenseDTO? {
@@ -207,7 +214,7 @@ struct ExpenseDatabase {
             payer: $0,
             amount: row[amount],
             participantsWeight: weights,
-            expenseType: ExpenseTypeDTO(rawValue: row[splitType])!) }
+            expenseType: ExpenseTypeDTO(rawValue: row[expenseType])!) }
     }
 }
 

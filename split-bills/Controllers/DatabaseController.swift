@@ -67,6 +67,16 @@ enum DatabaseAPI {
         }.eraseToAnyPublisher()
     }
 
+    static func expense(expenseId: ExpenseId) -> AnyPublisher<ExpenseDTO?, Never> {
+        return Deferred {
+            Future<ExpenseDTO?, Never> { promise in
+                let expensesDatabase = try! ExpenseDatabase(databasePath: URL.documentsDirectory.path)
+                let expense = try! expensesDatabase.expense(withId: expenseId)
+                promise(.success(expense))
+            }
+        }.eraseToAnyPublisher()
+    }
+
     static func createExpense(
         splitId: SplitId,
         name: String,
@@ -80,16 +90,25 @@ enum DatabaseAPI {
                 let expensesDatabase = try! ExpenseDatabase(databasePath: URL.documentsDirectory.path)
                 let weightsDTO = weights.map { ExpenseWeightDTO(participant: .init(name: $0.name), weight: $0.weight) }
                 try! expensesDatabase.create(splitId: splitId, name: name, payerName: payerName, amount: amount, weights: weightsDTO, expenseTypeIndex: expenseTypeIndex)
+                promise(.success(()))
             }
         }.eraseToAnyPublisher()
     }
 
-    static func expense(expenseId: ExpenseId) -> AnyPublisher<ExpenseDTO?, Never> {
+    static func updateExpense(
+        withId id: ExpenseId,
+        name: String,
+        payerName: String,
+        amount: Double,
+        weights: [ParticipantExpenseWeight],
+        expenseTypeIndex: ExpenseTypeIndex
+    ) -> AnyPublisher<Void, Never> {
         return Deferred {
-            Future<ExpenseDTO?, Never> { promise in
-                let expensesDatabase = try! ExpenseDatabase(databasePath: URL.documentsDirectory.path)
-                let expense = try! expensesDatabase.expense(withId: expenseId)
-                promise(.success(expense))
+            Future<Void, Never> { promise in
+                let expensesDatabse = try! ExpenseDatabase(databasePath: URL.documentsDirectory.path)
+                let weightsDTO = weights.map { ExpenseWeightDTO(participant: .init(name: $0.name), weight: $0.weight) }
+                try! expensesDatabse.update(expenseId: id, name: name, payerName: payerName, amount: amount, weights: weightsDTO, expenseTypeIndex: expenseTypeIndex)
+                promise(.success(()))
             }
         }.eraseToAnyPublisher()
     }
