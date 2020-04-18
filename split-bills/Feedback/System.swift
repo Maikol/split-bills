@@ -16,7 +16,6 @@ extension Publishers {
         scheduler: Scheduler,
         feedbacks: [Feedback<State, Event>]
     ) -> AnyPublisher<State, Never> {
-
         let state = CurrentValueSubject<State, Never>(initial)
 
         let events = feedbacks.map { feedback in feedback.run(state.eraseToAnyPublisher()) }
