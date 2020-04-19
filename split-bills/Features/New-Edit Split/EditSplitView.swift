@@ -18,10 +18,10 @@ struct EditSplitView: View {
         NavigationView {
             ZStack {
                 Color.background
-                KeyboardHost {
-                    contentView
-                }
-            }.edgesIgnoringSafeArea(.bottom)
+                    .edgesIgnoringSafeArea(.bottom)
+                contentView
+                    .keyboardAdaptive()
+            }
             .navigationBarTitle(Text("new-split-controller.title"), displayMode: .inline)
             .navigationBarItems(trailing:
                 Button(action: {
@@ -71,12 +71,9 @@ struct EditSplitView: View {
 
     private func participantsList(for split: SplitEditModel) -> some View {
         Section(header: FormSectionHeader(key: "new-split-controller.participants")) {
-            ForEach(0 ..< split.existingParticipants.count, id: \.self) { index in
-                self.requiredParticipantTextField(withIndex: index)
-            }
-            ForEach(split.activeNewParticipants) { participant in
-                self.dynamicParticipantView(participant: participant)
-            }
+            existingListOfParticipants(for: split.existingParticipants)
+            dynamicListOfParticipants(for: split.activeNewParticipants)
+
             Button(action: {
                 self.viewModel.send(event: .onAddParticipant)
             }) {
@@ -90,22 +87,26 @@ struct EditSplitView: View {
         }
     }
 
-    private func requiredParticipantTextField(withIndex index: Int) -> some View {
-        TextField(
-            "Participant \(index + 1)",
-            text: self.viewModel.binding(for: \.existingParticipants[index].name) { value in
-                EditSplitViewModel.Event.onExistingParticipantNameChange(value, index)
-        })
+    private func existingListOfParticipants(for existingParticipants: [ParticipantEditModel]) -> some View {
+        ForEach(0 ..< existingParticipants.count, id: \.self) { index in
+            TextField(
+                "Participant \(index + 1)",
+                text: self.viewModel.binding(for: \.existingParticipants[index].name) { value in
+                    EditSplitViewModel.Event.onExistingParticipantNameChange(value, index)
+            })
+        }
     }
 
-    private func dynamicParticipantView(participant: ParticipantEditModel) -> some View {
-        SplitParticipantRow(
-            label: NSLocalizedString("new-split-controller.participant-placeholder.new-participant", comment: ""),
-            name: self.viewModel.binding(for: \.newParticipants[participant.index].name) { value in
-                EditSplitViewModel.Event.onNewParticipantNameChange(value, participant.index)
-            })
-        {
-            self.viewModel.send(event: .onRemoveParticipant(participant.index))
+    private func dynamicListOfParticipants(for activeNewParticipants: [ParticipantEditModel]) -> some View {
+        ForEach(activeNewParticipants) { participant in
+            SplitParticipantRow(
+                localizedKey: "new-split-controller.participant-placeholder.new-participant",
+                name: self.viewModel.binding(for: \.newParticipants[participant.index].name) { value in
+                    EditSplitViewModel.Event.onNewParticipantNameChange(value, participant.index)
+                }
+            ) {
+                self.viewModel.send(event: .onRemoveParticipant(participant.index))
+            }
         }
     }
 

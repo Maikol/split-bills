@@ -11,11 +11,11 @@
 		503275F82446543200DDEAF1 /* EditSplitViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 503275F72446543200DDEAF1 /* EditSplitViewModel.swift */; };
 		503275FA244683B700DDEAF1 /* Builder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 503275F9244683B700DDEAF1 /* Builder.swift */; };
 		505C98FD244B39040098424C /* DTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505C98FC244B39040098424C /* DTOs.swift */; };
+		505C98FF244BCA4A0098424C /* KeyboardAvoidance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505C98FE244BCA4A0098424C /* KeyboardAvoidance.swift */; };
 		508CE462243AC8D800707D50 /* SplitListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508CE461243AC8D800707D50 /* SplitListItemView.swift */; };
 		508CE464243ADFEC00707D50 /* SplitListEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508CE463243ADFEC00707D50 /* SplitListEmptyView.swift */; };
 		508CE466243B061100707D50 /* SplitEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508CE465243B061100707D50 /* SplitEmptyView.swift */; };
 		508FC565243F1F6D008DA135 /* PlusButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508FC564243F1F6D008DA135 /* PlusButton.swift */; };
-		508FC567243F1F88008DA135 /* KeyboardHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508FC566243F1F88008DA135 /* KeyboardHost.swift */; };
 		508FC569243F4964008DA135 /* EditExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508FC568243F4964008DA135 /* EditExpenseView.swift */; };
 		509738B7243C45FB0040AB93 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 509738B6243C45FB0040AB93 /* ViewExtensions.swift */; };
 		50A3AA4D24442B040062106F /* SplitListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50A3AA4C24442B040062106F /* SplitListViewModel.swift */; };
@@ -56,7 +56,6 @@
 		DFB90DAC211E7A570084C5E5 /* SplitDetailViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB90DAB211E7A570084C5E5 /* SplitDetailViewModelTests.swift */; };
 		DFB90DB021218D5D0084C5E5 /* StyleExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB90DAF21218D5D0084C5E5 /* StyleExtensions.swift */; };
 		DFC166AB2448677900A7E519 /* SplitDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC166AA2448677900A7E519 /* SplitDetailViewModel.swift */; };
-		DFC166AD244A55D200A7E519 /* FirstResponderTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC166AC244A55D200A7E519 /* FirstResponderTextField.swift */; };
 		DFCCD27E243B2C2B00CB35C6 /* NewExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFCCD27D243B2C2B00CB35C6 /* NewExpenseView.swift */; };
 		DFD8C5702220F13A0095B3A3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DFD8C5722220F13A0095B3A3 /* Localizable.strings */; };
 		DFD8C57422211C6B0095B3A3 /* DatabaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFD8C57322211C6B0095B3A3 /* DatabaseTests.swift */; };
@@ -78,11 +77,11 @@
 		503275F72446543200DDEAF1 /* EditSplitViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditSplitViewModel.swift; sourceTree = "<group>"; };
 		503275F9244683B700DDEAF1 /* Builder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Builder.swift; sourceTree = "<group>"; };
 		505C98FC244B39040098424C /* DTOs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTOs.swift; sourceTree = "<group>"; };
+		505C98FE244BCA4A0098424C /* KeyboardAvoidance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardAvoidance.swift; sourceTree = "<group>"; };
 		508CE461243AC8D800707D50 /* SplitListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitListItemView.swift; sourceTree = "<group>"; };
 		508CE463243ADFEC00707D50 /* SplitListEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitListEmptyView.swift; sourceTree = "<group>"; };
 		508CE465243B061100707D50 /* SplitEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitEmptyView.swift; sourceTree = "<group>"; };
 		508FC564243F1F6D008DA135 /* PlusButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlusButton.swift; sourceTree = "<group>"; };
-		508FC566243F1F88008DA135 /* KeyboardHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardHost.swift; sourceTree = "<group>"; };
 		508FC568243F4964008DA135 /* EditExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditExpenseView.swift; sourceTree = "<group>"; };
 		509738B6243C45FB0040AB93 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		50A3AA4C24442B040062106F /* SplitListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitListViewModel.swift; sourceTree = "<group>"; };
@@ -127,7 +126,6 @@
 		DFB90DAB211E7A570084C5E5 /* SplitDetailViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitDetailViewModelTests.swift; sourceTree = "<group>"; };
 		DFB90DAF21218D5D0084C5E5 /* StyleExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleExtensions.swift; sourceTree = "<group>"; };
 		DFC166AA2448677900A7E519 /* SplitDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitDetailViewModel.swift; sourceTree = "<group>"; };
-		DFC166AC244A55D200A7E519 /* FirstResponderTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstResponderTextField.swift; sourceTree = "<group>"; };
 		DFCCD27D243B2C2B00CB35C6 /* NewExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewExpenseView.swift; sourceTree = "<group>"; };
 		DFD8C5712220F13A0095B3A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		DFD8C57322211C6B0095B3A3 /* DatabaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseTests.swift; sourceTree = "<group>"; };
@@ -158,8 +156,6 @@
 			children = (
 				DF4895E92439676100D10DBD /* FormSectionHeader.swift */,
 				508FC564243F1F6D008DA135 /* PlusButton.swift */,
-				508FC566243F1F88008DA135 /* KeyboardHost.swift */,
-				DFC166AC244A55D200A7E519 /* FirstResponderTextField.swift */,
 			);
 			path = "Shared Views";
 			sourceTree = "<group>";
@@ -371,6 +367,7 @@
 				DF890F9C211C772F00305528 /* Playground.playground */,
 				DF4895EB2439C86700D10DBD /* CollectionExtensions.swift */,
 				503275F9244683B700DDEAF1 /* Builder.swift */,
+				505C98FE244BCA4A0098424C /* KeyboardAvoidance.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -527,7 +524,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				50A3AA4D24442B040062106F /* SplitListViewModel.swift in Sources */,
-				DFC166AD244A55D200A7E519 /* FirstResponderTextField.swift in Sources */,
 				DF4895EC2439C86700D10DBD /* CollectionExtensions.swift in Sources */,
 				50E4DB442449E452006F3DC0 /* SplitEditModel.swift in Sources */,
 				DF78FA43244ABE9600C90842 /* DataRequesting.swift in Sources */,
@@ -561,9 +557,9 @@
 				50E4DB462449E86C006F3DC0 /* PaymentDisplayModel.swift in Sources */,
 				DF27336F24395C1D008005F8 /* UIKitClasses.swift in Sources */,
 				508CE466243B061100707D50 /* SplitEmptyView.swift in Sources */,
-				508FC567243F1F88008DA135 /* KeyboardHost.swift in Sources */,
 				DFA39B0A243C9E5B00DEBDC6 /* ParticipantTextEntryRow.swift in Sources */,
 				50E4DB422449E3E7006F3DC0 /* ParticipantEditModel.swift in Sources */,
+				505C98FF244BCA4A0098424C /* KeyboardAvoidance.swift in Sources */,
 				509738B7243C45FB0040AB93 /* ViewExtensions.swift in Sources */,
 				DF5CB5052118728F00F39DC0 /* database.swift in Sources */,
 				DFB90DB021218D5D0084C5E5 /* StyleExtensions.swift in Sources */,

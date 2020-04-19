@@ -20,9 +20,10 @@ struct EditExpenseView: View {
         NavigationView {
             ZStack {
                 Color.background
-                KeyboardHost {
-                    contentView
-                }
+                    .edgesIgnoringSafeArea(.bottom)
+                contentView
+                    .keyboardAdaptive()
+
             }
             .alert(isPresented: $showingDeleteAlert) {
                 Alert(
@@ -33,8 +34,6 @@ struct EditExpenseView: View {
                     })
                 )
             }
-            .background(Color.background)
-            .edgesIgnoringSafeArea(.bottom)
             .navigationBarTitle(Text("TODO"), displayMode: .inline)
             .navigationBarItems(trailing:
                 Button(action: {
