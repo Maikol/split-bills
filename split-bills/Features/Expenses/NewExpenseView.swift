@@ -18,11 +18,10 @@ struct NewExpenseView: View {
         NavigationView {
             ZStack {
                 Color.background
-                KeyboardHost {
-                    contentView
-                }
+                    .edgesIgnoringSafeArea(.bottom)
+                contentView
+                    .keyboardAdaptive()
             }
-            .edgesIgnoringSafeArea(.bottom)
             .navigationBarTitle(Text("expenses.new.title"), displayMode: .inline)
             .navigationBarItems(trailing:
                 Button(action: {

@@ -18,10 +18,10 @@ struct NewSplitView: View {
         NavigationView {
             ZStack {
                 Color.background
-                KeyboardHost {
-                    content
-                }
-            }.edgesIgnoringSafeArea(.bottom)
+                    .edgesIgnoringSafeArea(.bottom)
+                content
+                    .keyboardAdaptive()
+            }
             .navigationBarTitle(Text("new-split-controller.title"), displayMode: .inline)
             .navigationBarItems(trailing:
                 Button(action: {
@@ -82,7 +82,7 @@ struct NewSplitView: View {
     private var dynamicListOfParticipants: some View {
         ForEach(viewModel.state.activeNewParticipants) { participant in
             SplitParticipantRow(
-                label: NSLocalizedString("new-split-controller.participant-placeholder.new-participant", comment: ""),
+                localizedKey: "new-split-controller.participant-placeholder.new-participant",
                 name: self.viewModel.binding(for: \.newParticipants[participant.index].name) { value in
                     NewSplitViewModel.Event.onAddedParticipantNameChange(value, participant.index)
                 }

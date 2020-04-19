@@ -10,7 +10,7 @@ import SwiftUI
 
 struct SplitParticipantRow: View {
 
-    var label: String
+    var localizedKey: LocalizedStringKey
     @Binding var name: String
     var deleteAction: () -> Void
 
@@ -20,13 +20,13 @@ struct SplitParticipantRow: View {
                 Image(systemName: "minus.circle.fill")
                     .accentColor(.red)
             }
-            FirstResponderTextField(label: label, text: $name, isFirstResponder: true)
+            TextField(localizedKey, text: $name)
         }
     }
 }
 
 struct SplitParticipantRow_Previews: PreviewProvider {
     static var previews: some View {
-        SplitParticipantRow(label: "Test", name: .constant("Bob")) {}
+        SplitParticipantRow(localizedKey: "Test", name: .constant("Bob")) {}
     }
 }
