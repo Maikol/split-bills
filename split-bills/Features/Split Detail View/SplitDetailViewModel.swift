@@ -81,6 +81,7 @@ extension SplitDetailViewModel {
         case onLoaded(ListItem)
         case onRemoveExpense(ExpenseId)
         case onRemoveExpenses(offsets: IndexSet)
+        case onShare
 
         fileprivate func expensesToRemove(from ids: [ExpenseId]) -> [ExpenseId] {
             switch self {

@@ -24,7 +24,24 @@ struct SplitDetailView: View {
             self.containedSheet(sheet)
         }
         .navigationBarTitle(Text(viewModel.state.title), displayMode: .inline)
+        .navigationBarItems(trailing:
+            shareButtonView
+        )
         .onAppear { self.viewModel.send(event: .onAppear) }
+    }
+
+    private var shareButtonView: some View {
+        switch viewModel.state {
+        case let .loaded(item) where !item.expenses.isEmpty:
+            return Button(action: {
+                self.viewModel.send(event: .onShare)
+            }) {
+                Text("split.view.share")
+                    .apply(font: .body, color: .white)
+            }.eraseToAnyView()
+        default:
+            return EmptyView().eraseToAnyView()
+        }
     }
 
     private var contentView: some View {
