@@ -49,6 +49,7 @@
 		DF78FA43244ABE9600C90842 /* DataRequesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF78FA42244ABE9600C90842 /* DataRequesting.swift */; };
 		DF78FA45244ACAE100C90842 /* DataMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF78FA44244ACAE100C90842 /* DataMock.swift */; };
 		DF78FA47244AD80B00C90842 /* NewExpenseViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF78FA46244AD80B00C90842 /* NewExpenseViewModelTests.swift */; };
+		DF78FA4D244CF6EC00C90842 /* SharePaymentShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF78FA4C244CF6EC00C90842 /* SharePaymentShareSheet.swift */; };
 		DF8DB77424448994002FADE0 /* NewSplitViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8DB77324448994002FADE0 /* NewSplitViewModel.swift */; };
 		DF9ADEF52448667900F10906 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = DF9ADEF42448667900F10906 /* SQLite */; };
 		DFA39B0A243C9E5B00DEBDC6 /* ParticipantTextEntryRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA39B09243C9E5B00DEBDC6 /* ParticipantTextEntryRow.swift */; };
@@ -117,6 +118,7 @@
 		DF78FA42244ABE9600C90842 /* DataRequesting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataRequesting.swift; sourceTree = "<group>"; };
 		DF78FA44244ACAE100C90842 /* DataMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataMock.swift; sourceTree = "<group>"; };
 		DF78FA46244AD80B00C90842 /* NewExpenseViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewExpenseViewModelTests.swift; sourceTree = "<group>"; };
+		DF78FA4C244CF6EC00C90842 /* SharePaymentShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePaymentShareSheet.swift; sourceTree = "<group>"; };
 		DF890F9C211C772F00305528 /* Playground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Playground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		DF8DB77324448994002FADE0 /* NewSplitViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSplitViewModel.swift; sourceTree = "<group>"; };
 		DFA39B09243C9E5B00DEBDC6 /* ParticipantTextEntryRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantTextEntryRow.swift; sourceTree = "<group>"; };
@@ -217,6 +219,7 @@
 				DF88DEEF24446CC400151756 /* New-Edit Split */,
 				DF4895E62439622F00D10DBD /* Split Detail View */,
 				DFCCD27C243B2C1200CB35C6 /* Expenses */,
+				DF78FA4B244CF6D000C90842 /* Share Activity */,
 				508FC563243F1F3F008DA135 /* Shared Views */,
 			);
 			path = Features;
@@ -345,6 +348,14 @@
 				DFB90DA3211E7A0F0084C5E5 /* split_bills_tests.swift */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		DF78FA4B244CF6D000C90842 /* Share Activity */ = {
+			isa = PBXGroup;
+			children = (
+				DF78FA4C244CF6EC00C90842 /* SharePaymentShareSheet.swift */,
+			);
+			path = "Share Activity";
 			sourceTree = "<group>";
 		};
 		DF88DEEF24446CC400151756 /* New-Edit Split */ = {
@@ -555,6 +566,7 @@
 				DFCCD27E243B2C2B00CB35C6 /* NewExpenseView.swift in Sources */,
 				50A3AA5024442C3F0062106F /* Feedback.swift in Sources */,
 				50E4DB462449E86C006F3DC0 /* PaymentDisplayModel.swift in Sources */,
+				DF78FA4D244CF6EC00C90842 /* SharePaymentShareSheet.swift in Sources */,
 				DF27336F24395C1D008005F8 /* UIKitClasses.swift in Sources */,
 				508CE466243B061100707D50 /* SplitEmptyView.swift in Sources */,
 				DFA39B0A243C9E5B00DEBDC6 /* ParticipantTextEntryRow.swift in Sources */,

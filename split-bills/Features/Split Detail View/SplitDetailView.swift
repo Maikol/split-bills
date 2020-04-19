@@ -34,7 +34,7 @@ struct SplitDetailView: View {
         switch viewModel.state {
         case let .loaded(item) where !item.expenses.isEmpty:
             return Button(action: {
-                self.viewModel.send(event: .onShare)
+                self.viewModel.presentSheet(with: .sharePayment(item.payments))
             }) {
                 Text("split.view.share")
                     .apply(font: .body, color: .white)
@@ -99,6 +99,8 @@ struct SplitDetailView: View {
                 Spacer()
                 Text(String(format: "%.2f", payment.amount))
                     .apply(font: .body, color: .dark, weight: .bold)
+            }.onLongPressGesture {
+                self.viewModel.longPressAction(.payments(payments.paymentDetails))
             }
         }
     }
@@ -125,6 +127,8 @@ struct SplitDetailView: View {
             return NewExpenseView(viewModel: NewExpenseViewModel(splitId: viewModel.state.splitId)).eraseToAnyView()
         case let .expense(expenseId):
             return EditExpenseView(viewModel: EditExpenseViewModel(splitId: viewModel.state.splitId, expenseId: expenseId)).eraseToAnyView()
+        case let .sharePayment(payments):
+            return SharePaymentSheet(activityItems: [payments.paymentDetails]).eraseToAnyView()
         }
     }
 
@@ -132,6 +136,18 @@ struct SplitDetailView: View {
 
     private func removeExpense(at offsets: IndexSet) {
         viewModel.send(event: .onRemoveExpenses(offsets: offsets))
+    }
+}
+
+private extension Array where Element == PaymentDisplayModel {
+
+    var paymentDetails: String {
+        map {
+            $0.payer.name + " " +
+                NSLocalizedString("split.view.sttle.pays-to", comment: "") + " " +
+                $0.receiver.name + ": " +
+                String(format: "$%.2f", $0.amount)
+        }.joined(separator: "\n")
     }
 }
 
