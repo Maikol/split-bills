@@ -11,8 +11,21 @@ import Foundation
 
 enum DTOMocks {
     static let splits = [
-        SplitDTO(id: 1, name: "Test 1", participants: participants, expenses: [expense1, expense2])
+        SplitDTO(id: 0, name: "Test 1", participants: participants, expenses: [expense1, expense2]),
+        splitWithMultipleRandomExpenses
     ]
+
+    static let splitWithMultipleRandomExpenses: SplitDTO = {
+        var expenses = [ExpenseDTO]()
+
+        for i in 0...100000 {
+            let amount = Double.random(in: 1..<100)
+            let expense = ExpenseDTO(id: Int64(i), name: "Expense \(i)", payer: participants.randomElement()!, amount: amount, participantsWeight: participants.map { ExpenseWeightDTO(participant: $0, weight: 0.25) }, expenseType: .equallyWithAll)
+            expenses.append(expense)
+        }
+
+        return SplitDTO(id: 1, name: "Test 1", participants: participants, expenses: expenses)
+    }()
     
     static let participant1 = ParticipantDTO(name: "User 1")
     static let participant2 = ParticipantDTO(name: "User 2")
