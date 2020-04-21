@@ -99,9 +99,9 @@ struct SplitDetailView: View {
                 Spacer()
                 Text(String(format: "%.2f", payment.amount))
                     .apply(font: .body, color: .dark, weight: .bold)
-            }.onLongPressGesture {
-                self.viewModel.longPressAction(.payments(payments.paymentDetails))
             }
+        }.onLongPressGesture {
+            self.viewModel.longPressAction(.payments(payments.paymentDetails))
         }
     }
 
