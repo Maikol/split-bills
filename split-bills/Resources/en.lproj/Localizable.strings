@@ -30,6 +30,7 @@
 "split-controller.edit" = "Edit";
 "split-controller.cancel" = "Cancel";
 
+"split.view.share" = "Share";
 "split.view.settle-header" = "Settle";
 "split.view.overview-header" = "Overview";
 "split.view.sttle.pays-to" = "pays to";

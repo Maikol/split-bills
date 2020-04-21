@@ -50,6 +50,7 @@ struct SplitDatabase {
     func remove(splitId: Int64) throws {
         let row = table.filter(id == splitId)
         try participantsDatabase.remove(splitId: splitId)
+        try expensesDatabase.remove(splitId: splitId)
         try db.run(row.delete())
     }
 
@@ -190,6 +191,11 @@ struct ExpenseDatabase {
     func expense(withId id: Int64) throws -> ExpenseDTO? {
         let query = table.filter(self.id == id)
         return try db.prepare(query).compactMap { try expense(with: $0) }.first
+    }
+
+    func remove(splitId: Int64) throws {
+        let query = table.filter(self.splitId == splitId)
+        try db.prepare(query).forEach { try remove(expenseId: $0[id]) }
     }
 
     func remove(expenseId: Int64) throws {

@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 final class SplitDetailViewModel: ObservableObject {
 
@@ -40,6 +41,17 @@ final class SplitDetailViewModel: ObservableObject {
 
     func presentSheet(with style: Sheet.Style) {
         self.activeSheet = .init(style: style)
+    }
+
+    func longPressAction(_ action: LongPressAction) {
+        let generator = UINotificationFeedbackGenerator()
+
+        switch action {
+        case let .payments(details):
+            UIPasteboard.general.string = details
+        }
+
+        generator.notificationOccurred(.success)
     }
 }
 
@@ -103,10 +115,15 @@ extension SplitDetailViewModel {
         enum Style {
             case newExpense
             case expense(ExpenseId)
+            case sharePayment([PaymentDisplayModel])
         }
 
         let id = UUID()
         let style: Style
+    }
+
+    enum LongPressAction {
+        case payments(String)
     }
 }
 

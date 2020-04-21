@@ -98,8 +98,8 @@ extension NewSplitViewModel {
     static func whenCreatingSplit(input: AnyPublisher<Event, Never>, datasource: DataRequesting) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             let requiredParticipants = state.existingParticipants.map { $0.name }
-            let participants = state.existingParticipants.filter { !$0.name.isEmpty && !$0.removed }.map { $0.name }
-            let createSplitPublisher = datasource.createSplit(name: state.name, participants: requiredParticipants + participants)
+            let newParticipants = state.newParticipants.filter { !$0.name.isEmpty && !$0.removed }.map { $0.name }
+            let createSplitPublisher = datasource.createSplit(name: state.name, participants: requiredParticipants + newParticipants)
 
             return input.filter { $0 == .createSplit }
                 .flatMap { _ in createSplitPublisher }
