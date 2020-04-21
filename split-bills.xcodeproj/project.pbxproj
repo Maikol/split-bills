@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		50013954243D967C00E36B85 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50013953243D967C00E36B85 /* SceneDelegate.swift */; };
+		500809AC244FB0D300726011 /* SplitDetailViewModelPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 500809AB244FB0D300726011 /* SplitDetailViewModelPerformanceTests.swift */; };
 		503275F82446543200DDEAF1 /* EditSplitViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 503275F72446543200DDEAF1 /* EditSplitViewModel.swift */; };
 		503275FA244683B700DDEAF1 /* Builder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 503275F9244683B700DDEAF1 /* Builder.swift */; };
 		505C98FD244B39040098424C /* DTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505C98FC244B39040098424C /* DTOs.swift */; };
@@ -75,6 +76,7 @@
 
 /* Begin PBXFileReference section */
 		50013953243D967C00E36B85 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		500809AB244FB0D300726011 /* SplitDetailViewModelPerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitDetailViewModelPerformanceTests.swift; sourceTree = "<group>"; };
 		503275F72446543200DDEAF1 /* EditSplitViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditSplitViewModel.swift; sourceTree = "<group>"; };
 		503275F9244683B700DDEAF1 /* Builder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Builder.swift; sourceTree = "<group>"; };
 		505C98FC244B39040098424C /* DTOs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTOs.swift; sourceTree = "<group>"; };
@@ -329,6 +331,7 @@
 			isa = PBXGroup;
 			children = (
 				DFB90DAB211E7A570084C5E5 /* SplitDetailViewModelTests.swift */,
+				500809AB244FB0D300726011 /* SplitDetailViewModelPerformanceTests.swift */,
 				DF78FA46244AD80B00C90842 /* NewExpenseViewModelTests.swift */,
 			);
 			path = "View Models";
@@ -585,6 +588,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				500809AC244FB0D300726011 /* SplitDetailViewModelPerformanceTests.swift in Sources */,
 				DF78FA47244AD80B00C90842 /* NewExpenseViewModelTests.swift in Sources */,
 				DF78FA45244ACAE100C90842 /* DataMock.swift in Sources */,
 				DFD8C57422211C6B0095B3A3 /* DatabaseTests.swift in Sources */,
