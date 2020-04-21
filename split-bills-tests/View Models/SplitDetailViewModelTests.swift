@@ -68,21 +68,6 @@ final class SplitDetailViewModelTests: XCTestCase {
         XCTAssertFalse(receivers.contains(DisplayModelMocks.participant3))
         XCTAssertFalse(receivers.contains(DisplayModelMocks.participant4))
     }
-
-    func tesPaymentstPerforamnce() {
-        let expectation = XCTestExpectation(description: "split details loaded")
-
-        var item: SplitDetailViewModel.ListItem?
-
-        viewModel.$state.sink { state in
-            guard case let .loaded(loadedItem) = state else { return }
-            item = loadedItem
-            expectation.fulfill()
-        }.store(in: &bag)
-
-        wait(for: [expectation], timeout: 1)
-        XCTAssertNotNil(item)
-    }
 }
 
 extension SplitDetailViewModel.State: Equatable {
