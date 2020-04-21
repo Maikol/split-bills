@@ -21,13 +21,13 @@ struct SplitListItemView: View {
                 Button(action: {
                     self.editAction()
                 }) {
-                    Text("Edit")
+                    Text("split-controller.edit")
                     Image(systemName: "pencil")
                 }
                 Button(action: {
                     self.deleteAction()
                 }) {
-                    Text("Delete")
+                    Text("new-split-controller.delete")
                         .foregroundColor(.error) // Not working
                     Image(systemName: "trash")
                 }.foregroundColor(.primary)
