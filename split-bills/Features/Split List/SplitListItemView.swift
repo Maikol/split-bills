@@ -35,8 +35,10 @@ struct SplitListItemView: View {
     }
 }
 
+#if DEBUG
 struct SplitRow_Previews: PreviewProvider {
     static var previews: some View {
         SplitListItemView(split: .example, editAction: {}) {}
     }
 }
+#endif

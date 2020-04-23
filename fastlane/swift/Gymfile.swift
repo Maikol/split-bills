@@ -10,7 +10,7 @@
 
 class Gymfile: GymfileProtocol {
 
-    var scheme: { return "split-bills" }
+    var scheme: String { return "split-bills" }
 }
 
 
