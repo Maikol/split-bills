@@ -40,11 +40,12 @@ struct SplitDatabase {
         try db.prepare(table).map { try split(with: $0) }
     }
 
-    func create(eventName: String, participants: [String]) throws {
+    @discardableResult func create(eventName: String, participants: [String]) throws -> Int64 {
         let insert = table.insert(self.eventName <- eventName)
         let rowId = try db.run(insert)
 
         try participants.forEach { try participantsDatabase.add(participant: $0, splitId: rowId) }
+        return rowId
     }
 
     func remove(splitId: Int64) throws {

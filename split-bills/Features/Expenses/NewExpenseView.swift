@@ -81,6 +81,7 @@ struct NewExpenseView: View {
             HStack {
                 Text("expenses.new.amount-header")
                 TextField("0", text: viewModel.binding(for: \.amount) { string in NewExpenseViewModel.Event.onAmountChange(string) })
+                    .accessibility(label: Text("amountTextField"))
                     .multilineTextAlignment(.trailing)
                     .keyboardType(.decimalPad)
             }

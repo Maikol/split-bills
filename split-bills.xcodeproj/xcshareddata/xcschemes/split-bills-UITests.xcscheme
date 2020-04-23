@@ -9,14 +9,14 @@
          <BuildActionEntry
             buildForTesting = "YES"
             buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DF5CB4D92118483A00F39DC0"
-               BuildableName = "split-bills.app"
-               BlueprintName = "split-bills"
+               BlueprintIdentifier = "50AFA975245068A700011D25"
+               BuildableName = "split-billsUITests.xctest"
+               BlueprintName = "split-billsUITests"
                ReferencedContainer = "container:split-bills.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -27,34 +27,10 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
-      codeCoverageEnabled = "YES"
-      onlyGenerateCoverageForSpecifiedTargets = "YES">
-      <CodeCoverageTargets>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DF5CB4D92118483A00F39DC0"
-            BuildableName = "split-bills.app"
-            BlueprintName = "split-bills"
-            ReferencedContainer = "container:split-bills.xcodeproj">
-         </BuildableReference>
-      </CodeCoverageTargets>
+      disableMainThreadChecker = "YES">
       <Testables>
          <TestableReference
-            skipped = "NO"
-            parallelizable = "YES"
-            testExecutionOrdering = "random">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DFB90DA0211E7A0F0084C5E5"
-               BuildableName = "split-bills-tests.xctest"
-               BlueprintName = "split-bills-tests"
-               ReferencedContainer = "container:split-bills.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES"
-            testExecutionOrdering = "random">
+            skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "50AFA975245068A700011D25"
@@ -75,16 +51,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DF5CB4D92118483A00F39DC0"
-            BuildableName = "split-bills.app"
-            BlueprintName = "split-bills"
-            ReferencedContainer = "container:split-bills.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -92,16 +58,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DF5CB4D92118483A00F39DC0"
-            BuildableName = "split-bills.app"
-            BlueprintName = "split-bills"
+            BlueprintIdentifier = "50AFA975245068A700011D25"
+            BuildableName = "split-billsUITests.xctest"
+            BlueprintName = "split-billsUITests"
             ReferencedContainer = "container:split-bills.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
