@@ -22,6 +22,12 @@
 		50A3AA4D24442B040062106F /* SplitListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50A3AA4C24442B040062106F /* SplitListViewModel.swift */; };
 		50A3AA5024442C3F0062106F /* Feedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50A3AA4F24442C3F0062106F /* Feedback.swift */; };
 		50A3AA5224442C580062106F /* System.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50A3AA5124442C580062106F /* System.swift */; };
+		50AFA979245068A700011D25 /* split_billsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AFA978245068A700011D25 /* split_billsUITests.swift */; };
+		50AFA9812450690F00011D25 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AFA9802450690F00011D25 /* SnapshotHelper.swift */; };
+		50AFA9832450764300011D25 /* ApplicationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AFA9822450764300011D25 /* ApplicationState.swift */; };
+		50AFA9842450799800011D25 /* ApplicationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AFA9822450764300011D25 /* ApplicationState.swift */; };
+		50AFA98624512C4500011D25 /* UITestingEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AFA98524512C4500011D25 /* UITestingEnvironment.swift */; };
+		50AFA98824514D6500011D25 /* SnapshotsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AFA98724514D6500011D25 /* SnapshotsUITests.swift */; };
 		50B851CE2449033C00D6DBC9 /* NewExpenseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B851CD2449033C00D6DBC9 /* NewExpenseViewModel.swift */; };
 		50E4DB2F24498BFD006F3DC0 /* EditExpenseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E4DB2E24498BFD006F3DC0 /* EditExpenseViewModel.swift */; };
 		50E4DB332449DBED006F3DC0 /* ExpenseDisplayModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E4DB322449DBED006F3DC0 /* ExpenseDisplayModel.swift */; };
@@ -65,6 +71,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		50AFA97B245068A700011D25 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DF5CB4D22118483A00F39DC0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DF5CB4D92118483A00F39DC0;
+			remoteInfo = "split-bills";
+		};
 		DFB90DA6211E7A0F0084C5E5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DF5CB4D22118483A00F39DC0 /* Project object */;
@@ -90,6 +103,13 @@
 		50A3AA4C24442B040062106F /* SplitListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitListViewModel.swift; sourceTree = "<group>"; };
 		50A3AA4F24442C3F0062106F /* Feedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Feedback.swift; sourceTree = "<group>"; };
 		50A3AA5124442C580062106F /* System.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = System.swift; sourceTree = "<group>"; };
+		50AFA976245068A700011D25 /* split-billsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "split-billsUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		50AFA978245068A700011D25 /* split_billsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = split_billsUITests.swift; sourceTree = "<group>"; };
+		50AFA97A245068A700011D25 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		50AFA9802450690F00011D25 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
+		50AFA9822450764300011D25 /* ApplicationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationState.swift; sourceTree = "<group>"; };
+		50AFA98524512C4500011D25 /* UITestingEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestingEnvironment.swift; sourceTree = "<group>"; };
+		50AFA98724514D6500011D25 /* SnapshotsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotsUITests.swift; sourceTree = "<group>"; };
 		50B851CD2449033C00D6DBC9 /* NewExpenseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewExpenseViewModel.swift; sourceTree = "<group>"; };
 		50E4DB2E24498BFD006F3DC0 /* EditExpenseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditExpenseViewModel.swift; sourceTree = "<group>"; };
 		50E4DB322449DBED006F3DC0 /* ExpenseDisplayModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseDisplayModel.swift; sourceTree = "<group>"; };
@@ -137,6 +157,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		50AFA973245068A700011D25 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DF5CB4D72118483A00F39DC0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -171,6 +198,17 @@
 				50A3AA5124442C580062106F /* System.swift */,
 			);
 			path = Feedback;
+			sourceTree = "<group>";
+		};
+		50AFA977245068A700011D25 /* split-billsUITests */ = {
+			isa = PBXGroup;
+			children = (
+				50AFA9802450690F00011D25 /* SnapshotHelper.swift */,
+				50AFA978245068A700011D25 /* split_billsUITests.swift */,
+				50AFA97A245068A700011D25 /* Info.plist */,
+				50AFA98724514D6500011D25 /* SnapshotsUITests.swift */,
+			);
+			path = "split-billsUITests";
 			sourceTree = "<group>";
 		};
 		50E4DB302449D185006F3DC0 /* Display Models */ = {
@@ -263,6 +301,7 @@
 			children = (
 				DF5CB4DC2118483A00F39DC0 /* split-bills */,
 				DFB90DA2211E7A0F0084C5E5 /* split-bills-tests */,
+				50AFA977245068A700011D25 /* split-billsUITests */,
 				DF5CB4DB2118483A00F39DC0 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -272,6 +311,7 @@
 			children = (
 				DF5CB4DA2118483A00F39DC0 /* split-bills.app */,
 				DFB90DA1211E7A0F0084C5E5 /* split-bills-tests.xctest */,
+				50AFA976245068A700011D25 /* split-billsUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -314,6 +354,8 @@
 			children = (
 				DF5CB4DD2118483A00F39DC0 /* AppDelegate.swift */,
 				50013953243D967C00E36B85 /* SceneDelegate.swift */,
+				50AFA9822450764300011D25 /* ApplicationState.swift */,
+				50AFA98524512C4500011D25 /* UITestingEnvironment.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -431,6 +473,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		50AFA975245068A700011D25 /* split-billsUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 50AFA97D245068A700011D25 /* Build configuration list for PBXNativeTarget "split-billsUITests" */;
+			buildPhases = (
+				50AFA972245068A700011D25 /* Sources */,
+				50AFA973245068A700011D25 /* Frameworks */,
+				50AFA974245068A700011D25 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				50AFA97C245068A700011D25 /* PBXTargetDependency */,
+			);
+			name = "split-billsUITests";
+			productName = "split-billsUITests";
+			productReference = 50AFA976245068A700011D25 /* split-billsUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		DF5CB4D92118483A00F39DC0 /* split-bills */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = DF5CB4EC2118483C00F39DC0 /* Build configuration list for PBXNativeTarget "split-bills" */;
@@ -475,10 +535,14 @@
 		DF5CB4D22118483A00F39DC0 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1000;
+				LastSwiftUpdateCheck = 1140;
 				LastUpgradeCheck = 1000;
 				ORGANIZATIONNAME = "Carlos Miguel de Elias";
 				TargetAttributes = {
+					50AFA975245068A700011D25 = {
+						CreatedOnToolsVersion = 11.4;
+						TestTargetID = DF5CB4D92118483A00F39DC0;
+					};
 					DF5CB4D92118483A00F39DC0 = {
 						CreatedOnToolsVersion = 10.0;
 						LastSwiftMigration = 1140;
@@ -508,11 +572,19 @@
 			targets = (
 				DF5CB4D92118483A00F39DC0 /* split-bills */,
 				DFB90DA0211E7A0F0084C5E5 /* split-bills-tests */,
+				50AFA975245068A700011D25 /* split-billsUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		50AFA974245068A700011D25 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DF5CB4D82118483A00F39DC0 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -533,6 +605,17 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		50AFA972245068A700011D25 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				50AFA9842450799800011D25 /* ApplicationState.swift in Sources */,
+				50AFA98824514D6500011D25 /* SnapshotsUITests.swift in Sources */,
+				50AFA979245068A700011D25 /* split_billsUITests.swift in Sources */,
+				50AFA9812450690F00011D25 /* SnapshotHelper.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DF5CB4D62118483A00F39DC0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -541,6 +624,7 @@
 				DF4895EC2439C86700D10DBD /* CollectionExtensions.swift in Sources */,
 				50E4DB442449E452006F3DC0 /* SplitEditModel.swift in Sources */,
 				DF78FA43244ABE9600C90842 /* DataRequesting.swift in Sources */,
+				50AFA98624512C4500011D25 /* UITestingEnvironment.swift in Sources */,
 				508FC565243F1F6D008DA135 /* PlusButton.swift in Sources */,
 				503275F82446543200DDEAF1 /* EditSplitViewModel.swift in Sources */,
 				DF5CB50721187A9400F39DC0 /* DatabaseAPI.swift in Sources */,
@@ -549,6 +633,7 @@
 				DF4895EA2439676100D10DBD /* FormSectionHeader.swift in Sources */,
 				50FD349D243C65B5000B327A /* ParticipantSelectRow.swift in Sources */,
 				DF8DB77424448994002FADE0 /* NewSplitViewModel.swift in Sources */,
+				50AFA9832450764300011D25 /* ApplicationState.swift in Sources */,
 				50E4DB332449DBED006F3DC0 /* ExpenseDisplayModel.swift in Sources */,
 				DFC166AB2448677900A7E519 /* SplitDetailViewModel.swift in Sources */,
 				505C98FD244B39040098424C /* DTOs.swift in Sources */,
@@ -601,6 +686,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		50AFA97C245068A700011D25 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DF5CB4D92118483A00F39DC0 /* split-bills */;
+			targetProxy = 50AFA97B245068A700011D25 /* PBXContainerItemProxy */;
+		};
 		DFB90DA7211E7A0F0084C5E5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = DF5CB4D92118483A00F39DC0 /* split-bills */;
@@ -628,6 +718,44 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		50AFA97E245068A700011D25 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "split-billsUITests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "maikol.split-billsUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "split-bills";
+			};
+			name = Debug;
+		};
+		50AFA97F245068A700011D25 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "split-billsUITests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "maikol.split-billsUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "split-bills";
+			};
+			name = Release;
+		};
 		DF5CB4EA2118483C00F39DC0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -683,6 +811,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_SWIFT_FLAGS = "";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -825,6 +954,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		50AFA97D245068A700011D25 /* Build configuration list for PBXNativeTarget "split-billsUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				50AFA97E245068A700011D25 /* Debug */,
+				50AFA97F245068A700011D25 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		DF5CB4D52118483A00F39DC0 /* Build configuration list for PBXProject "split-bills" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

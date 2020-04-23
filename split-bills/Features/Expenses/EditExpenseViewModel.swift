@@ -17,7 +17,7 @@ final class EditExpenseViewModel: ObservableObject {
     private var bag = Set<AnyCancellable>()
     private let input = PassthroughSubject<Event, Never>()
 
-    init(splitId: SplitId, expenseId: ExpenseId, datasource: DataRequesting = DatabaseAPI.shared) {
+    init(splitId: SplitId, expenseId: ExpenseId, datasource: DataRequesting = DatabaseAPI()) {
         state = .idle(splitId: splitId, expenseId: expenseId)
         Publishers.system(
             initial: state,

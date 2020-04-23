@@ -11,10 +11,13 @@ import Combine
 
 struct DatabaseAPI: DataRequesting {
 
-    static let shared = DatabaseAPI()
+    private let splitDatabase: SplitDatabase
+    private let expensesDatabase: ExpenseDatabase
 
-    private let splitDatabase = try! SplitDatabase(databasePath: URL.documentsDirectory.path)
-    private let expensesDatabase = try! ExpenseDatabase(databasePath: URL.documentsDirectory.path)
+    init(databasePath: String = ApplicationState.documentsPath) {
+        splitDatabase = try! SplitDatabase(databasePath: databasePath)
+        expensesDatabase = try! ExpenseDatabase(databasePath: databasePath)
+    }
 
     func splits() -> AnyPublisher<[SplitDTO], Never> {
         return Deferred {
@@ -109,17 +112,5 @@ struct DatabaseAPI: DataRequesting {
                 promise(.success(()))
             }
         }.eraseToAnyPublisher()
-    }
-}
-
-extension URL {
-
-    static var documentsDirectory: URL {
-        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        guard let documentsURL = paths.first else {
-            fatalError("Missing a documents directory")
-        }
-
-        return documentsURL
     }
 }

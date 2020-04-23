@@ -19,7 +19,7 @@ final class NewSplitViewModel: ObservableObject {
     private var bag = Set<AnyCancellable>()
     private let input = PassthroughSubject<Event, Never>()
 
-    init(datasource: DataRequesting = DatabaseAPI.shared) {
+    init(datasource: DataRequesting = DatabaseAPI()) {
         Publishers.system(
             initial: state,
             reduce: self.reduce,

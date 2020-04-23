@@ -13,6 +13,13 @@ import SwiftUI
 final class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        #if DEBUG
+        let environment = ProcessInfo.processInfo.environment
+        if environment["UI_TESTING"] != nil, let uiTestinglaunchOptionString = environment["launch_option"] {
+            let uiTestinglaunchOption = UITestingEnvironment.ApplicationLaunchOption(rawValue: uiTestinglaunchOptionString)!
+            UITestingEnvironment.setupFor(launchOption: uiTestinglaunchOption)
+        }
+        #endif
         return true
     }
 
