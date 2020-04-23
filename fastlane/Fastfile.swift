@@ -16,6 +16,6 @@ class Fastfile: LaneFile {
 
     func testLane() {
     desc("Run tests")
-        runTests(scheme: "split-bills")
+        runTests()
     }
 }
