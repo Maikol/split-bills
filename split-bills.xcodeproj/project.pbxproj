@@ -29,6 +29,7 @@
 		50AFA98624512C4500011D25 /* UITestingEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AFA98524512C4500011D25 /* UITestingEnvironment.swift */; };
 		50AFA98824514D6500011D25 /* SnapshotsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AFA98724514D6500011D25 /* SnapshotsUITests.swift */; };
 		50B851CE2449033C00D6DBC9 /* NewExpenseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B851CD2449033C00D6DBC9 /* NewExpenseViewModel.swift */; };
+		50BC3BA62452B82C0024B79D /* SplitListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BC3BA52452B82C0024B79D /* SplitListViewModelTests.swift */; };
 		50E4DB2F24498BFD006F3DC0 /* EditExpenseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E4DB2E24498BFD006F3DC0 /* EditExpenseViewModel.swift */; };
 		50E4DB332449DBED006F3DC0 /* ExpenseDisplayModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E4DB322449DBED006F3DC0 /* ExpenseDisplayModel.swift */; };
 		50E4DB352449DCC9006F3DC0 /* SplitDisplayModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E4DB342449DCC9006F3DC0 /* SplitDisplayModel.swift */; };
@@ -54,7 +55,7 @@
 		DF5CB5052118728F00F39DC0 /* database.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB5042118728F00F39DC0 /* database.swift */; };
 		DF5CB50721187A9400F39DC0 /* DatabaseAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5CB50621187A9400F39DC0 /* DatabaseAPI.swift */; };
 		DF78FA43244ABE9600C90842 /* DataRequesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF78FA42244ABE9600C90842 /* DataRequesting.swift */; };
-		DF78FA45244ACAE100C90842 /* DataMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF78FA44244ACAE100C90842 /* DataMock.swift */; };
+		DF78FA45244ACAE100C90842 /* EmptyDataMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF78FA44244ACAE100C90842 /* EmptyDataMock.swift */; };
 		DF78FA47244AD80B00C90842 /* NewExpenseViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF78FA46244AD80B00C90842 /* NewExpenseViewModelTests.swift */; };
 		DF78FA4D244CF6EC00C90842 /* SharePaymentShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF78FA4C244CF6EC00C90842 /* SharePaymentShareSheet.swift */; };
 		DF8DB77424448994002FADE0 /* NewSplitViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8DB77324448994002FADE0 /* NewSplitViewModel.swift */; };
@@ -111,6 +112,7 @@
 		50AFA98524512C4500011D25 /* UITestingEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestingEnvironment.swift; sourceTree = "<group>"; };
 		50AFA98724514D6500011D25 /* SnapshotsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotsUITests.swift; sourceTree = "<group>"; };
 		50B851CD2449033C00D6DBC9 /* NewExpenseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewExpenseViewModel.swift; sourceTree = "<group>"; };
+		50BC3BA52452B82C0024B79D /* SplitListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitListViewModelTests.swift; sourceTree = "<group>"; };
 		50E4DB2E24498BFD006F3DC0 /* EditExpenseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditExpenseViewModel.swift; sourceTree = "<group>"; };
 		50E4DB322449DBED006F3DC0 /* ExpenseDisplayModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseDisplayModel.swift; sourceTree = "<group>"; };
 		50E4DB342449DCC9006F3DC0 /* SplitDisplayModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitDisplayModel.swift; sourceTree = "<group>"; };
@@ -138,7 +140,7 @@
 		DF5CB5042118728F00F39DC0 /* database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = database.swift; sourceTree = "<group>"; };
 		DF5CB50621187A9400F39DC0 /* DatabaseAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseAPI.swift; sourceTree = "<group>"; };
 		DF78FA42244ABE9600C90842 /* DataRequesting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataRequesting.swift; sourceTree = "<group>"; };
-		DF78FA44244ACAE100C90842 /* DataMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataMock.swift; sourceTree = "<group>"; };
+		DF78FA44244ACAE100C90842 /* EmptyDataMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyDataMock.swift; sourceTree = "<group>"; };
 		DF78FA46244AD80B00C90842 /* NewExpenseViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewExpenseViewModelTests.swift; sourceTree = "<group>"; };
 		DF78FA4C244CF6EC00C90842 /* SharePaymentShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePaymentShareSheet.swift; sourceTree = "<group>"; };
 		DF890F9C211C772F00305528 /* Playground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Playground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -372,6 +374,7 @@
 		DF78FA48244AD95D00C90842 /* View Models */ = {
 			isa = PBXGroup;
 			children = (
+				50BC3BA52452B82C0024B79D /* SplitListViewModelTests.swift */,
 				DFB90DAB211E7A570084C5E5 /* SplitDetailViewModelTests.swift */,
 				500809AB244FB0D300726011 /* SplitDetailViewModelPerformanceTests.swift */,
 				DF78FA46244AD80B00C90842 /* NewExpenseViewModelTests.swift */,
@@ -465,7 +468,7 @@
 			isa = PBXGroup;
 			children = (
 				DFD8C57622211CC70095B3A3 /* Mocks.swift */,
-				DF78FA44244ACAE100C90842 /* DataMock.swift */,
+				DF78FA44244ACAE100C90842 /* EmptyDataMock.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -675,11 +678,12 @@
 			files = (
 				500809AC244FB0D300726011 /* SplitDetailViewModelPerformanceTests.swift in Sources */,
 				DF78FA47244AD80B00C90842 /* NewExpenseViewModelTests.swift in Sources */,
-				DF78FA45244ACAE100C90842 /* DataMock.swift in Sources */,
+				DF78FA45244ACAE100C90842 /* EmptyDataMock.swift in Sources */,
 				DFD8C57422211C6B0095B3A3 /* DatabaseTests.swift in Sources */,
 				DFB90DAC211E7A570084C5E5 /* SplitDetailViewModelTests.swift in Sources */,
 				DFB90DA4211E7A0F0084C5E5 /* split_bills_tests.swift in Sources */,
 				DFD8C57722211CC70095B3A3 /* Mocks.swift in Sources */,
+				50BC3BA62452B82C0024B79D /* SplitListViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

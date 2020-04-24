@@ -12,15 +12,15 @@ import Combine
 
 final class SplitDetailViewModelTests: XCTestCase {
 
-    var mock: DataMock!
+    var mock: EmptyDataMock!
     var viewModel: SplitDetailViewModel!
 
     private var bag = Set<AnyCancellable>()
 
-    override func setUp() {
+    override func setUpWithError() throws {
         super.setUp()
 
-        mock = DataMock()
+        mock = EmptyDataMock()
         viewModel = SplitDetailViewModel(splitId: 0, title: "Split Title", datasource: mock)
         viewModel.send(event: .onAppear)
     }

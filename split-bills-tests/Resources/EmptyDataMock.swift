@@ -13,11 +13,7 @@ import Combine
 class EmptyDataMock: DataRequesting {
 
     func splits() -> AnyPublisher<[SplitDTO], Never> {
-        return Deferred {
-            Future<[SplitDTO], Never> { promise in
-                promise(.success(DTOMocks.splits))
-            }
-        }.eraseToAnyPublisher()
+        Empty().eraseToAnyPublisher()
     }
 
     func split(withId id: SplitId) -> AnyPublisher<SplitDTO?, Never> {

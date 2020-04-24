@@ -12,7 +12,7 @@ import Combine
 
 final class NewExpenseViewModelTests: XCTestCase {
 
-    final class MockRequester: DataMock {
+    final class MockRequester: EmptyDataMock {
         var onCreate: ((DataRequesting.ExpenseData) -> Void)?
 
         override func createExpense(splitId: SplitId, expenseData: ExpenseData) -> AnyPublisher<Void, Never> {
@@ -26,7 +26,7 @@ final class NewExpenseViewModelTests: XCTestCase {
 
     private var bag = Set<AnyCancellable>()
 
-    override func setUp() {
+    override func setUpWithError() throws {
         super.setUp()
 
         mock = MockRequester()
